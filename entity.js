@@ -51,7 +51,7 @@ class Entity extends SpriteActor {
         this.stage = stage;
         this.vx = 0;
         this.vy = 0;
-        this.entityKey = null;
+        this.entityKey = crypto.randomUUID();
         this.behavior = new EntityBehavior(this);
     }
 
@@ -181,19 +181,19 @@ class Player extends Entity {
     processInput(input) {
         const move = () => {
             const speedX = 1.5;
-            if (input.getKey("ArrowRight") > 0) this.vx = speedX;
-            else if (input.getKey("ArrowLeft") > 0) this.vx = -speedX;
+            if (input.getKey("d") > 0) this.vx = speedX;
+            else if (input.getKey("a") > 0) this.vx = -speedX;
             else this.vx = 0;
         };
         const sit = () => {
-            if (input.getKey("ArrowDown") > 0) {
+            if (input.getKey("s") > 0) {
                 this.state = "sit";
                 this.vx = 0;
                 this.hitbox = new Rectangle(7, 16, 10, 16);
             }
         };
         const jump = () => {
-            if (input.getKey("z") == 1) {
+            if (input.getKey("w") == 1) {
                 if (this.jump == 1) {
                     this.jump = 0;
                     this.vy = -3;
@@ -201,15 +201,15 @@ class Player extends Entity {
             }
         };
         const wind = (vx) => {
-            if (input.getKey("x") == 1) {
+            if (input.getKey(" ") == 1) {
                 this.dispatch("makeWind", vx);
                 this.animation = "wind";
-                this.animationTimer = 6;
+                this.animationTimer = 12;
                 this.playAnimation("wind");
             }
         };
         const standUp = () => {
-            if (input.getKey("ArrowDown") <= 0) {
+            if (input.getKey("s") <= 0) {
                 this.state = "standUp";
                 this.hitbox = new Rectangle(7, 7, 10, 25);
             }

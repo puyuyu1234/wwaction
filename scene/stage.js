@@ -76,25 +76,25 @@ class StageScene extends Scene {
         text.font = "10px " + FONT;
         text.cameraFollowRateX = text.cameraFollowRateY = 0;
         text.update = (input) => {
-            if (input.getKey("d") == 1) {
-                text.debugFlag = !text.debugFlag;
+            if (input.getKey("1") == 1) {
+                text.alpha = !text.alpha;
             }
-            if (!text.debugFlag) {
-                text.text =
-                    "[操作方法]\n" +
-                    "←→ : 移動\n" +
-                    "↓   : しゃがみ\n" +
-                    "Z    : ジャンプ\n" +
-                    "X    : 風\n" +
-                    "R    : リトライ\n" +
-                    "D    : デバッグテキスト表示/非表示\n" +
-                    "\n" +
-                    "[INFO]\n" +
-                    `x:${this.player.x.toFixed(1)}, y:${this.player.y.toFixed(3)}\n` +
-                    `state:${this.player.state}\n`;
-            } else {
-                text.text = "";
-            }
+            text.text =
+                "[操作方法]\n" +
+                "A/D  : 移動\n" +
+                "S    : しゃがみ\n" +
+                "W    : ジャンプ\n" +
+                "Space: 風\n" +
+                "R    : リトライ\n" +
+                "1    : デバッグテキスト表示/非表示\n" +
+                "\n" +
+                "[INFO]\n" +
+                `x:${this.player.x.toFixed(1)}, y:${this.player.y.toFixed(3)}\n` +
+                `state:${this.player.state}\n` +
+                "\n\n\n\n\n\n\n\n" +
+                "[MEMO]\n" +
+                "最初の地形は平原にする、風出しても反射しないように\n" +
+                "風で壁を登るやつ、もうちょっと誘導いれたほうがいいかも\n";
         };
 
         /*
@@ -198,6 +198,7 @@ class StageScene extends Scene {
                     }
                     const sprite = new ENTITYDATA[block].cl(x, y, stage);
                     sprite.addChildTo(this.EntityLayer);
+                    console.log(sprite.entityKey);
                     this.entityMap.set(sprite.entityKey, sprite);
                 } else {
                     // 通常ブロック登録

@@ -986,9 +986,9 @@ class Game {
             this.lag -= frameTime;
             this.elapsedSecondList.shift();
             this.elapsedSecondList.push(frameTime);
-        }
-        for (const currentScene of this.currentSceneList) {
-            if (this.context) currentScene.render(this.context);
+            for (const currentScene of this.currentSceneList) {
+                if (this.context) currentScene.render(this.context);
+            }
         }
 
         this.currentFps = 60 / this.elapsedSecondList.reduce((s, v) => s + v, 0);
