@@ -18,6 +18,13 @@
         <div id="canvas_wrapper">
             <canvas width="320" height="240" id="screenCanvas"></canvas>
         </div>
+        <h3>操作</h3>
+        <p>
+            A・Dキー：左右移動<br />
+            Wキー：ジャンプ<br />
+            Sキー：しゃがむ<br />
+            Spaceキー：風を吹かせる<br />
+        </p>
         <!--
         <button class="spb" id="lButton">←</button>
         <button class="spb" id="rButton">→</button>
@@ -34,9 +41,12 @@
         </p>-->
         <script src="engine.js"></script>
         <script src="util.js"></script>
-        <script src="param.js"></script>
-        <script src="entity.js"></script>
+        <script src="entity/entity.js"></script>
+        <script src="entity/player.js"></script>
+        <script src="entity/boss.js"></script>
+        <script src="entity/others.js"></script>
         <script src="scene/stage.js"></script>
+        <script src="param.js"></script>
         <script src="main.js"></script>
     </body>
 </html>
