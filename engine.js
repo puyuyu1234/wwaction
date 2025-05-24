@@ -21,8 +21,8 @@ class Rectangle {
      * @returns {boolean} - 重なっている場合はtrue。
      */
     hitTest(other) {
-        const horizontal = other.left < this.right && this.left < other.right;
-        const vertical = other.top < this.bottom && this.top < other.bottom;
+        const horizontal = other.left <= this.right && this.left <= other.right;
+        const vertical = other.top <= this.bottom && this.top <= other.bottom;
         return horizontal && vertical;
     }
 
@@ -383,6 +383,8 @@ class Actor extends EventDispatcher {
      */
     update(input) {}
 
+    updateRender() {}
+
     /**
      * アクターを描画します。
      * @param {CanvasRenderingContext2D} context - 描画に使用するコンテキスト。
@@ -424,6 +426,7 @@ class Actor extends EventDispatcher {
     /** @param {LayerActor | StaticLayerActor | Scene} parent  */
     addChildTo(parent) {
         parent.addChild(this);
+        this.updateRender();
         return this;
     }
 
@@ -437,6 +440,14 @@ class Actor extends EventDispatcher {
         this.width = rectangle.width;
         this.height = rectangle.height;
     }
+}
+
+class NullActor extends Actor {
+    constructor() {
+        super(0, 0);
+    }
+
+    render() {}
 }
 
 /**
@@ -635,6 +646,10 @@ class SpriteActor extends Actor {
         }
     }
 
+    updateRender() {
+        this.updateSpriteAnimation();
+    }
+
     /**
      * アクターを描画します。
      * @override
@@ -643,7 +658,6 @@ class SpriteActor extends Actor {
      */
     render(context, camera) {
         super.render(context, camera);
-        this.updateSpriteAnimation();
 
         context.drawImage(
             this.sprite.image,
@@ -775,6 +789,7 @@ class LayerActor extends Actor {
     update(input) {
         for (const [key, actor] of this.children) {
             actor.update(input);
+            actor.updateRender();
             actor.time++;
         }
     }
@@ -901,6 +916,7 @@ class Scene extends EventDispatcher {
     update(input) {
         for (const [key, actor] of this.children) {
             actor.update(input);
+            actor.updateRender();
             actor.time++;
         }
     }
@@ -979,6 +995,7 @@ class Game {
         this.time++;
 
         while (this.lag >= frameTime / 2) {
+            if (this.lag >= frameTime * 10) this.lag = frameTime;
             this.input.update();
             for (const currentScene of this.currentSceneList) {
                 currentScene.update(this.input);
@@ -1268,6 +1285,9 @@ class SoundTrack {
             this.bufferSource.loopStart = this.loopStart;
             this.bufferSource.loopEnd = this.loopEnd;
         }
+        this.bufferSource.onended = () => {
+            this.isPlaying = false;
+        };
 
         return this.bufferSource;
     }
