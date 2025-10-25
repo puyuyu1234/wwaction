@@ -1,5 +1,12 @@
 /**
  * AABB (Axis-Aligned Bounding Box) 矩形クラス
+ *
+ * 座標系の定義:
+ * - left, top は「境界の内側」を指す
+ * - right, bottom は「境界の外側」を指す
+ * - Rectangle(0, 0, 16, 16) の場合:
+ *   - left=0, right=16, top=0, bottom=16
+ *   - 実際に占有するピクセルは (0,0) から (15,15) まで
  */
 export class Rectangle {
   constructor(

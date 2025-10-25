@@ -7,9 +7,9 @@ describe('Rectangle', () => {
       const rect = new Rectangle(10, 20, 16, 16)
 
       expect(rect.left).toBe(10)
-      expect(rect.right).toBe(26) // 10 + 16
+      expect(rect.right).toBe(26) // 10 + 16 (境界の外側)
       expect(rect.top).toBe(20)
-      expect(rect.bottom).toBe(36) // 20 + 16
+      expect(rect.bottom).toBe(36) // 20 + 16 (境界の外側)
     })
 
     it('calculates center correctly', () => {
@@ -49,6 +49,7 @@ describe('Rectangle', () => {
     it('detects point outside', () => {
       const rect = new Rectangle(0, 0, 16, 16)
 
+      // (16, 16) は境界の外なので含まれない
       expect(rect.contain(16, 16)).toBe(false)
       expect(rect.contain(-1, 8)).toBe(false)
     })
