@@ -2,7 +2,7 @@ import { EventDispatcher } from '@/core/EventDispatcher'
 
 /**
  * ゲーム内のアクター基底クラス
- * Phase 1では最小限の実装 (x, y, width, height, tags のみ)
+ * PixiJS と統合したゲームオブジェクト
  */
 export class Actor extends EventDispatcher {
   x: number
@@ -25,5 +25,8 @@ export class Actor extends EventDispatcher {
     return this.tags.includes(tagName)
   }
 
-  // update(), render() などは Phase 3 で実装
+  /**
+   * フレーム更新（サブクラスでオーバーライド）
+   */
+  update?(): void
 }

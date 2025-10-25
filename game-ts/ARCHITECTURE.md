@@ -21,17 +21,27 @@ game-ts/
 ├── src/
 │   ├── core/           # エンジンコア (engine.jsから移植)
 │   │   ├── Rectangle.ts        # AABB基礎クラス
+│   │   ├── Rectangle.spec.ts   # テスト
 │   │   ├── EventDispatcher.ts  # Pub/Sub イベントシステム
+│   │   ├── EventDispatcher.spec.ts  # テスト
 │   │   ├── GameEvent.ts        # イベントデータ
 │   │   ├── Input.ts            # 入力管理 (キーボード・マウス)
 │   │   └── Game.ts             # ゲームループ
 │   │
 │   ├── actor/          # アクターシステム (描画とロジックの分離)
 │   │   ├── Actor.ts            # ベースアクター
+│   │   ├── Actor.spec.ts       # テスト
 │   │   ├── SpriteActor.ts      # スプライト描画
+│   │   ├── SpriteActor.spec.ts # テスト
 │   │   ├── TextActor.ts        # テキスト描画
 │   │   ├── LayerActor.ts       # レイヤー管理
 │   │   └── index.ts            # エクスポート
+│   │
+│   ├── components/     # 再利用可能なComponent (Phase 2)
+│   │   ├── PhysicsComponent.ts  # 物理演算
+│   │   ├── PhysicsComponent.spec.ts  # テスト
+│   │   ├── TilemapCollisionComponent.ts  # タイルマップ衝突判定
+│   │   └── TilemapCollisionComponent.spec.ts  # テスト
 │   │
 │   ├── scene/          # シーン管理
 │   │   ├── Scene.ts            # ベースシーン
@@ -39,15 +49,14 @@ game-ts/
 │   │   └── TitleScene.ts       # タイトルシーン
 │   │
 │   ├── entity/         # ゲームエンティティ
-│   │   ├── Entity.ts           # ベースエンティティ (物理+衝突)
-│   │   ├── EntityBehavior.ts   # 挙動定義 (重力・壁反応)
+│   │   ├── Entity.ts           # ベースエンティティ (Component統合)
+│   │   ├── Entity.spec.ts      # テスト
 │   │   ├── Player.ts           # プレイヤー
+│   │   ├── Player.spec.ts      # テスト
 │   │   ├── Wind.ts             # 風
+│   │   ├── Wind.spec.ts        # テスト
 │   │   ├── Enemy.ts            # 敵
 │   │   └── index.ts
-│   │
-│   ├── physics/        # 物理・衝突判定 (自作)
-│   │   └── TilemapCollision.ts # タイルマップ衝突 (isWall実装)
 │   │
 │   ├── resources/      # リソース管理
 │   │   ├── ImageLoader.ts      # 画像ロード
@@ -61,24 +70,14 @@ game-ts/
 │   ├── game/           # ゲーム固有ロジック (param.js, util.js移植)
 │   │   ├── config.ts           # BLOCKSIZE, BLOCKDATA, STAGEDATA
 │   │   ├── types.ts            # BlockData, StageData, EntityData
+│   │   ├── example.spec.ts     # テスト例
 │   │   └── utils.ts            # makeRangeWithEnd, easing関数
 │   │
 │   ├── main.ts         # エントリーポイント
 │   └── App.vue         # Vue コンポーネント
-│
-└── tests/              # テストファイル
-    ├── core/
-    │   ├── Rectangle.spec.ts
-    │   └── EventDispatcher.spec.ts
-    ├── game/
-    │   ├── config.spec.ts
-    │   └── utils.spec.ts
-    ├── entity/
-    │   ├── Entity.spec.ts
-    │   ├── Player.spec.ts
-    │   └── Wind.spec.ts
-    └── physics/
-        └── TilemapCollision.spec.ts
+```
+
+**注**: テストファイル(*.spec.ts)は各モジュールと同じディレクトリに配置します
 ```
 
 ---

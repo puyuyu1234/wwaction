@@ -12,6 +12,11 @@ import { CollisionType } from "./types";
 export const BLOCKSIZE = 16;
 
 /**
+ * 重力加速度 (ピクセル/フレーム²)
+ */
+export const GRAVITY = 0.125;
+
+/**
  * 難易度ごとのHP
  * [EASY, NORMAL, HARD, LUNATIC]
  */

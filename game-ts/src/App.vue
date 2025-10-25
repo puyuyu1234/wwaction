@@ -1,19 +1,51 @@
 <script setup lang="ts">
-import GameCanvas from './components/GameCanvas.vue'
+import { onMounted } from 'vue'
+import { Game } from './core/Game'
+import { StageScene } from './scene/StageScene'
+
+onMounted(async () => {
+  const game = new Game('gameCanvas', 320, 240)
+  await game.init()
+
+  const stage = new StageScene(1, game.getInput())
+  game.changeScene(stage)
+
+  game.start()
+  console.log('Game started!')
+})
 </script>
 
 <template>
-  <main>
-    <GameCanvas />
-  </main>
+  <canvas id="gameCanvas"></canvas>
 </template>
 
 <style scoped>
-main {
+canvas {
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+</style>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#app {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #1a1a1a;
 }
 </style>
