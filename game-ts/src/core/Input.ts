@@ -1,9 +1,11 @@
 /**
  * 入力管理クラス
  * キーボード入力の状態を管理
+ * engine.jsの実装に準拠
  */
 export class Input {
-  private keyMap: Map<string, number> = new Map()
+  private isKeyPressedMap: Map<string, boolean> = new Map()
+  private keyTimeMap: Map<string, number> = new Map()
 
   constructor() {
     // キーボードイベントのリスナー登録
@@ -12,35 +14,35 @@ export class Input {
   }
 
   private handleKeyDown(e: KeyboardEvent) {
-    const current = this.keyMap.get(e.key) ?? 0
-    if (current === 0) {
-      this.keyMap.set(e.key, 1)
-    }
+    this.isKeyPressedMap.set(e.code, true)
+    e.preventDefault()
   }
 
   private handleKeyUp(e: KeyboardEvent) {
-    this.keyMap.set(e.key, 0)
+    this.isKeyPressedMap.set(e.code, false)
   }
 
   /**
    * フレーム更新
-   * 押された瞬間のキーを持続状態に更新
+   * キーが押されている間は正の値を増加、離されている間は負の値を減少
    */
   update() {
-    this.keyMap.forEach((value, key) => {
-      if (value === 1) {
-        this.keyMap.set(key, 2)
-      }
+    this.isKeyPressedMap.forEach((isPressed, key) => {
+      const keyTime = this.keyTimeMap.get(key) ?? 0
+      this.keyTimeMap.set(
+        key,
+        isPressed ? Math.max(1, keyTime + 1) : Math.min(-1, keyTime - 1)
+      )
     })
   }
 
   /**
    * キーの状態を取得
    * @param key キー名
-   * @returns 0: 押されていない, 1: 押された瞬間, 2: 押され続けている
+   * @returns 正の値: 押されている（1=押された瞬間、2以上=押され続けている）、負の値: 離されている、0: 未入力
    */
   getKey(key: string): number {
-    return this.keyMap.get(key) ?? 0
+    return this.keyTimeMap.get(key) ?? 0
   }
 
   /**
@@ -54,7 +56,19 @@ export class Input {
    * キーが押されているかどうか（押された瞬間 + 押され続けている）
    */
   isKeyDown(key: string): boolean {
-    const state = this.getKey(key)
-    return state === 1 || state === 2
+    return this.getKey(key) > 0
+  }
+
+  /**
+   * デバッグ用: 現在押されているキーの一覧を取得
+   */
+  getPressedKeys(): string[] {
+    const pressed: string[] = []
+    this.keyTimeMap.forEach((value: number, key: string) => {
+      if (value > 0) {
+        pressed.push(`${key}:${value}`)
+      }
+    })
+    return pressed
   }
 }

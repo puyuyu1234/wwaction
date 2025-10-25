@@ -67,3 +67,86 @@ describe('Player - 床の上で静止', () => {
     }
   })
 })
+
+describe('Player - ジャンプ操作', () => {
+  let input: MockInput
+
+  beforeEach(() => {
+    input = new MockInput()
+  })
+
+  it('床の上で「KeyW」を押すとジャンプできる', () => {
+    // シンプルな床のステージ
+    const stage = [
+      [' ', ' ', ' ', ' ', ' '],
+      ['a', 'a', 'a', 'a', 'a'], // 床
+    ]
+
+    const player = new Player(0, 0, stage, input)
+
+    // 床に着地するまで更新
+    for (let i = 0; i < 20; i++) {
+      player.update()
+    }
+
+    const beforeJumpY = player.y
+    console.log(`ジャンプ前: y=${beforeJumpY}, vy=${player.vy}`)
+
+    // 「KeyW」を押す（isKeyPressed = true になる状態は 1）
+    input.setKey('KeyW', 1)
+    player.update()
+
+    console.log(`ジャンプ直後: y=${player.y}, vy=${player.vy}`)
+
+    // ジャンプ直後、vyが負の値（上向き）になっているはず
+    expect(player.vy).toBeLessThan(0)
+
+    // 数フレーム後、yが小さく（上に移動）なっているはず
+    input.setKey('KeyW', 0) // キーを離す
+    for (let i = 0; i < 5; i++) {
+      player.update()
+    }
+
+    console.log(`数フレーム後: y=${player.y}, vy=${player.vy}`)
+    expect(player.y).toBeLessThan(beforeJumpY)
+  })
+
+  it('空中では連続してジャンプできない（コヨーテタイム切れ後）', () => {
+    const stage = [
+      [' ', ' ', ' ', ' ', ' '],
+      ['a', 'a', 'a', 'a', 'a'], // 床
+    ]
+
+    const player = new Player(0, 0, stage, input)
+
+    // 床に着地するまで更新
+    for (let i = 0; i < 20; i++) {
+      player.update()
+    }
+
+    // 1回目のジャンプ
+    input.setKey('KeyW', 1)
+    player.update()
+    input.setKey('KeyW', 0)
+
+    const firstJumpVy = player.vy
+    expect(firstJumpVy).toBeLessThan(0)
+
+    // コヨーテタイムが切れて落下状態になるまで十分待つ（20フレーム以上）
+    for (let i = 0; i < 25; i++) {
+      player.update()
+    }
+
+    // 2回目のジャンプを試みる（空中なので失敗するはず）
+    const beforeSecondJumpVy = player.vy
+    input.setKey('KeyW', 1)
+    player.update()
+    const afterSecondJumpVy = player.vy
+    input.setKey('KeyW', 0)
+
+    // ジャンプが発動していないことを確認（vyが-4になっていない）
+    expect(afterSecondJumpVy).not.toBe(-4)
+    // vyは継続して重力の影響を受けているはず（前フレームとの差が重力加速度程度）
+    expect(Math.abs(afterSecondJumpVy - beforeSecondJumpVy)).toBeLessThan(1)
+  })
+})

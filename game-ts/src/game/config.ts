@@ -7,6 +7,12 @@ import type { BlockData, StageData } from "./types";
 import { CollisionType } from "./types";
 
 /**
+ * デバッグモード
+ * import.meta.env.DEV を使用して開発時のみtrue
+ */
+export const DEBUG = import.meta.env.DEV;
+
+/**
  * ブロックサイズ (ピクセル)
  */
 export const BLOCKSIZE = 16;

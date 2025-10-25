@@ -1,8 +1,8 @@
-import { Graphics, Container } from "pixi.js";
+import { Graphics, Container, Text } from "pixi.js";
 import { Scene } from "./Scene";
 import { Player } from "@/entity/Player";
 import { Input } from "@/core/Input";
-import { STAGEDATA, BLOCKSIZE } from "@/game/config";
+import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from "@/game/config";
 
 /**
  * ステージシーン
@@ -14,9 +14,12 @@ export class StageScene extends Scene {
   private stageGraphics: Graphics;
   private playerGraphics: Graphics;
   private camera: Container;
+  private debugText!: Text;
+  private input: Input;
 
   constructor(stageIndex: number, input: Input) {
     super();
+    this.input = input;
 
     // ステージデータ取得
     const stageData = STAGEDATA[stageIndex];
@@ -54,6 +57,23 @@ export class StageScene extends Scene {
 
     this.player = new Player(playerX, playerY, this.stage, input);
     this.add(this.player);
+
+    // デバッグテキスト（開発時のみ表示）
+    if (DEBUG) {
+      this.debugText = new Text({
+        text: "",
+        style: {
+          fontFamily: FONT,
+          fontSize: 10,
+          fill: 0xffffff,
+        },
+        resolution: 1, // ピクセルフォント用に解像度を1に固定
+      });
+      this.debugText.x = 5;
+      this.debugText.y = 5;
+      this.debugText.roundPixels = true; // ピクセル境界に配置
+      this.container.addChild(this.debugText);
+    }
   }
 
   update() {
@@ -61,6 +81,31 @@ export class StageScene extends Scene {
 
     // プレイヤー描画更新
     this.renderPlayer();
+
+    // デバッグ情報更新（開発時のみ）
+    if (DEBUG) {
+      this.updateDebugInfo();
+    }
+  }
+
+  /**
+   * デバッグ情報更新
+   */
+  private updateDebugInfo() {
+    const debug = this.player.getDebugInfo();
+    const pressedKeys = this.input.getPressedKeys();
+    const keyW = this.input.getKey('KeyW');
+    const keyA = this.input.getKey('KeyA');
+    const keyD = this.input.getKey('KeyD');
+
+    this.debugText.text = [
+      `x: ${debug.x}  y: ${debug.y}`,
+      `vx: ${debug.vx}  vy: ${debug.vy}`,
+      `coyoteTime: ${debug.coyoteTime}/${debug.coyoteTimeMax}`,
+      `onGround: ${debug.onGround}`,
+      `KeyW:${keyW} KeyA:${keyA} KeyD:${keyD}`,
+      `Keys: ${pressedKeys.join(', ') || 'none'}`,
+    ].join("\n");
   }
 
   /**

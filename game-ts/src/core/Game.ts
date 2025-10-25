@@ -43,9 +43,9 @@ export class Game {
       width: this.baseWidth,
       height: this.baseHeight,
       backgroundColor: 0x000000,
-      resolution: window.devicePixelRatio || 1,
+      resolution: 1, // ピクセルアート用に解像度を1に固定
       antialias: false,
-      autoDensity: true,
+      autoDensity: false, // 解像度を1に固定する場合はfalseにする
     })
 
     // リサイズ処理を設定
