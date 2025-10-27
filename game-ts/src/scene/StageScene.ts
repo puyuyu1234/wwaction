@@ -4,6 +4,7 @@ import { Player } from "@/entity/Player";
 import { Wind } from "@/entity/Wind";
 import { Entity } from "@/entity/Entity";
 import { Input } from "@/core/Input";
+import { HPBar } from "@/actor/HPBar";
 import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from "@/game/config";
 
 /**
@@ -18,6 +19,7 @@ export class StageScene extends Scene {
   private entitiesGraphics: Graphics;
   private camera: Container;
   private debugText!: Text;
+  private hpBar!: HPBar; // HP表示（通常UI）
   private input: Input;
 
   constructor(stageIndex: number, input: Input) {
@@ -58,8 +60,8 @@ export class StageScene extends Scene {
       }
     }
 
-    // プレイヤーもentitiesリストに追加
-    this.player = new Player(playerX, playerY, this.stage, input);
+    // プレイヤーもentitiesリストに追加（HP: 5/5で初期化）
+    this.player = new Player(playerX, playerY, this.stage, input, 5, 5);
     this.entities.push(this.player);
     this.add(this.player);
 
@@ -67,6 +69,15 @@ export class StageScene extends Scene {
     const wind = new Wind(playerX + 100, playerY - 50, 2, this.stage);
     this.entities.push(wind);
     this.add(wind);
+
+    // HP表示（通常UI - 常に表示）
+    this.hpBar = new HPBar(this.player, 10, 220);
+    this.container.addChild(this.hpBar.container);
+
+    // プレイヤーのダメージイベントをリッスン
+    this.player.on('playerDamage', (damage: number) => {
+      this.hpBar.onDamage(damage);
+    });
 
     // デバッグテキスト（開発時のみ表示）
     if (DEBUG) {
@@ -80,7 +91,7 @@ export class StageScene extends Scene {
         resolution: 1, // ピクセルフォント用に解像度を1に固定
       });
       this.debugText.x = 5;
-      this.debugText.y = 5;
+      this.debugText.y = 25; // HP表示の下に配置
       this.debugText.roundPixels = true; // ピクセル境界に配置
       this.container.addChild(this.debugText);
     }
@@ -94,6 +105,9 @@ export class StageScene extends Scene {
 
     // エンティティ描画更新
     this.renderEntities();
+
+    // HP表示更新
+    this.hpBar.update();
 
     // デバッグ情報更新（開発時のみ）
     if (DEBUG) {
@@ -133,6 +147,7 @@ export class StageScene extends Scene {
     const keyD = this.input.getKey('KeyD');
 
     this.debugText.text = [
+      `HP: ${debug.hp}/${debug.maxHp} ${debug.invincible ? '[無敵]' : ''} ${debug.isDead ? '[死亡]' : ''}`,
       `x: ${debug.x}  y: ${debug.y}`,
       `vx: ${debug.vx}  vy: ${debug.vy}`,
       `coyoteTime: ${debug.coyoteTime}/${debug.coyoteTimeMax}`,

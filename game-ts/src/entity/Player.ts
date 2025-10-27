@@ -17,12 +17,20 @@ export class Player extends Entity {
   private readonly JUMP_POWER = -4;
   private readonly WIND_JUMP_POWER = -3; // 風との衝突時のジャンプ力
 
-  constructor(x: number, y: number, stage: string[][], input: Input) {
+  // HP関連
+  public hp: number;
+  public maxHp: number;
+  private noHitboxTime = 0; // 無敵時間（ダメージ後の猶予）
+  public isDead = false;
+
+  constructor(x: number, y: number, stage: string[][], input: Input, hp: number, maxHp: number) {
     const rect = new Rectangle(x, y, 16, 16);
     const hitbox = new Rectangle(4, 0, 8, 16);
     super("player", rect, hitbox, stage);
 
     this.input = input;
+    this.hp = hp;
+    this.maxHp = maxHp;
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this);
@@ -51,6 +59,14 @@ export class Player extends Entity {
   }
 
   update() {
+    // 死亡時は更新しない
+    if (this.isDead) return;
+
+    // 無敵時間の更新
+    if (this.noHitboxTime > 0) {
+      this.noHitboxTime--;
+    }
+
     // 重力
     this.physics!.applyGravity();
 
@@ -96,6 +112,48 @@ export class Player extends Entity {
   }
 
   /**
+   * ダメージを受ける
+   * @param num ダメージ量
+   */
+  damage(num: number) {
+    // 無敵時間中はダメージを受けない
+    if (this.noHitboxTime > 0) return;
+
+    // HPを減らす（最小0）
+    this.hp = Math.max(0, this.hp - num);
+
+    // ノックバック（scaleXの逆方向に押し出す）
+    this.vx = this.vx > 0 ? -1 : 1;
+
+    // 無敵時間を設定（約0.8秒）
+    this.noHitboxTime = 50;
+
+    // ダメージイベント発火（HPBar更新用）
+    this.dispatch('playerDamage', num);
+
+    // 死亡判定
+    if (this.hp <= 0) {
+      this.isDead = true;
+      this.dispatch('death'); // イベント発火（将来的にゲームオーバー処理で使用）
+    }
+  }
+
+  /**
+   * 回復する
+   * @param num 回復量
+   */
+  heal(num: number) {
+    this.hp = Math.min(this.maxHp, this.hp + num);
+  }
+
+  /**
+   * 無敵時間中かどうか
+   */
+  isInvincible(): boolean {
+    return this.noHitboxTime > 0;
+  }
+
+  /**
    * デバッグ情報を取得
    */
   getDebugInfo() {
@@ -107,6 +165,10 @@ export class Player extends Entity {
       coyoteTime: this.coyoteTime,
       coyoteTimeMax: this.COYOTE_TIME_MAX,
       onGround: this.coyoteTime === 0,
+      hp: this.hp,
+      maxHp: this.maxHp,
+      invincible: this.isInvincible(),
+      isDead: this.isDead,
     };
   }
 }
