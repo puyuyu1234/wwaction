@@ -1,5 +1,6 @@
 import { PhysicsComponent } from '@/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@/components/TilemapCollisionComponent'
+import { CollisionReactionComponent } from '@/components/CollisionReactionComponent'
 import { SpriteActor } from '@/actor/SpriteActor'
 import { Rectangle } from '@/core/Rectangle'
 
@@ -13,6 +14,7 @@ export class Entity extends SpriteActor {
 
   protected physics?: PhysicsComponent
   protected collision?: TilemapCollisionComponent
+  protected collisionReaction = new CollisionReactionComponent()
 
   constructor(
     imageKey: string,
@@ -27,6 +29,14 @@ export class Entity extends SpriteActor {
 
   update() {
     // サブクラスでオーバーライド
+  }
+
+  /**
+   * 他のエンティティとの衝突を処理
+   * @param other 衝突相手のエンティティ
+   */
+  handleCollision(other: Entity) {
+    this.collisionReaction.handle(other)
   }
 
   get currentHitbox(): Rectangle {

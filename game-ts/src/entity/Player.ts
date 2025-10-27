@@ -15,6 +15,7 @@ export class Player extends Entity {
   private readonly COYOTE_TIME_MAX = 6; // コヨーテタイム最大フレーム数
   private readonly MOVE_SPEED = 2;
   private readonly JUMP_POWER = -4;
+  private readonly WIND_JUMP_POWER = -3; // 風との衝突時のジャンプ力
 
   constructor(x: number, y: number, stage: string[][], input: Input) {
     const rect = new Rectangle(x, y, 16, 16);
@@ -26,6 +27,27 @@ export class Player extends Entity {
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this);
     this.collision = new TilemapCollisionComponent(this, stage);
+
+    // 衝突反応を登録（元のJS実装の on("hitWind", ...) に相当）
+    this.setupCollisionReactions();
+  }
+
+  /**
+   * 各種エンティティとの衝突時の反応を設定
+   */
+  private setupCollisionReactions() {
+    // 風との衝突: WindJump
+    this.collisionReaction.on('wind', () => {
+      this.vy = this.WIND_JUMP_POWER;
+    });
+
+    // TODO: 他の衝突反応もここに追加
+    // 例:
+    // this.collisionReaction.on('enemy', () => this.damage(1));
+    // this.collisionReaction.on('potion', (item) => {
+    //   this.heal(1);
+    //   item.destroy();
+    // });
   }
 
   update() {

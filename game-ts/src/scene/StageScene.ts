@@ -1,6 +1,8 @@
 import { Graphics, Container, Text } from "pixi.js";
 import { Scene } from "./Scene";
 import { Player } from "@/entity/Player";
+import { Wind } from "@/entity/Wind";
+import { Entity } from "@/entity/Entity";
 import { Input } from "@/core/Input";
 import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from "@/game/config";
 
@@ -10,9 +12,10 @@ import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from "@/game/config";
  */
 export class StageScene extends Scene {
   private stage: string[][];
-  private player: Player;
+  private player: Player; // デバッグ情報用に参照を保持
+  private entities: Entity[] = []; // プレイヤーを含む全エンティティ
   private stageGraphics: Graphics;
-  private playerGraphics: Graphics;
+  private entitiesGraphics: Graphics;
   private camera: Container;
   private debugText!: Text;
   private input: Input;
@@ -39,9 +42,9 @@ export class StageScene extends Scene {
     this.camera.addChild(this.stageGraphics);
     this.renderStage();
 
-    // プレイヤー描画用Graphics
-    this.playerGraphics = new Graphics();
-    this.camera.addChild(this.playerGraphics);
+    // エンティティ描画用Graphics
+    this.entitiesGraphics = new Graphics();
+    this.camera.addChild(this.entitiesGraphics);
 
     // プレイヤー生成（ステージ内の '0' を探す）
     let playerX = 0;
@@ -55,8 +58,15 @@ export class StageScene extends Scene {
       }
     }
 
+    // プレイヤーもentitiesリストに追加
     this.player = new Player(playerX, playerY, this.stage, input);
+    this.entities.push(this.player);
     this.add(this.player);
+
+    // デモ用: 風エンティティを追加
+    const wind = new Wind(playerX + 100, playerY - 50, 2, this.stage);
+    this.entities.push(wind);
+    this.add(wind);
 
     // デバッグテキスト（開発時のみ表示）
     if (DEBUG) {
@@ -79,12 +89,36 @@ export class StageScene extends Scene {
   update() {
     super.update();
 
-    // プレイヤー描画更新
-    this.renderPlayer();
+    // エンティティ間の衝突判定
+    this.checkCollisions();
+
+    // エンティティ描画更新
+    this.renderEntities();
 
     // デバッグ情報更新（開発時のみ）
     if (DEBUG) {
       this.updateDebugInfo();
+    }
+  }
+
+  /**
+   * エンティティ間の衝突判定
+   * CollisionReactionComponent を使った衝突処理
+   */
+  private checkCollisions() {
+    // 全エンティティ同士の衝突チェック（N^2だが、エンティティ数が少ないので問題なし）
+    for (let i = 0; i < this.entities.length; i++) {
+      for (let j = i + 1; j < this.entities.length; j++) {
+        const entityA = this.entities[i];
+        const entityB = this.entities[j];
+
+        // Rectangle.hitTest() を使用
+        if (entityA.currentHitbox.hitTest(entityB.currentHitbox)) {
+          // CollisionReactionComponent による双方向の反応処理
+          entityA.handleCollision(entityB);
+          entityB.handleCollision(entityA);
+        }
+      }
     }
   }
 
@@ -132,23 +166,38 @@ export class StageScene extends Scene {
   }
 
   /**
-   * プレイヤー描画
+   * 全エンティティ描画（プレイヤー含む）
    */
-  private renderPlayer() {
-    this.playerGraphics.clear();
+  private renderEntities() {
+    this.entitiesGraphics.clear();
 
-    // デバッグ用: プレイヤーを赤で描画
-    this.playerGraphics.rect(
-      this.player.x,
-      this.player.y,
-      this.player.width,
-      this.player.height
-    );
-    this.playerGraphics.fill(0xff0000);
+    this.entities.forEach((entity) => {
+      // エンティティの種類に応じて色を変える
+      let color = 0xaaaaaa; // デフォルト: グレー
+      if (entity.imageKey === 'player') {
+        color = 0xff0000; // プレイヤー: 赤
+      } else if (entity.imageKey === 'wind') {
+        color = 0x00ffff; // 風: シアン
+      }
 
-    // ヒットボックス表示（デバッグ用）
-    const hitbox = this.player.currentHitbox;
-    this.playerGraphics.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
-    this.playerGraphics.stroke({ width: 1, color: 0x00ff00 });
+      // エンティティ本体
+      this.entitiesGraphics.rect(
+        entity.x,
+        entity.y,
+        entity.width,
+        entity.height
+      );
+      this.entitiesGraphics.fill(color);
+
+      // ヒットボックス表示（デバッグ用）
+      if (DEBUG) {
+        const hitbox = entity.currentHitbox;
+        this.entitiesGraphics.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+
+        // プレイヤーは緑、その他は黄色
+        const strokeColor = entity.imageKey === 'player' ? 0x00ff00 : 0xffff00;
+        this.entitiesGraphics.stroke({ width: 1, color: strokeColor });
+      }
+    });
   }
 }
