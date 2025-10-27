@@ -5,14 +5,14 @@ import { Rectangle } from '@/core/Rectangle'
 
 /**
  * ゲームエンティティ基底クラス
- * Component風継承: PhysicsComponent と TilemapCollisionComponent を所有
+ * Component風継承: PhysicsComponent と TilemapCollisionComponent を必要に応じて所有
  */
 export class Entity extends SpriteActor {
   vx = 0
   vy = 0
 
-  protected physics: PhysicsComponent
-  protected collision: TilemapCollisionComponent
+  protected physics?: PhysicsComponent
+  protected collision?: TilemapCollisionComponent
 
   constructor(
     imageKey: string,
@@ -22,9 +22,7 @@ export class Entity extends SpriteActor {
   ) {
     super(imageKey, rectangle)
 
-    // Component初期化
-    this.physics = new PhysicsComponent(this)
-    this.collision = new TilemapCollisionComponent(this, stage)
+    // Componentはサブクラスで必要に応じて初期化
   }
 
   update() {

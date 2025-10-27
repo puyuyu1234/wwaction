@@ -2,7 +2,10 @@ import { BLOCKSIZE, BLOCKDATA } from "@/game/config";
 import { CollisionType } from "@/game/types";
 import { Rectangle } from "@/core/Rectangle";
 
-export interface ICollidable {
+/**
+ * 衝突判定Componentが要求するインターフェース
+ */
+export interface ICollisionEntity {
   x: number;
   y: number;
   vx: number;
@@ -23,7 +26,7 @@ export interface ICollidable {
  * - isWall(x, y) は座標 (x, y) が壁かどうかを判定
  */
 export class TilemapCollisionComponent {
-  constructor(private entity: ICollidable, private stage: string[][]) {}
+  constructor(private entity: ICollisionEntity, private stage: string[][]) {}
 
   /**
    * エンティティの現在のヒットボックス（ワールド座標）

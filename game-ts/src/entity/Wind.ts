@@ -1,5 +1,7 @@
 import { Entity } from './Entity'
 import { Rectangle } from '@/core/Rectangle'
+import { PhysicsComponent } from '@/components/PhysicsComponent'
+import { TilemapCollisionComponent } from '@/components/TilemapCollisionComponent'
 
 /**
  * 風エンティティ
@@ -14,27 +16,31 @@ export class Wind extends Entity {
     super('wind', rect, hitbox, stage)
 
     this.vx = vx
+
+    // 必要なComponentを初期化
+    this.physics = new PhysicsComponent(this)
+    this.collision = new TilemapCollisionComponent(this, stage)
   }
 
   update() {
     // 重力
-    this.physics.applyGravity()
+    this.physics!.applyGravity()
 
     // 壁判定 (跳ね返る)
-    if (this.collision.checkLeftWall() && this.vx < 0) {
-      this.collision.bounceAtLeftWall()
+    if (this.collision!.checkLeftWall() && this.vx < 0) {
+      this.collision!.bounceAtLeftWall()
     }
-    if (this.collision.checkRightWall() && this.vx > 0) {
-      this.collision.bounceAtRightWall()
+    if (this.collision!.checkRightWall() && this.vx > 0) {
+      this.collision!.bounceAtRightWall()
     }
-    if (this.collision.checkUpWall() && this.vy < 0) {
-      this.collision.stopAtUpWall()
+    if (this.collision!.checkUpWall() && this.vy < 0) {
+      this.collision!.stopAtUpWall()
     }
-    if (this.collision.checkDownWall() && this.vy > 0) {
-      this.collision.stopAtDownWall()
+    if (this.collision!.checkDownWall() && this.vy > 0) {
+      this.collision!.stopAtDownWall()
     }
 
     // 速度適用
-    this.physics.applyVelocity()
+    this.physics!.applyVelocity()
   }
 }
