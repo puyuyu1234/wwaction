@@ -4,22 +4,23 @@ import { PhysicsComponent } from '@/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@/components/TilemapCollisionComponent'
 
 /**
- * 風エンティティ
- * - 水平方向に移動
+ * Potion（回復アイテム）エンティティ
+ * - プレイヤーに取得されるとHPを1回復
  * - 重力が適用される
- * - 壁で跳ね返る
+ * - 壁で停止
+ * - 風で跳ねる
+ * - 取得後は消滅
  */
-export class Wind extends Entity {
+export class Potion extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(x: number, y: number, vx: number, stage: string[][]) {
+  constructor(x: number, y: number, stage: string[][]) {
     const rect = new Rectangle(x, y, 16, 16)
-    const hitbox = new Rectangle(2, 1, 12, 15)
-    // タグ 'wind': Playerの衝突反応で参照される
-    super('wind', rect, hitbox, stage, ['wind'])
+    const hitbox = new Rectangle(4, 4, 8, 12)
 
-    this.vx = vx
+    // タグ 'healing': Playerの衝突反応で参照される
+    super('potion', rect, hitbox, stage, ['healing'])
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
@@ -30,12 +31,12 @@ export class Wind extends Entity {
     // 重力
     this.physics.applyGravity()
 
-    // 壁判定 (跳ね返る)
+    // 壁判定（停止）
     if (this.tilemap.checkLeftWall() && this.vx < 0) {
-      this.tilemap.bounceAtLeftWall()
+      this.tilemap.stopAtLeftWall()
     }
     if (this.tilemap.checkRightWall() && this.vx > 0) {
-      this.tilemap.bounceAtRightWall()
+      this.tilemap.stopAtRightWall()
     }
     if (this.tilemap.checkUpWall() && this.vy < 0) {
       this.tilemap.stopAtUpWall()

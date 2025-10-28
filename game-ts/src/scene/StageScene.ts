@@ -2,6 +2,9 @@ import { Graphics, Container, Text } from "pixi.js";
 import { Scene } from "./Scene";
 import { Player } from "@/entity/Player";
 import { Wind } from "@/entity/Wind";
+import { Nasake } from "@/entity/Nasake";
+import { Potion } from "@/entity/Potion";
+import { Nuefu } from "@/entity/Nuefu";
 import { Entity } from "@/entity/Entity";
 import { Input } from "@/core/Input";
 import { HPBar } from "@/actor/HPBar";
@@ -67,8 +70,19 @@ export class StageScene extends Scene {
 
     // デモ用: 風エンティティを追加
     const wind = new Wind(playerX + 100, playerY - 50, 2, this.stage);
-    this.entities.push(wind);
-    this.add(wind);
+    this.addEntity(wind);
+
+    // デモ用: Nasakeエンティティを追加
+    const nasake = new Nasake(playerX + 150, playerY, this.stage);
+    this.addEntity(nasake);
+
+    // デモ用: Potionエンティティを追加
+    const potion = new Potion(playerX + 200, playerY - 32, this.stage);
+    this.addEntity(potion);
+
+    // デモ用: Nuefuエンティティを追加
+    const nuefu = new Nuefu(playerX + 250, playerY, this.stage);
+    this.addEntity(nuefu);
 
     // HP表示（通常UI - 常に表示）
     this.hpBar = new HPBar(this.player, 10, 220);
@@ -113,6 +127,34 @@ export class StageScene extends Scene {
     if (DEBUG) {
       this.updateDebugInfo();
     }
+  }
+
+  /**
+   * エンティティをシーンに追加
+   * destroyイベントをリッスンして自動削除を設定
+   */
+  private addEntity(entity: Entity) {
+    this.entities.push(entity);
+    this.add(entity);
+
+    // destroyイベントをリッスン
+    entity.on('destroy', () => {
+      this.removeEntity(entity);
+    });
+  }
+
+  /**
+   * エンティティをシーンから削除
+   */
+  private removeEntity(entity: Entity) {
+    const index = this.entities.indexOf(entity);
+    if (index !== -1) {
+      this.entities.splice(index, 1);
+    }
+    this.remove(entity);
+
+    // すべてのイベントリスナーをクリーンアップしてメモリリークを防止
+    entity.clearAllEvents();
   }
 
   /**
@@ -193,6 +235,12 @@ export class StageScene extends Scene {
         color = 0xff0000; // プレイヤー: 赤
       } else if (entity.imageKey === 'wind') {
         color = 0x00ffff; // 風: シアン
+      } else if (entity.imageKey === 'nasake') {
+        color = 0xff00ff; // Nasake: マゼンタ
+      } else if (entity.imageKey === 'potion') {
+        color = 0x00ff00; // Potion: 緑
+      } else if (entity.imageKey === 'nuefu') {
+        color = 0xffaa00; // Nuefu: オレンジ
       }
 
       // エンティティ本体

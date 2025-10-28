@@ -225,4 +225,32 @@ export class TilemapCollisionComponent {
       this.entity.hitbox.height;
     this.entity.vy = 0;
   }
+
+  /**
+   * 右側が崖かどうかをチェック
+   * 接地している時に、ヒットボックスの右下に地面がないかを判定
+   */
+  checkRightSideCliff(): boolean {
+    const hitbox = this.currentHitbox;
+    // 足元の1ピクセル下をチェック（速度は考慮しない）
+    const checkBottom = hitbox.bottom + 1;
+    const checkRight = hitbox.right;
+
+    // 右下の足元に地面がない = 右側が崖
+    return !this.isWall(checkRight, checkBottom);
+  }
+
+  /**
+   * 左側が崖かどうかをチェック
+   * 接地している時に、ヒットボックスの左下に地面がないかを判定
+   */
+  checkLeftSideCliff(): boolean {
+    const hitbox = this.currentHitbox;
+    // 足元の1ピクセル下をチェック（速度は考慮しない）
+    const checkBottom = hitbox.bottom + 1;
+    const checkLeft = hitbox.left;
+
+    // 左下の足元に地面がない = 左側が崖
+    return !this.isWall(checkLeft, checkBottom);
+  }
 }

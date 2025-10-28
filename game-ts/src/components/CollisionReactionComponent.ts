@@ -6,28 +6,46 @@ import type { Entity } from '@/entity/Entity'
 export type CollisionHandler = (other: Entity) => void
 
 /**
- * エンティティ間の衝突反応を管理するComponent
- * 元のJS実装の on("hitWind", ...) の思想を継承しつつ型安全に
+ * エンティティ間の衝突反応を管理するComponent（タグベース）
+ *
+ * 使用例:
+ * ```typescript
+ * // 'wind' タグを持つエンティティと衝突した時
+ * this.collisionReaction.on('wind', (wind) => {
+ *   this.vy = -3; // ジャンプ
+ * });
+ *
+ * // 'enemy' タグを持つエンティティと衝突した時
+ * this.collisionReaction.on('enemy', (enemy) => {
+ *   this.damage(1);
+ * });
+ * ```
  */
 export class CollisionReactionComponent {
   private reactions = new Map<string, CollisionHandler>()
 
   /**
-   * 特定タイプのエンティティとの衝突時の反応を登録
-   * @param targetType 衝突相手のimageKey (例: 'wind', 'enemy', 'potion')
+   * 特定タグを持つエンティティとの衝突時の反応を登録
+   * @param targetTag 衝突相手のタグ (例: 'wind', 'enemy', 'potion')
    * @param handler 衝突時に実行される関数
    */
-  on(targetType: string, handler: CollisionHandler) {
-    this.reactions.set(targetType, handler)
+  on(targetTag: string, handler: CollisionHandler) {
+    this.reactions.set(targetTag, handler)
   }
 
   /**
-   * 衝突を処理する
+   * 衝突を処理する（タグベース）
+   * 相手エンティティの全てのタグをチェックし、登録された反応を実行
    * @param other 衝突相手のEntity
    */
   handle(other: Entity) {
-    const handler = this.reactions.get(other.imageKey)
-    handler?.(other)
+    // 相手の全タグをチェック
+    other.tags.forEach(tag => {
+      const handler = this.reactions.get(tag)
+      if (handler) {
+        handler(other)
+      }
+    })
   }
 
   /**

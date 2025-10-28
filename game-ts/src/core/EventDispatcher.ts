@@ -58,6 +58,14 @@ export class EventDispatcher {
   }
 
   /**
+   * すべてのイベントリスナーを消去
+   * オブジェクト破棄時のメモリリーク防止に使用
+   */
+  clearAllEvents(): void {
+    this.listeners.clear()
+  }
+
+  /**
    * イベントにリスナーが登録されているか確認
    */
   hasListeners(event: string): boolean {

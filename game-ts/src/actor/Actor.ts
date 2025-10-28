@@ -9,20 +9,34 @@ export class Actor extends EventDispatcher {
   y: number
   width = 0
   height = 0
-  tags: string[]
+  tags: Set<string>
 
   constructor(x: number, y: number, tags: string[] = []) {
     super()
     this.x = x
     this.y = y
-    this.tags = tags
+    this.tags = new Set(tags)
+  }
+
+  /**
+   * タグを追加
+   */
+  addTag(tag: string): void {
+    this.tags.add(tag)
+  }
+
+  /**
+   * タグを削除
+   */
+  removeTag(tag: string): void {
+    this.tags.delete(tag)
   }
 
   /**
    * 指定したタグを持っているか確認
    */
   hasTag(tagName: string): boolean {
-    return this.tags.includes(tagName)
+    return this.tags.has(tagName)
   }
 
   /**

@@ -23,10 +23,14 @@ export class Player extends Entity {
   private noHitboxTime = 0; // 無敵時間（ダメージ後の猶予）
   public isDead = false;
 
+  // Components（型安全に保持）
+  private physics: PhysicsComponent;
+  private tilemap: TilemapCollisionComponent;
+
   constructor(x: number, y: number, stage: string[][], input: Input, hp: number, maxHp: number) {
     const rect = new Rectangle(x, y, 16, 16);
     const hitbox = new Rectangle(4, 0, 8, 16);
-    super("player", rect, hitbox, stage);
+    super("player", rect, hitbox, stage, []);
 
     this.input = input;
     this.hp = hp;
@@ -34,7 +38,7 @@ export class Player extends Entity {
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this);
-    this.collision = new TilemapCollisionComponent(this, stage);
+    this.tilemap = new TilemapCollisionComponent(this, stage);
 
     // 衝突反応を登録（元のJS実装の on("hitWind", ...) に相当）
     this.setupCollisionReactions();
@@ -49,13 +53,17 @@ export class Player extends Entity {
       this.vy = this.WIND_JUMP_POWER;
     });
 
-    // TODO: 他の衝突反応もここに追加
-    // 例:
-    // this.collisionReaction.on('enemy', () => this.damage(1));
-    // this.collisionReaction.on('potion', (item) => {
-    //   this.heal(1);
-    //   item.destroy();
-    // });
+    // 敵との衝突: 1ダメージ
+    this.collisionReaction.on('enemy', () => {
+      this.damage(1);
+    });
+
+    // 回復アイテムとの衝突: HP回復 + アイテム消滅
+    this.collisionReaction.on('healing', (item) => {
+      this.heal(1);
+      // アイテムを削除（元のJS実装の destroy() に相当）
+      item.destroy();
+    });
   }
 
   update() {
@@ -68,7 +76,7 @@ export class Player extends Entity {
     }
 
     // 重力
-    this.physics!.applyGravity();
+    this.physics.applyGravity();
 
     // 左右移動
     if (this.input.isKeyDown("KeyA")) {
@@ -88,19 +96,19 @@ export class Player extends Entity {
     }
 
     // 壁判定（停止）
-    if (this.collision!.checkLeftWall() && this.vx < 0) {
-      this.collision!.stopAtLeftWall();
+    if (this.tilemap.checkLeftWall() && this.vx < 0) {
+      this.tilemap.stopAtLeftWall();
     }
-    if (this.collision!.checkRightWall() && this.vx > 0) {
-      this.collision!.stopAtRightWall();
+    if (this.tilemap.checkRightWall() && this.vx > 0) {
+      this.tilemap.stopAtRightWall();
     }
-    if (this.collision!.checkUpWall() && this.vy < 0) {
-      this.collision!.stopAtUpWall();
+    if (this.tilemap.checkUpWall() && this.vy < 0) {
+      this.tilemap.stopAtUpWall();
     }
 
     // 床判定
-    if (this.collision!.checkDownWall() && this.vy > 0) {
-      this.collision!.stopAtDownWall();
+    if (this.tilemap.checkDownWall() && this.vy > 0) {
+      this.tilemap.stopAtDownWall();
       this.coyoteTime = 0; // 着地したらコヨーテタイムリセット
     } else {
       // 空中にいる場合、コヨーテタイムを増やす
@@ -108,7 +116,7 @@ export class Player extends Entity {
     }
 
     // 速度適用
-    this.physics!.applyVelocity();
+    this.physics.applyVelocity();
   }
 
   /**
