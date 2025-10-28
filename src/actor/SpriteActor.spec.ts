@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
+
 import { SpriteActor } from './SpriteActor'
+
 import { Rectangle } from '@/core/Rectangle'
 
 describe('SpriteActor', () => {

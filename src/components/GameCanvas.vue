@@ -24,6 +24,6 @@ onMounted(() => {
     ref="canvasRef"
     width="320"
     height="240"
-    style="border: 2px solid #444; image-rendering: pixelated; image-rendering: crisp-edges;"
+    style="border: 2px solid #444; image-rendering: pixelated; image-rendering: crisp-edges"
   />
 </template>

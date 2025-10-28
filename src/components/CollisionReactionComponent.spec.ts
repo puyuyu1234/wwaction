@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
+
 import { CollisionReactionComponent } from './CollisionReactionComponent'
-import { Entity } from '@/entity/Entity'
+
 import { Rectangle } from '@/core/Rectangle'
+import { Entity } from '@/entity/Entity'
 
 describe('CollisionReactionComponent', () => {
   it('登録されたハンドラが正しく呼ばれる', () => {
@@ -12,7 +14,13 @@ describe('CollisionReactionComponent', () => {
     component.on('wind', mockHandler)
 
     // 風エンティティを作成（タグに 'wind' を含む）
-    const wind = new Entity('wind', new Rectangle(0, 0, 16, 16), new Rectangle(0, 0, 16, 16), [[]], ['wind'])
+    const wind = new Entity(
+      'wind',
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(0, 0, 16, 16),
+      [[]],
+      ['wind']
+    )
 
     // 衝突処理
     component.handle(wind)
@@ -30,7 +38,13 @@ describe('CollisionReactionComponent', () => {
     component.on('wind', mockHandler)
 
     // 別のエンティティ（enemy）を作成（'enemy' タグを持つ）
-    const enemy = new Entity('enemy', new Rectangle(0, 0, 16, 16), new Rectangle(0, 0, 16, 16), [[]], ['enemy'])
+    const enemy = new Entity(
+      'enemy',
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(0, 0, 16, 16),
+      [[]],
+      ['enemy']
+    )
 
     // 衝突処理
     component.handle(enemy)
@@ -47,8 +61,20 @@ describe('CollisionReactionComponent', () => {
     component.on('wind', windHandler)
     component.on('enemy', enemyHandler)
 
-    const wind = new Entity('wind', new Rectangle(0, 0, 16, 16), new Rectangle(0, 0, 16, 16), [[]], ['wind'])
-    const enemy = new Entity('enemy', new Rectangle(0, 0, 16, 16), new Rectangle(0, 0, 16, 16), [[]], ['enemy'])
+    const wind = new Entity(
+      'wind',
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(0, 0, 16, 16),
+      [[]],
+      ['wind']
+    )
+    const enemy = new Entity(
+      'enemy',
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(0, 0, 16, 16),
+      [[]],
+      ['enemy']
+    )
 
     // wind との衝突
     component.handle(wind)
@@ -68,7 +94,13 @@ describe('CollisionReactionComponent', () => {
     component.on('wind', mockHandler)
     component.clear()
 
-    const wind = new Entity('wind', new Rectangle(0, 0, 16, 16), new Rectangle(0, 0, 16, 16), [[]], ['wind'])
+    const wind = new Entity(
+      'wind',
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(0, 0, 16, 16),
+      [[]],
+      ['wind']
+    )
     component.handle(wind)
 
     // クリア後はハンドラが呼ばれない
@@ -85,7 +117,13 @@ describe('CollisionReactionComponent', () => {
       playerVy = -3 // WindJump
     })
 
-    const wind = new Entity('wind', new Rectangle(0, 0, 16, 16), new Rectangle(0, 0, 16, 16), [[]], ['wind'])
+    const wind = new Entity(
+      'wind',
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(0, 0, 16, 16),
+      [[]],
+      ['wind']
+    )
     component.handle(wind)
 
     // vy が変更されている

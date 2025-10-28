@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
+
 import { TilemapCollisionComponent } from './TilemapCollisionComponent'
+
 import { Rectangle } from '@/core/Rectangle'
 
 describe('TilemapCollisionComponent', () => {
@@ -319,7 +321,10 @@ describe('TilemapCollisionComponent', () => {
 
   describe('上壁の衝突判定', () => {
     it('上壁を検出する', () => {
-      const stage = [['a', 'a', 'a'], [' ', ' ', ' ']]
+      const stage = [
+        ['a', 'a', 'a'],
+        [' ', ' ', ' '],
+      ]
       const entity = {
         x: 0,
         y: 16,
@@ -335,7 +340,10 @@ describe('TilemapCollisionComponent', () => {
     })
 
     it('上壁で停止する', () => {
-      const stage = [['a', 'a', 'a'], [' ', ' ', ' ']]
+      const stage = [
+        ['a', 'a', 'a'],
+        [' ', ' ', ' '],
+      ]
       const entity = {
         x: 0,
         y: 20,
@@ -463,7 +471,10 @@ describe('TilemapCollisionComponent', () => {
 
   describe('下壁の衝突判定', () => {
     it('下壁を検出する', () => {
-      const stage = [[' ', ' ', ' '], ['a', 'a', 'a']]
+      const stage = [
+        [' ', ' ', ' '],
+        ['a', 'a', 'a'],
+      ]
       const entity = {
         x: 0,
         y: 0,
@@ -479,7 +490,10 @@ describe('TilemapCollisionComponent', () => {
     })
 
     it('下壁で停止する', () => {
-      const stage = [[' ', ' ', ' '], ['a', 'a', 'a']]
+      const stage = [
+        [' ', ' ', ' '],
+        ['a', 'a', 'a'],
+      ]
       const entity = {
         x: 0,
         y: -5,

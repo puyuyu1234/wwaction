@@ -1,5 +1,5 @@
-import { CollisionReactionComponent } from '@/components/CollisionReactionComponent'
 import { SpriteActor } from '@/actor/SpriteActor'
+import { CollisionReactionComponent } from '@/components/CollisionReactionComponent'
 import { Rectangle } from '@/core/Rectangle'
 
 /**

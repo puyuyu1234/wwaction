@@ -29,10 +29,7 @@ export class Input {
   update() {
     this.isKeyPressedMap.forEach((isPressed, key) => {
       const keyTime = this.keyTimeMap.get(key) ?? 0
-      this.keyTimeMap.set(
-        key,
-        isPressed ? Math.max(1, keyTime + 1) : Math.min(-1, keyTime - 1)
-      )
+      this.keyTimeMap.set(key, isPressed ? Math.max(1, keyTime + 1) : Math.min(-1, keyTime - 1))
     })
   }
 

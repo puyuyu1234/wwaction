@@ -1,7 +1,8 @@
 import { Entity } from './Entity'
-import { Rectangle } from '@/core/Rectangle'
+
 import { PhysicsComponent } from '@/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@/components/TilemapCollisionComponent'
+import { Rectangle } from '@/core/Rectangle'
 
 /**
  * 風エンティティ

@@ -1,4 +1,5 @@
 import { Container } from 'pixi.js'
+
 import { Actor } from '@/actor/Actor'
 import { EventDispatcher } from '@/core/EventDispatcher'
 

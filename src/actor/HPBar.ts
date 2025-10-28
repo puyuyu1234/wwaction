@@ -1,6 +1,7 @@
 import { Container, Graphics, Text } from 'pixi.js'
-import { FONT } from '@/game/config'
+
 import { Player } from '@/entity/Player'
+import { FONT } from '@/game/config'
 
 /**
  * HPバー表示クラス
@@ -117,8 +118,7 @@ export class HPBar {
     const maxHp = this.player.maxHp
 
     // 現在HPに対応するバーの幅を計算
-    const currentBarSize =
-      hp < maxHp ? Math.floor((this.BAR_WIDTH * hp) / maxHp) : this.BAR_WIDTH
+    const currentBarSize = hp < maxHp ? Math.floor((this.BAR_WIDTH * hp) / maxHp) : this.BAR_WIDTH
 
     // 緑バーの更新
     if (currentBarSize <= this.greenBarWidth) {

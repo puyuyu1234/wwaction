@@ -40,7 +40,7 @@ export class CollisionReactionComponent {
    */
   handle(other: Entity) {
     // 相手の全タグをチェック
-    other.tags.forEach(tag => {
+    other.tags.forEach((tag) => {
       const handler = this.reactions.get(tag)
       if (handler) {
         handler(other)

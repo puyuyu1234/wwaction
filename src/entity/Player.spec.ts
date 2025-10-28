@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+
 import { Player } from './Player'
+
 import { Input } from '@/core/Input'
 
 /**
@@ -166,7 +168,6 @@ describe('Player - HP/ダメージシステム', () => {
     expect(player.maxHp).toBe(10)
     expect(player.isDead).toBe(false)
   })
-
 
   it('ダメージを受けるとHPが減少する', () => {
     const stage = [[' ']]

@@ -1,4 +1,5 @@
 import { Actor } from './Actor'
+
 import { Rectangle } from '@/core/Rectangle'
 
 /**

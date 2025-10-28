@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+
 import { Rectangle } from './Rectangle'
 
 describe('Rectangle', () => {
