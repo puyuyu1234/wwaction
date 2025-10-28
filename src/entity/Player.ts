@@ -65,6 +65,11 @@ export class Player extends Entity {
       // アイテムを削除（元のJS実装の destroy() に相当）
       item.destroy()
     })
+
+    // ゴールとの衝突: nextStageイベント発火
+    this.collisionReaction.on('goal', () => {
+      this.dispatch('nextStage')
+    })
   }
 
   update() {
