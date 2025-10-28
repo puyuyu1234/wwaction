@@ -1,3 +1,4 @@
+import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
 import { PhysicsComponent } from '@/components/PhysicsComponent'
@@ -16,7 +17,6 @@ export class Player extends Entity {
   private readonly COYOTE_TIME_MAX = 6 // コヨーテタイム最大フレーム数
   private readonly MOVE_SPEED = 2
   private readonly JUMP_POWER = -4
-  private readonly WIND_JUMP_POWER = -3 // 風との衝突時のジャンプ力
 
   // HP関連
   public hp: number
@@ -51,7 +51,7 @@ export class Player extends Entity {
   private setupCollisionReactions() {
     // 風との衝突: WindJump
     this.collisionReaction.on('wind', () => {
-      this.vy = this.WIND_JUMP_POWER
+      CommonBehaviors.windJump(this)
     })
 
     // 敵との衝突: 1ダメージ

@@ -1,3 +1,4 @@
+import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
 import { PhysicsComponent } from '@/components/PhysicsComponent'
@@ -28,7 +29,7 @@ export class SunGlass extends Entity {
 
     // 風との衝突反応を設定: 跳ねる
     this.collisionReaction.on('wind', () => {
-      this.vy = -3 // WindJump
+      CommonBehaviors.windJump(this)
     })
   }
 

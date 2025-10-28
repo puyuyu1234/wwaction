@@ -1,3 +1,4 @@
+import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
 import { PhysicsComponent } from '@/components/PhysicsComponent'
@@ -26,6 +27,11 @@ export class Potion extends Entity {
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, stage)
+
+    // 風との衝突反応を設定
+    this.collisionReaction.on('wind', () => {
+      CommonBehaviors.windJump(this)
+    })
   }
 
   update() {
