@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+
 import { Game } from './core/Game'
 import { StageScene } from './scene/StageScene'
 
