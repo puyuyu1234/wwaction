@@ -53,8 +53,11 @@ export class TilemapCollisionComponent {
     const bx = Math.floor(x / BLOCKSIZE)
     const by = Math.floor(y / BLOCKSIZE)
 
+    // 上方向（y < 0）はジャンプできるよう壁扱いしない
     if (y < 0) return false
-    if (!this.stage[by]?.[bx]) return false
+
+    // ステージ外は壁扱い（エンティティが落下しないように）
+    if (!this.stage[by]?.[bx]) return true
 
     const blockKey = this.stage[by][bx]
     const blockType = BLOCKDATA[blockKey]?.type ?? CollisionType.NONE

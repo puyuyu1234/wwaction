@@ -624,4 +624,132 @@ describe('TilemapCollisionComponent', () => {
       expect(hitDownWallAgain).toBe(false)
     })
   })
+
+  describe('ステージ外の壁判定', () => {
+    it('ステージ左端（x < 0）は壁として扱われる', () => {
+      const stage = [
+        [' ', ' ', ' '],
+        [' ', ' ', ' '],
+      ]
+      const entity = {
+        x: 2,
+        y: 16,
+        vx: -5,
+        vy: 0,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      // ふるまい：「ステージ左端は壁として検出される」
+      expect(collision.checkLeftWall()).toBe(true)
+    })
+
+    it('ステージ右端（x >= stage幅）は壁として扱われる', () => {
+      const stage = [
+        [' ', ' ', ' '], // 幅3ブロック = 48px
+        [' ', ' ', ' '],
+      ]
+      const entity = {
+        x: 40,
+        y: 16,
+        vx: 5,
+        vy: 0,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      // ふるまい：「ステージ右端は壁として検出される」
+      expect(collision.checkRightWall()).toBe(true)
+    })
+
+    it('ステージ下端（y >= stage高さ）は壁として扱われる', () => {
+      const stage = [
+        [' ', ' ', ' '],
+        [' ', ' ', ' '], // 高さ2ブロック = 32px
+      ]
+      const entity = {
+        x: 16,
+        y: 24,
+        vx: 0,
+        vy: 10,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      // ふるまい：「ステージ下端は壁として検出される」
+      expect(collision.checkDownWall()).toBe(true)
+    })
+
+    it('ステージ上端（y < 0）は壁として扱われない（ジャンプ可能）', () => {
+      const stage = [
+        [' ', ' ', ' '],
+        [' ', ' ', ' '],
+      ]
+      const entity = {
+        x: 16,
+        y: 2,
+        vx: 0,
+        vy: -5,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      // ふるまい：「ステージ上端は壁として扱わない（上方向に抜けられる）」
+      expect(collision.checkUpWall()).toBe(false)
+    })
+
+    it('ステージ左端で跳ね返る', () => {
+      const stage = [
+        [' ', ' ', ' '],
+        [' ', ' ', ' '],
+      ]
+      const entity = {
+        x: 2,
+        y: 16,
+        vx: -5,
+        vy: 0,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      collision.bounceAtLeftWall()
+
+      // ふるまい：「ステージ左端で跳ね返る」
+      expect(entity.vx).toBe(5) // 速度反転
+      expect(entity.x).toBeGreaterThanOrEqual(0) // ステージ内に配置
+    })
+
+    it('ステージ下端で停止する', () => {
+      const stage = [
+        [' ', ' ', ' '],
+        [' ', ' ', ' '], // 高さ2ブロック = 32px
+      ]
+      const entity = {
+        x: 16,
+        y: 24,
+        vx: 0,
+        vy: 10,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      collision.stopAtDownWall()
+
+      // ふるまい：「ステージ下端で停止する」
+      expect(entity.vy).toBe(0)
+      expect(entity.y).toBeLessThanOrEqual(32) // ステージ高さ以内
+    })
+  })
 })
