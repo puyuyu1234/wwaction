@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js'
 
-import { Actor } from '@/actor/Actor'
-import { EventDispatcher } from '@/core/EventDispatcher'
+import { Actor } from '@/engine/actor/Actor'
+import { EventDispatcher } from '@core/EventDispatcher'
 
 /**
  * シーン基底クラス

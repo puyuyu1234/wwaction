@@ -1,7 +1,7 @@
 import { Container, Graphics, Text } from 'pixi.js'
 
-import { Player } from '@/entity/Player'
-import { FONT } from '@/game/config'
+import { Player } from '@entity/Player'
+import { FONT } from '@game/config'
 
 /**
  * HPバー表示クラス

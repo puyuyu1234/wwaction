@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 
 import { SpriteActor } from './SpriteActor'
 
-import { Rectangle } from '@/core/Rectangle'
+import { Rectangle } from '@core/Rectangle'
 
 describe('SpriteActor', () => {
   it('initializes with imageKey and rectangle', () => {

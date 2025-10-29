@@ -2,9 +2,9 @@ import { Entity } from './Entity'
 import { Nasake } from './Nasake'
 import { SunGlass } from './SunGlass'
 
-import { PhysicsComponent } from '@/components/PhysicsComponent'
-import { TilemapCollisionComponent } from '@/components/TilemapCollisionComponent'
-import { Rectangle } from '@/core/Rectangle'
+import { PhysicsComponent } from '@components/PhysicsComponent'
+import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
+import { Rectangle } from '@core/Rectangle'
 
 /**
  * Gurasan（グラサン）エンティティ

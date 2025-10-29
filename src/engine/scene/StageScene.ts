@@ -2,15 +2,15 @@ import { Graphics, Container, Text } from 'pixi.js'
 
 import { Scene } from './Scene'
 
-import { HPBar } from '@/actor/HPBar'
-import { Input } from '@/core/Input'
-import { Entity } from '@/entity/Entity'
-import { Nasake } from '@/entity/Nasake'
-import { Nuefu } from '@/entity/Nuefu'
-import { Player } from '@/entity/Player'
-import { Potion } from '@/entity/Potion'
-import { Wind } from '@/entity/Wind'
-import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from '@/game/config'
+import { HPBar } from '@/engine/actor/HPBar'
+import { Input } from '@core/Input'
+import { Entity } from '@entity/Entity'
+import { Nasake } from '@entity/Nasake'
+import { Nuefu } from '@entity/Nuefu'
+import { Player } from '@entity/Player'
+import { Potion } from '@entity/Potion'
+import { Wind } from '@entity/Wind'
+import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from '@game/config'
 
 /**
  * ステージシーン

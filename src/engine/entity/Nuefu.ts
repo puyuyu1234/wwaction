@@ -1,18 +1,19 @@
 import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
-import { PhysicsComponent } from '@/components/PhysicsComponent'
-import { TilemapCollisionComponent } from '@/components/TilemapCollisionComponent'
-import { Rectangle } from '@/core/Rectangle'
+import { PhysicsComponent } from '@components/PhysicsComponent'
+import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
+import { Rectangle } from '@core/Rectangle'
 
 /**
- * Nasake（ナサケ）エンティティ
- * - 最もシンプルな敵（プレイヤーにダメージを与えない）
+ * Nuefu（ヌエフ）エンティティ
+ * - プレイヤーにダメージを与える敵
  * - 左右に移動し、壁で反転
+ * - 崖で方向転換（落ちない）
  * - 風で跳ねる
  * - 重力が適用される
  */
-export class Nasake extends Entity {
+export class Nuefu extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
@@ -20,11 +21,10 @@ export class Nasake extends Entity {
     const rect = new Rectangle(x, y, 16, 16)
     const hitbox = new Rectangle(4, 4, 8, 12)
 
-    // タグなし（誰も参照しないため）
-    // 将来ダメージを与える敵にする場合は ['enemy'] を追加
-    super('nasake', rect, hitbox, stage, [])
+    // タグ 'enemy': Playerの衝突反応で参照される（ダメージを与える）
+    super('nuefu', rect, hitbox, stage, ['enemy'])
 
-    this.vx = -0.25 // 左方向にゆっくり移動
+    this.vx = -0.5 // 左方向に移動
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
@@ -56,6 +56,18 @@ export class Nasake extends Entity {
     }
     if (this.tilemap.checkDownWall() && this.vy > 0) {
       this.tilemap.stopAtDownWall()
+
+      // 崖判定（接地している時のみ）
+      // 右側が崖 → 左方向へ
+      if (this.tilemap.checkRightSideCliff()) {
+        this.vx = -Math.abs(this.vx)
+        // TODO: scaleX = 1
+      }
+      // 左側が崖 → 右方向へ
+      if (this.tilemap.checkLeftSideCliff()) {
+        this.vx = Math.abs(this.vx)
+        // TODO: scaleX = -1
+      }
     }
 
     // 速度適用

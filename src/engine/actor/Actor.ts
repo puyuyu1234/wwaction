@@ -1,4 +1,4 @@
-import { EventDispatcher } from '@/core/EventDispatcher'
+import { EventDispatcher } from '@core/EventDispatcher'
 
 /**
  * ゲーム内のアクター基底クラス

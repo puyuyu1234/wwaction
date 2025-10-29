@@ -2,7 +2,7 @@ import { Application } from 'pixi.js'
 
 import { Input } from './Input'
 
-import { Scene } from '@/scene/Scene'
+import { Scene } from '@/engine/scene/Scene'
 
 /**
  * ゲームメインループクラス

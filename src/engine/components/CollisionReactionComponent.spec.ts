@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 
 import { CollisionReactionComponent } from './CollisionReactionComponent'
 
-import { Rectangle } from '@/core/Rectangle'
-import { Entity } from '@/entity/Entity'
+import { Rectangle } from '@core/Rectangle'
+import { Entity } from '@entity/Entity'
 
 describe('CollisionReactionComponent', () => {
   it('登録されたハンドラが正しく呼ばれる', () => {

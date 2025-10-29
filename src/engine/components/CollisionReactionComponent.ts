@@ -1,4 +1,4 @@
-import type { Entity } from '@/entity/Entity'
+import type { Entity } from '@entity/Entity'
 
 /**
  * 衝突時の反応を処理するハンドラ型

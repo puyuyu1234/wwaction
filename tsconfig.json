@@ -23,7 +23,11 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@core/*": ["./src/engine/core/*"],
+      "@components/*": ["./src/engine/components/*"],
+      "@entity/*": ["./src/engine/entity/*"],
+      "@game/*": ["./src/game/*"]
     },
 
     /* Vitest */

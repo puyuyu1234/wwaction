@@ -1,6 +1,6 @@
-import { Rectangle } from '@/core/Rectangle'
-import { BLOCKSIZE, BLOCKDATA } from '@/game/config'
-import { CollisionType } from '@/game/types'
+import { Rectangle } from '@core/Rectangle'
+import { BLOCKSIZE, BLOCKDATA } from '@game/config'
+import { CollisionType } from '@game/types'
 
 /**
  * 衝突判定Componentが要求するインターフェース

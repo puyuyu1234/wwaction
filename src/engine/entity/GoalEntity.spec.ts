@@ -3,8 +3,8 @@ import { describe, it, expect } from 'vitest'
 import { GoalEntity } from './GoalEntity'
 import { Player } from './Player'
 
-import { Input } from '@/core/Input'
-import { Rectangle } from '@/core/Rectangle'
+import { Input } from '@core/Input'
+import { Rectangle } from '@core/Rectangle'
 
 describe('GoalEntity - 基本動作', () => {
   it('指定した矩形領域を持つ', () => {
@@ -55,7 +55,10 @@ describe('GoalEntity - 基本動作', () => {
 
 describe('Player - ゴールとの衝突', () => {
   it('ゴールに触れると nextStage イベントが発火する', () => {
-    const stage = [[' ', ' '], [' ', ' ']]
+    const stage = [
+      [' ', ' '],
+      [' ', ' '],
+    ]
     const input = new Input()
     const player = new Player(0, 0, stage, input, 3, 3)
 
@@ -76,7 +79,10 @@ describe('Player - ゴールとの衝突', () => {
   })
 
   it('ゴール以外のエンティティでは nextStage イベントが発火しない', () => {
-    const stage = [[' ', ' '], [' ', ' ']]
+    const stage = [
+      [' ', ' '],
+      [' ', ' '],
+    ]
     const input = new Input()
     const player = new Player(0, 0, stage, input, 3, 3)
 

@@ -1,4 +1,4 @@
-import { GRAVITY } from '@/game/config'
+import { GRAVITY } from '@game/config'
 
 /**
  * 物理演算Componentが要求するインターフェース

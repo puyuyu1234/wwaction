@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 
-import { Game } from './core/Game'
-import { StageScene } from './scene/StageScene'
+import { Game } from '@core/Game'
+import { StageScene } from '@/engine/scene/StageScene'
 
 onMounted(async () => {
   const game = new Game('gameCanvas', 320, 240)
