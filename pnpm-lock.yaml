@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@tonejs/midi':
+        specifier: ^2.0.28
+        version: 2.0.28
       pixi.js:
         specifier: ^8.14.0
         version: 8.14.0
+      tone:
+        specifier: ^15.1.22
+        version: 15.1.22
       vue:
         specifier: ^3.5.22
         version: 3.5.22(typescript@5.9.3)
@@ -99,6 +105,10 @@ packages:
     resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+
+  '@babel/runtime@7.28.4':
+    resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
+    engines: {node: '>=6.9.0'}
 
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
@@ -503,6 +513,9 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
+  '@tonejs/midi@2.0.28':
+    resolution: {integrity: sha512-RII6YpInPsOZ5t3Si/20QKpNqB1lZ2OCFJSOzJxz38YdY/3zqDr3uaml4JuCWkdixuPqP1/TBnXzhQ39csyoVg==}
+
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -720,6 +733,9 @@ packages:
     resolution: {integrity: sha512-LHE+8BuR7RYGDKvnrmcuSq3tDcKv9OFEXQt/HpbZhY7V6h0zlUXutnAD82GiFx9rdieCMjkvtcsPqBwgUl1Iiw==}
     engines: {node: '>= 0.4'}
 
+  array-flatten@3.0.0:
+    resolution: {integrity: sha512-zPMVc3ZYlGLNk4mpK1NzP2wg0ml9t7fUgDsayR5Y5rSzxQilzR9FGu/EH2jQOcKSAeAfWeylyW8juy3OkWRvNA==}
+
   array-includes@3.1.9:
     resolution: {integrity: sha512-FmeCCAenzH0KH381SPT5FZmiA/TmpndpcaShhfgEN9eCVjnFBqq3l1xrI42y8+PPLI6hypzou4GXw00WHmPBLQ==}
     engines: {node: '>= 0.4'}
@@ -750,6 +766,10 @@ packages:
   async-function@1.0.0:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
     engines: {node: '>= 0.4'}
+
+  automation-events@7.1.13:
+    resolution: {integrity: sha512-1Hay5TQPzxsskSqPTH3YXyzE9Iirz82zZDse2vr3+kOR7Sc7om17qIEPsESchlNX0EgKxANwR40i2g/O3GM1Tw==}
+    engines: {node: '>=18.2.0'}
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -1446,6 +1466,9 @@ packages:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
 
+  midi-file@1.2.4:
+    resolution: {integrity: sha512-B5SnBC6i2bwJIXTY9MElIydJwAmnKx+r5eJ1jknTLetzLflEl0GWveuBB6ACrQpecSRkOB6fhTx1PwXk2BVxnA==}
+
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
@@ -1704,6 +1727,9 @@ packages:
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
+  standardized-audio-context@25.3.77:
+    resolution: {integrity: sha512-Ki9zNz6pKcC5Pi+QPjPyVsD9GwJIJWgryji0XL9cAJXMGyn+dPOf6Qik1AHei0+UNVcc4BOCa0hWLBzlwqsW/A==}
+
   std-env@3.10.0:
     resolution: {integrity: sha512-5GS12FdOZNliM5mAOxFRg7Ir0pWz8MdpYm6AY6VPkGpbA7ZzmbzNcBJQ0GPvvyWgcY7QAhCgf9Uy89I03faLkg==}
 
@@ -1775,6 +1801,9 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
+  tone@15.1.22:
+    resolution: {integrity: sha512-TCScAGD4sLsama5DjvTUXlLDXSqPealhL64nsdV1hhr6frPWve0DeSo63AKnSJwgfg55fhvxj0iPPRwPN5o0ag==}
+
   totalist@3.0.1:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
     engines: {node: '>=6'}
@@ -1795,6 +1824,9 @@ packages:
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
+
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -2035,6 +2067,8 @@ snapshots:
   '@babel/parser@7.28.5':
     dependencies:
       '@babel/types': 7.28.5
+
+  '@babel/runtime@7.28.4': {}
 
   '@babel/types@7.28.5':
     dependencies:
@@ -2300,6 +2334,11 @@ snapshots:
   '@rtsao/scc@1.1.0': {}
 
   '@standard-schema/spec@1.0.0': {}
+
+  '@tonejs/midi@2.0.28':
+    dependencies:
+      array-flatten: 3.0.0
+      midi-file: 1.2.4
 
   '@types/chai@5.2.3':
     dependencies:
@@ -2598,6 +2637,8 @@ snapshots:
       call-bound: 1.0.4
       is-array-buffer: 3.0.5
 
+  array-flatten@3.0.0: {}
+
   array-includes@3.1.9:
     dependencies:
       call-bind: 1.0.8
@@ -2652,6 +2693,11 @@ snapshots:
       js-tokens: 9.0.1
 
   async-function@1.0.0: {}
+
+  automation-events@7.1.13:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      tslib: 2.8.1
 
   available-typed-arrays@1.0.7:
     dependencies:
@@ -3471,6 +3517,8 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.1
 
+  midi-file@1.2.4: {}
+
   minimatch@3.1.2:
     dependencies:
       brace-expansion: 1.1.12
@@ -3779,6 +3827,12 @@ snapshots:
 
   stackback@0.0.2: {}
 
+  standardized-audio-context@25.3.77:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      automation-events: 7.1.13
+      tslib: 2.8.1
+
   std-env@3.10.0: {}
 
   stop-iteration-iterator@1.1.0:
@@ -3848,6 +3902,11 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
+  tone@15.1.22:
+    dependencies:
+      standardized-audio-context: 25.3.77
+      tslib: 2.8.1
+
   totalist@3.0.1: {}
 
   tough-cookie@6.0.0:
@@ -3868,6 +3927,8 @@ snapshots:
       json5: 1.0.2
       minimist: 1.2.8
       strip-bom: 3.0.0
+
+  tslib@2.8.1: {}
 
   type-check@0.4.0:
     dependencies:

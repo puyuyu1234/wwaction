@@ -4,8 +4,12 @@ import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent
 import { Input } from '@core/Input'
 import { Rectangle } from '@core/Rectangle'
 
+
 import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
+
+import { AudioManager } from '@/audio/AudioManager'
+import { SFX_KEYS } from '@/game/config'
 
 /**
  * プレイヤーエンティティ
@@ -14,6 +18,7 @@ import { Entity } from './Entity'
  */
 export class Player extends Entity {
   private input: Input
+  private audio = AudioManager.getInstance()
   private coyoteTime = 0 // 空中にいる時間（コヨーテタイム用）
   private readonly COYOTE_TIME_MAX = 6 // コヨーテタイム最大フレーム数
   private readonly MOVE_SPEED = 2
@@ -99,6 +104,7 @@ export class Player extends Entity {
       if (this.coyoteTime < this.COYOTE_TIME_MAX) {
         this.vy = this.JUMP_POWER
         this.coyoteTime = this.COYOTE_TIME_MAX // ジャンプしたらコヨーテタイム消費
+        this.audio.playSound(SFX_KEYS.JUMP)
       }
     }
 
@@ -143,6 +149,9 @@ export class Player extends Entity {
     // 無敵時間を設定（約0.8秒）
     this.noHitboxTime = 50
 
+    // ダメージ音
+    this.audio.playSound(SFX_KEYS.DAMAGE)
+
     // ダメージイベント発火（HPBar更新用）
     this.dispatch('playerDamage', num)
 
@@ -159,6 +168,7 @@ export class Player extends Entity {
    */
   heal(num: number) {
     this.hp = Math.min(this.maxHp, this.hp + num)
+    this.audio.playSound(SFX_KEYS.HEAL)
   }
 
   /**

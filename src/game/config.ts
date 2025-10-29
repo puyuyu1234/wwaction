@@ -34,6 +34,30 @@ export const HPDATA = [7, 5, 3, 1]
 export const FONT = "'MS Gothic', 'ＭＳ ゴシック', 'MS ゴシック', monospace"
 
 /**
+ * 効果音キー定義
+ * マジックストリング防止用
+ */
+export const SFX_KEYS = {
+  JUMP: 'jump',
+  DAMAGE: 'damage',
+  HEAL: 'heal',
+  GOAL: 'goal',
+} as const
+
+/**
+ * 音源アセットパス定義
+ */
+export const AUDIO_ASSETS = {
+  sfx: {
+    jump: '/assets/audio/sfx/jump.mp3',
+    damage: '/assets/audio/sfx/damage.mp3',
+    heal: '/assets/audio/sfx/heal.mp3',
+    goal: '/assets/audio/sfx/goal.mp3',
+  },
+  music: (stage: number) => `/assets/audio/music/stage${stage}.mp3`,
+} as const
+
+/**
  * ブロックデータマップ
  * キー: ステージマップ内の文字
  * 値: ブロックの性質

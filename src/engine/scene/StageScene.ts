@@ -7,11 +7,12 @@ import { Nuefu } from '@entity/Nuefu'
 import { Player } from '@entity/Player'
 import { Potion } from '@entity/Potion'
 import { Wind } from '@entity/Wind'
-import { STAGEDATA, BLOCKSIZE, FONT, DEBUG } from '@game/config'
+import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS } from '@game/config'
 import { Graphics, Container, Text } from 'pixi.js'
 
 import { Scene } from './Scene'
 
+import { AudioManager } from '@/audio/AudioManager'
 import { HPBar } from '@/engine/actor/HPBar'
 
 /**
@@ -28,10 +29,13 @@ export class StageScene extends Scene {
   private debugText!: Text
   private hpBar!: HPBar // HP表示（通常UI）
   private input: Input
+  private audio = AudioManager.getInstance()
+  private stageIndex: number
 
   constructor(stageIndex: number, input: Input) {
     super()
     this.input = input
+    this.stageIndex = stageIndex
 
     // ステージデータ取得
     const stageData = STAGEDATA[stageIndex]
@@ -113,6 +117,9 @@ export class StageScene extends Scene {
       this.debugText.roundPixels = true // ピクセル境界に配置
       this.container.addChild(this.debugText)
     }
+
+    // コンストラクタでBGM開始を試みる（初期化済みの場合のみ再生）
+    this.startBGM()
   }
 
   update() {
@@ -145,6 +152,18 @@ export class StageScene extends Scene {
     entity.on('destroy', () => {
       this.removeEntity(entity)
     })
+  }
+
+  /**
+   * BGM再生開始
+   * コンストラクタから呼ばれる（AudioManager初期化済みの場合のみ再生）
+   * 初期化前なら無音のまま（シーンが変わるまで無音で問題なし）
+   */
+  startBGM(): void {
+    if (this.audio.isReady()) {
+      const bgmPath = AUDIO_ASSETS.music(this.stageIndex)
+      void this.audio.playMusic(bgmPath) // 非同期だが待たない（失敗時はwarnのみ）
+    }
   }
 
   /**
@@ -256,5 +275,13 @@ export class StageScene extends Scene {
         this.entitiesGraphics.stroke({ width: 1, color: strokeColor })
       }
     })
+  }
+
+  /**
+   * シーン終了時の処理
+   */
+  end() {
+    this.audio.stopMusic()
+    super.end()
   }
 }

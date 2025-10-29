@@ -2,7 +2,9 @@ import { Application } from 'pixi.js'
 
 import { Input } from './Input'
 
+import { AudioManager } from '@/audio/AudioManager'
 import { Scene } from '@/engine/scene/Scene'
+import { AUDIO_ASSETS } from '@/game/config'
 
 /**
  * ゲームメインループクラス
@@ -12,6 +14,7 @@ export class Game {
   private app: Application
   private currentScene: Scene | null = null
   private input: Input
+  private audioManager: AudioManager
   private running = false
   private lastTime = 0
   private readonly baseWidth: number
@@ -22,7 +25,12 @@ export class Game {
   private readonly FRAME_TIME = 1000 / this.FPS // 16.666...ms
   private accumulator = 0
 
-  constructor(canvasId: string, baseWidth: number, baseHeight: number) {
+  constructor(
+    canvasId: string,
+    baseWidth: number,
+    baseHeight: number,
+    audioManager: AudioManager = AudioManager.getInstance()
+  ) {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement
     if (!canvas) {
       throw new Error(`Canvas with id "${canvasId}" not found`)
@@ -34,6 +42,7 @@ export class Game {
     // PixiJS Application 初期化
     this.app = new Application()
     this.input = new Input()
+    this.audioManager = audioManager
   }
 
   /**
@@ -171,5 +180,27 @@ export class Game {
    */
   getApp(): Application {
     return this.app
+  }
+
+  /**
+   * AudioManager を取得
+   */
+  getAudioManager(): AudioManager {
+    return this.audioManager
+  }
+
+  /**
+   * 音響システムを初期化し、効果音をロード
+   * Canvas Focus時に一度だけ呼ばれる
+   * BGM開始はScene側の責務
+   */
+  async startAudio(): Promise<void> {
+    // AudioManager初期化
+    if (!this.audioManager.isReady()) {
+      await this.audioManager.init()
+    }
+
+    // 効果音プリロード
+    await this.audioManager.loadSounds(AUDIO_ASSETS.sfx)
   }
 }
