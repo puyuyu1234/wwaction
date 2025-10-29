@@ -163,6 +163,19 @@ export const BLOCKDATA: Record<string, BlockData> = {
 }
 
 /**
+ * エンティティスポーンマップ
+ * キー: ステージマップ内の文字
+ * 値: エンティティ設定
+ */
+export const ENTITYDATA = {
+  '1': { entityClass: 'Nasake' },
+  '2': { entityClass: 'Gurasan' },
+  '3': { entityClass: 'Potion' },
+  '4': { entityClass: 'GurasanNotFall' },
+  '5': { entityClass: 'Nuefu' },
+} as const
+
+/**
  * ステージデータ
  * LoadStageData() から移植
  */

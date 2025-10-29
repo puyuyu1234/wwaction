@@ -2,12 +2,13 @@
 
 import { Input } from '@core/Input'
 import { Entity } from '@entity/Entity'
+import { Gurasan } from '@entity/Gurasan'
+import { GurasanNotFall } from '@entity/GurasanNotFall'
 import { Nasake } from '@entity/Nasake'
 import { Nuefu } from '@entity/Nuefu'
 import { Player } from '@entity/Player'
 import { Potion } from '@entity/Potion'
-import { Wind } from '@entity/Wind'
-import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS } from '@game/config'
+import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA } from '@game/config'
 import { Graphics, Container, Text } from 'pixi.js'
 
 import { Scene } from './Scene'
@@ -76,21 +77,8 @@ export class StageScene extends Scene {
     this.entities.push(this.player)
     this.add(this.player)
 
-    // デモ用: 風エンティティを追加
-    const wind = new Wind(playerX + 100, playerY - 50, 2, this.stage)
-    this.addEntity(wind)
-
-    // デモ用: Nasakeエンティティを追加
-    const nasake = new Nasake(playerX + 150, playerY, this.stage)
-    this.addEntity(nasake)
-
-    // デモ用: Potionエンティティを追加
-    const potion = new Potion(playerX + 200, playerY - 32, this.stage)
-    this.addEntity(potion)
-
-    // デモ用: Nuefuエンティティを追加
-    const nuefu = new Nuefu(playerX + 250, playerY, this.stage)
-    this.addEntity(nuefu)
+    // ステージデータからエンティティを生成
+    this.spawnEntitiesFromStage()
 
     // HP表示（通常UI - 常に表示）
     this.hpBar = new HPBar(this.player, 10, 220)
@@ -137,6 +125,38 @@ export class StageScene extends Scene {
     // デバッグ情報更新（開発時のみ）
     if (DEBUG) {
       this.updateDebugInfo()
+    }
+  }
+
+  /**
+   * ステージデータからエンティティを生成
+   */
+  private spawnEntitiesFromStage() {
+    // エンティティファクトリー（クラス名 → コンストラクタのマッピング）
+    const entityFactory = {
+      Nasake: (x: number, y: number) => new Nasake(x, y, this.stage),
+      Gurasan: (x: number, y: number) => new Gurasan(x, y, this.stage),
+      Potion: (x: number, y: number) => new Potion(x, y, this.stage),
+      GurasanNotFall: (x: number, y: number) => new GurasanNotFall(x, y, this.stage),
+      Nuefu: (x: number, y: number) => new Nuefu(x, y, this.stage),
+    } as const
+
+    // ステージを走査してエンティティを配置
+    for (let y = 0; y < this.stage.length; y++) {
+      for (let x = 0; x < this.stage[y].length; x++) {
+        const char = this.stage[y][x]
+
+        // ENTITYDATAに定義されているキーか確認
+        if (char in ENTITYDATA) {
+          const entityKey = char as keyof typeof ENTITYDATA
+          const entityData = ENTITYDATA[entityKey]
+          const entityName = entityData.entityClass
+
+          // ファクトリーからエンティティを生成
+          const entity = entityFactory[entityName](x * BLOCKSIZE, y * BLOCKSIZE)
+          this.addEntity(entity)
+        }
+      }
     }
   }
 
@@ -259,6 +279,10 @@ export class StageScene extends Scene {
         color = 0x00ff00 // Potion: 緑
       } else if (entity.imageKey === 'nuefu') {
         color = 0xffaa00 // Nuefu: オレンジ
+      } else if (entity.imageKey === 'gurasan') {
+        color = 0xff6600 // Gurasan: 赤オレンジ
+      } else if (entity.imageKey === 'gurasanNotFall') {
+        color = 0xff3300 // GurasanNotFall: 濃い赤オレンジ
       }
 
       // エンティティ本体

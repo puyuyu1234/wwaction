@@ -79,22 +79,11 @@ export interface StageData {
   /** オプションパラメータ */
   param?: {
     /** ボスクラス (後で実装) */
-    boss?: any
+    boss?: unknown
 
     /** BGM名 */
     bgm?: string
   }
-}
-
-/**
- * エンティティデータの型定義 (後で実装)
- */
-export interface EntityData {
-  /** エンティティ名 */
-  name: string
-
-  /** エンティティクラス (後で実装) */
-  entityClass: any
 }
 
 /**

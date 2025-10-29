@@ -31,7 +31,7 @@ export class EventDispatcher {
    * 1回だけ実行されるイベントリスナーを登録
    */
   once(event: string, callback: Function): void {
-    const wrapper = (...args: any[]) => {
+    const wrapper = (...args: unknown[]) => {
       callback(...args)
       this.off(event, wrapper)
     }
@@ -41,7 +41,7 @@ export class EventDispatcher {
   /**
    * イベントを発火
    */
-  dispatch(event: string, ...args: any[]): void {
+  dispatch(event: string, ...args: unknown[]): void {
     const callbacks = this.listeners.get(event)
     if (callbacks) {
       for (const callback of callbacks) {
