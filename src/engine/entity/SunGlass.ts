@@ -1,8 +1,9 @@
+import { PhysicsComponent } from '@components/PhysicsComponent'
+import { Rectangle } from '@core/Rectangle'
+
 import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
-import { PhysicsComponent } from '@components/PhysicsComponent'
-import { Rectangle } from '@core/Rectangle'
 
 /**
  * SunGlass（サングラス）エンティティ

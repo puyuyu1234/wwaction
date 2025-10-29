@@ -1,6 +1,7 @@
-import { SpriteActor } from '@/engine/actor/SpriteActor'
 import { CollisionReactionComponent } from '@components/CollisionReactionComponent'
 import { Rectangle } from '@core/Rectangle'
+
+import { SpriteActor } from '@/engine/actor/SpriteActor'
 
 /**
  * ゲームエンティティ基底クラス

@@ -1,10 +1,10 @@
+import { Input } from '@core/Input'
+import { Rectangle } from '@core/Rectangle'
 import { describe, it, expect } from 'vitest'
 
 import { GoalEntity } from './GoalEntity'
 import { Player } from './Player'
 
-import { Input } from '@core/Input'
-import { Rectangle } from '@core/Rectangle'
 
 describe('GoalEntity - 基本動作', () => {
   it('指定した矩形領域を持つ', () => {

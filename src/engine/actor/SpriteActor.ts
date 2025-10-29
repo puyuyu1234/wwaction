@@ -1,6 +1,7 @@
+import { Rectangle } from '@core/Rectangle'
+
 import { Actor } from './Actor'
 
-import { Rectangle } from '@core/Rectangle'
 
 /**
  * スプライト描画機能を持つアクター

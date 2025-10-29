@@ -1,8 +1,8 @@
+import { Rectangle } from '@core/Rectangle'
 import { describe, it, expect } from 'vitest'
 
 import { TilemapCollisionComponent } from './TilemapCollisionComponent'
 
-import { Rectangle } from '@core/Rectangle'
 
 describe('TilemapCollisionComponent', () => {
   describe('左壁の衝突判定', () => {

@@ -1,6 +1,7 @@
+import { Rectangle } from '@core/Rectangle'
+
 import { Entity } from './Entity'
 
-import { Rectangle } from '@core/Rectangle'
 
 /**
  * GoalEntity（ゴール判定エンティティ）

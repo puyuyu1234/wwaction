@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Game } from '@core/Game'
 import { onMounted } from 'vue'
 
-import { Game } from '@core/Game'
 import { StageScene } from '@/engine/scene/StageScene'
 
 onMounted(async () => {

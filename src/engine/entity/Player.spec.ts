@@ -1,8 +1,8 @@
+import { Input } from '@core/Input'
 import { describe, it, expect, beforeEach } from 'vitest'
 
 import { Player } from './Player'
 
-import { Input } from '@core/Input'
 
 /**
  * モック Input クラス
