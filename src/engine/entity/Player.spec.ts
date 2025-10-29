@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach } from 'vitest'
 
 import { Player } from './Player'
 
-
 /**
  * モック Input クラス
  * キー入力をシミュレート

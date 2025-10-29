@@ -1,9 +1,7 @@
-
 import { PhysicsComponent } from '@components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
 import { Input } from '@core/Input'
 import { Rectangle } from '@core/Rectangle'
-
 
 import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'

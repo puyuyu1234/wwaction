@@ -4,7 +4,6 @@ import { Rectangle } from '@core/Rectangle'
 import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
-
 /**
  * SunGlass（サングラス）エンティティ
  * - Gurasan が風に触れたときに分裂して生成される

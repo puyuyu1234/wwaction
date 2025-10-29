@@ -2,7 +2,6 @@ import { Rectangle } from '@core/Rectangle'
 
 import { Actor } from './Actor'
 
-
 /**
  * スプライト描画機能を持つアクター
  * Phase 1では最小限の実装 (imageKey, rectangle getter/setter のみ)

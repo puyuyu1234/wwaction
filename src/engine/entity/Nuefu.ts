@@ -1,4 +1,3 @@
-
 import { PhysicsComponent } from '@components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
 import { Rectangle } from '@core/Rectangle'

@@ -6,7 +6,6 @@ import { Entity } from './Entity'
 import { Nasake } from './Nasake'
 import { SunGlass } from './SunGlass'
 
-
 /**
  * Gurasan（グラサン）エンティティ
  * - サングラスをかけた敵キャラクター

@@ -5,7 +5,6 @@ import { describe, it, expect } from 'vitest'
 import { GoalEntity } from './GoalEntity'
 import { Player } from './Player'
 
-
 describe('GoalEntity - 基本動作', () => {
   it('指定した矩形領域を持つ', () => {
     const rect = new Rectangle(100, 50, 32, 32)

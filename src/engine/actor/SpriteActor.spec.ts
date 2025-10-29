@@ -3,7 +3,6 @@ import { describe, it, expect } from 'vitest'
 
 import { SpriteActor } from './SpriteActor'
 
-
 describe('SpriteActor', () => {
   it('initializes with imageKey and rectangle', () => {
     const rect = new Rectangle(10, 20, 16, 16)

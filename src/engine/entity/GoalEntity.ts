@@ -2,7 +2,6 @@ import { Rectangle } from '@core/Rectangle'
 
 import { Entity } from './Entity'
 
-
 /**
  * GoalEntity（ゴール判定エンティティ）
  * - 描画・物理演算なし

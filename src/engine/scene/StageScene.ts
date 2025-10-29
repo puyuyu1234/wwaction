@@ -1,5 +1,3 @@
-
-
 import { Input } from '@core/Input'
 import { Entity } from '@entity/Entity'
 import { Gurasan } from '@entity/Gurasan'

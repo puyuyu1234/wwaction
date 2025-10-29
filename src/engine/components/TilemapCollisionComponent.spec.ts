@@ -3,7 +3,6 @@ import { describe, it, expect } from 'vitest'
 
 import { TilemapCollisionComponent } from './TilemapCollisionComponent'
 
-
 describe('TilemapCollisionComponent', () => {
   describe('左壁の衝突判定', () => {
     it('左壁を検出する', () => {

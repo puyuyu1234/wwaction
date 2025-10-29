@@ -4,7 +4,6 @@ import { describe, it, expect, vi } from 'vitest'
 
 import { CollisionReactionComponent } from './CollisionReactionComponent'
 
-
 describe('CollisionReactionComponent', () => {
   it('登録されたハンドラが正しく呼ばれる', () => {
     const component = new CollisionReactionComponent()
