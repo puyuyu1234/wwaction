@@ -15,7 +15,7 @@ export class MusicPlayer {
   private currentPath: string | null = null
 
   // MIDI再生用
-  private synths: Tone.PolySynth[] = []
+  private synths: (Tone.PolySynth | Tone.NoiseSynth)[] = []
   private parts: Tone.Part[] = []
   private midiMode = false
 
@@ -93,7 +93,12 @@ export class MusicPlayer {
 
       // Partを作成
       const part = new Tone.Part((time, note) => {
-        synth.triggerAttackRelease(note.note, note.duration, time, note.velocity)
+        if (synth instanceof Tone.NoiseSynth) {
+          // NoiseSynthはnote引数を受け付けない
+          synth.triggerAttackRelease(note.duration, time, note.velocity)
+        } else {
+          synth.triggerAttackRelease(note.note, note.duration, time, note.velocity)
+        }
       }, notes)
 
       part.loop = loop

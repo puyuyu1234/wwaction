@@ -29,7 +29,7 @@ export class StageScene extends Scene {
   private hpBar!: HPBar // HP表示（通常UI）
   private input: Input
   private audio = AudioManager.getInstance()
-  private stageIndex: number
+  // private stageIndex: number // 将来的にステージ別BGMで使用予定
   private stageWidth: number // ステージ幅（ピクセル）
   private stageHeight: number // ステージ高さ（ピクセル）
   private viewportWidth: number // ビューポート幅（Game.tsのbaseWidthから取得）
@@ -38,7 +38,7 @@ export class StageScene extends Scene {
   constructor(stageIndex: number, input: Input, viewportWidth = 320, viewportHeight = 240) {
     super()
     this.input = input
-    this.stageIndex = stageIndex
+    // this.stageIndex = stageIndex // 将来的にステージ別BGMで使用予定
     this.viewportWidth = viewportWidth
     this.viewportHeight = viewportHeight
 
@@ -215,8 +215,54 @@ export class StageScene extends Scene {
    */
   startBGM(): void {
     if (this.audio.isReady()) {
-      const bgmPath = AUDIO_ASSETS.music(this.stageIndex)
-      void this.audio.playMusic(bgmPath) // 非同期だが待たない（失敗時はwarnのみ）
+      // test.midを各トラック専用の音源設定で再生（6トラック対応）
+      const midiPath = AUDIO_ASSETS.midi.test
+
+      const trackSynthMap = {
+        // Track 0: Noise, sine, 0.001, 0.5, 0, 0.001, -22dB
+        0: {
+          synthType: 'noise' as const,
+          waveform: 'sine' as const, // NoiseSynthではwaveformは使われないが型のために必要
+          envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.001 },
+          volume: -22,
+        },
+        // Track 1: Basic, square, 0.001, 0.15, 0, 0.001, -10dB
+        1: {
+          synthType: 'synth' as const,
+          waveform: 'square' as const,
+          envelope: { attack: 0.001, decay: 0.5, sustain: 0.15, release: 0.001 },
+          volume: -10,
+        },
+        // Track 2: Basic, sawtooth, 0.001, 1, 0.3, 1, -10dB
+        2: {
+          synthType: 'synth' as const,
+          waveform: 'sawtooth' as const,
+          envelope: { attack: 0.001, decay: 0.7, sustain: 0.1, release: 1 },
+          volume: -10,
+        },
+        // Track 3: Basic, square, 0, 0.4, 0.001, 0.6, -15dB
+        3: {
+          synthType: 'synth' as const,
+          waveform: 'square' as const,
+          envelope: { attack: 0.4, decay: 0.001, sustain: 1, release: 0.6 },
+          volume: -15,
+        },
+        // Track 4: Basic, sawtooth, 0.001, 0.5, 0.1, 0.001, -10dB
+        4: {
+          synthType: 'synth' as const,
+          waveform: 'sawtooth' as const,
+          envelope: { attack: 0.001, decay: 0.5, sustain: 0.1, release: 0.001 },
+          volume: -10,
+        },
+        // Track 5: Basic, square, デフォルト設定
+        5: {
+          synthType: 'synth' as const,
+          waveform: 'square' as const,
+          envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 0.8 },
+        },
+      }
+
+      void this.audio.playMidi(midiPath, trackSynthMap, true) // 非同期だが待たない（失敗時はwarnのみ）
     }
   }
 

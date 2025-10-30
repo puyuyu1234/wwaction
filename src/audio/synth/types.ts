@@ -4,6 +4,11 @@
 export type WaveformType = 'square' | 'sawtooth' | 'triangle' | 'sine'
 
 /**
+ * シンセサイザータイプ
+ */
+export type SynthType = 'synth' | 'noise'
+
+/**
  * ADSR エンベロープ設定
  */
 export interface EnvelopeConfig {
@@ -21,6 +26,8 @@ export interface EnvelopeConfig {
  * シンセプリセット設定
  */
 export interface SynthPreset {
+  /** シンセタイプ */
+  synthType: SynthType
   /** 波形タイプ */
   waveform: WaveformType
   /** エンベロープ設定 */

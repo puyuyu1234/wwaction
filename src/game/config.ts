@@ -49,12 +49,15 @@ export const SFX_KEYS = {
  */
 export const AUDIO_ASSETS = {
   sfx: {
-    jump: '/assets/audio/sfx/jump.mp3',
-    damage: '/assets/audio/sfx/damage.mp3',
-    heal: '/assets/audio/sfx/heal.mp3',
-    goal: '/assets/audio/sfx/goal.mp3',
+    jump: '/assets/sound/sfx/jump.mp3',
+    damage: '/assets/sound/sfx/gameover.mp3', // damage.mp3がないのでgameover.mp3を使用
+    heal: '/assets/sound/sfx/heal.mp3',
+    goal: '/assets/sound/sfx/wind.mp3', // goal.mp3がないのでwind.mp3を使用
   },
-  music: (stage: number) => `/assets/audio/music/stage${stage}.mp3`,
+  music: (stage: number) => `/assets/sound/music/stage${stage}.mp3`,
+  midi: {
+    test: '/assets/sound/music/test.mid',
+  },
 } as const
 
 /**
