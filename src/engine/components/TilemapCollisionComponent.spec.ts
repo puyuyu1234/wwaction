@@ -715,6 +715,36 @@ describe('TilemapCollisionComponent', () => {
       const isCliff = collision.checkRightSideCliff()
       expect(isCliff).toBe(true) // PLATFORMの右側は崖
     })
+
+    it('PLATFORMに下から数pxめり込んだ状態では、checkDownWallで補正されない（上向きから下向きへの速度転換時）', () => {
+      const stage = [
+        [' ', ' ', ' '], // y=0-15: 空白
+        ['a', 'a', 'a'], // y=16-31: PLATFORM
+      ]
+      const entity = {
+        x: 0,
+        y: 13, // y=13: hitbox.bottom = 13 + 16 = 29
+        vx: 0,
+        vy: 1, // 下向き速度（小さい）
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      // シナリオ:
+      // 1. プレイヤーが下からジャンプして platform に突入（vy < 0）
+      // 2. platform の上端 y=16 を突破して、y=13 の位置に到達（bottom=29）
+      // 3. 重力で vy が正（下向き）に転換
+      // 4. この時点で checkDownWall() を呼ぶと、現在の bottom=29 が
+      //    platform 内（y=16-31）にめり込んでいるため、
+      //    nextBottom = 29 + 1 = 30 も platform 内を指す
+      // 5. 通常なら true を返して stopAtDownWall() で補正されるが、
+      //    それではプレイヤーがワープしたように見える
+      // 6. よって、現在の bottom が platform の上端（y=16）より下にある場合は
+      //    checkDownWall() は false を返すべき
+      expect(collision.checkDownWall()).toBe(false)
+    })
   })
 
   describe('ステージ外の壁判定', () => {

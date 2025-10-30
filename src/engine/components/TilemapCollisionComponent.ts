@@ -203,10 +203,31 @@ export class TilemapCollisionComponent {
    * 下方向への移動で壁に衝突するかチェック
    * ヒットボックスの下辺が次フレームで壁に入るかを判定
    * PLATFORM（一方通行足場）は上から降りることで着地可能
+   *
+   * 注意: PLATFORMに下から突入してめり込んでいる場合、判定をスキップする
+   * （ワープしたように見えるのを防ぐため）
+   * legacy実装の isDifferentPosition チェックを参考
+   *
+   * 座標系の違い:
+   * - legacy: bottom = y + height - 1 (実際に占有する最後のピクセル)
+   * - TypeScript: bottom = y + height (境界の外側)
+   * → TypeScript実装では bottom - 1 が実際に占有する最後のピクセル
    */
   checkDownWall(): boolean {
     const hitbox = this.currentHitbox
     const nextBottom = hitbox.bottom + this.entity.vy // bottom = 境界の外側
+
+    // 現在の実占有位置と次フレームの実占有位置が異なるブロックグリッドに跨がるかチェック
+    // legacy: isDifferentPosition(currentBottom, bottom + 1)
+    //   where currentBottom = y + height - 1, bottom = currentBottom + vy
+    // TypeScript: bottom - 1 が実占有位置なので、(bottom - 1, nextBottom - 1 + 1) = (bottom - 1, nextBottom)
+    const currentBlockY = Math.floor((hitbox.bottom - 1) / BLOCKSIZE)
+    const nextBlockY = Math.floor(nextBottom / BLOCKSIZE)
+    if (currentBlockY === nextBlockY) {
+      // 同じブロック内にいる場合は判定しない
+      // （platformに下から突入してめり込んでいる状態）
+      return false
+    }
 
     // ヒットボックスの左から右まで BLOCKSIZE 刻みでチェック
     // bottom（境界の外側）の位置をチェック
