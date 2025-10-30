@@ -10,7 +10,7 @@ onMounted(async () => {
   const game = new Game('gameCanvas', 320, 240)
   await game.init()
 
-  const stage = new StageScene(1, game.getInput())
+  const stage = new StageScene(1, game.getInput(), game.getBaseWidth(), game.getBaseHeight())
   game.changeScene(stage)
 
   game.start()

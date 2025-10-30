@@ -30,11 +30,17 @@ export class StageScene extends Scene {
   private input: Input
   private audio = AudioManager.getInstance()
   private stageIndex: number
+  private stageWidth: number // ステージ幅（ピクセル）
+  private stageHeight: number // ステージ高さ（ピクセル）
+  private viewportWidth: number // ビューポート幅（Game.tsのbaseWidthから取得）
+  private viewportHeight: number // ビューポート高さ（Game.tsのbaseHeightから取得）
 
-  constructor(stageIndex: number, input: Input) {
+  constructor(stageIndex: number, input: Input, viewportWidth = 320, viewportHeight = 240) {
     super()
     this.input = input
     this.stageIndex = stageIndex
+    this.viewportWidth = viewportWidth
+    this.viewportHeight = viewportHeight
 
     // ステージデータ取得
     const stageData = STAGEDATA[stageIndex]
@@ -44,6 +50,10 @@ export class StageScene extends Scene {
 
     // stages[0] は string[] の配列なので、それを文字の2次元配列に変換
     this.stage = stageData.stages[0].map((row) => row.split(''))
+
+    // ステージサイズを計算
+    this.stageWidth = this.stage[0].length * BLOCKSIZE
+    this.stageHeight = this.stage.length * BLOCKSIZE
 
     // カメラコンテナ（スクロール用）
     this.camera = new Container()
@@ -78,9 +88,10 @@ export class StageScene extends Scene {
     // ステージデータからエンティティを生成
     this.spawnEntitiesFromStage()
 
+    // 固定UI（HPBar/debugText）はカメラ外に配置
     // HP表示（通常UI - 常に表示）
     this.hpBar = new HPBar(this.player, 10, 220)
-    this.container.addChild(this.hpBar.container)
+    this.container.addChild(this.hpBar.container) // camera外 = スクロールしない
 
     // プレイヤーのダメージイベントをリッスン
     this.player.on('playerDamage', (damage: number) => {
@@ -101,7 +112,7 @@ export class StageScene extends Scene {
       this.debugText.x = 5
       this.debugText.y = 25 // HP表示の下に配置
       this.debugText.roundPixels = true // ピクセル境界に配置
-      this.container.addChild(this.debugText)
+      this.container.addChild(this.debugText) // camera外 = スクロールしない
     }
 
     // コンストラクタでBGM開始を試みる（初期化済みの場合のみ再生）
@@ -110,6 +121,9 @@ export class StageScene extends Scene {
 
   update() {
     super.update()
+
+    // カメラ追従処理
+    this.updateCamera()
 
     // エンティティ間の衝突判定
     this.checkCollisions()
@@ -124,6 +138,28 @@ export class StageScene extends Scene {
     if (DEBUG) {
       this.updateDebugInfo()
     }
+  }
+
+  /**
+   * カメラ追従処理
+   * プレイヤーを画面中央に配置し、ステージ境界でカメラを停止
+   */
+  private updateCamera() {
+    // プレイヤーの中心座標を基準にカメラ位置を計算
+    const playerCenterX = this.player.x + this.player.width / 2
+    const playerCenterY = this.player.y + this.player.height / 2
+
+    // カメラ位置（プレイヤーを画面中央に配置）
+    let cameraX = playerCenterX - this.viewportWidth / 2
+    let cameraY = playerCenterY - this.viewportHeight / 2
+
+    // ステージ境界でカメラを制限
+    cameraX = Math.max(0, Math.min(cameraX, this.stageWidth - this.viewportWidth))
+    cameraY = Math.max(0, Math.min(cameraY, this.stageHeight - this.viewportHeight))
+
+    // PixiJSではカメラ移動は Container.position をマイナス値で設定
+    this.camera.x = -Math.floor(cameraX)
+    this.camera.y = -Math.floor(cameraY)
   }
 
   /**

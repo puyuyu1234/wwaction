@@ -190,6 +190,20 @@ export class Game {
   }
 
   /**
+   * ビューポート幅を取得
+   */
+  getBaseWidth(): number {
+    return this.baseWidth
+  }
+
+  /**
+   * ビューポート高さを取得
+   */
+  getBaseHeight(): number {
+    return this.baseHeight
+  }
+
+  /**
    * 音響システムを初期化し、効果音をロード
    * Canvas Focus時に一度だけ呼ばれる
    * BGM開始はScene側の責務
