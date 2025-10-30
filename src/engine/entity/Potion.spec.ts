@@ -5,8 +5,8 @@ import { Potion } from './Potion'
 describe('Potion - 壁での挙動（Windとの差異）', () => {
   it('左壁に当たっても跳ね返らず停止する', () => {
     const stage = [
-      ['a', ' ', ' ', ' ', ' '],
-      ['a', 'a', 'a', 'a', 'a'],
+      ['g', ' ', ' ', ' ', ' '],
+      ['g', 'a', 'a', 'a', 'g'],
     ]
     const potion = new Potion(32, 0, stage)
     potion.vx = -1 // 左向きに移動
@@ -22,8 +22,8 @@ describe('Potion - 壁での挙動（Windとの差異）', () => {
 
   it('右壁に当たっても跳ね返らず停止する', () => {
     const stage = [
-      [' ', ' ', ' ', ' ', 'a'],
-      ['a', 'a', 'a', 'a', 'a'],
+      [' ', ' ', ' ', ' ', 'g'],
+      ['g', 'a', 'a', 'a', 'g'],
     ]
     const potion = new Potion(16, 0, stage)
     potion.vx = 1 // 右向きに移動
@@ -39,8 +39,8 @@ describe('Potion - 壁での挙動（Windとの差異）', () => {
 
   it('壁に当たった後は移動しない', () => {
     const stage = [
-      ['a', ' ', ' ', ' ', 'a'],
-      ['a', 'a', 'a', 'a', 'a'],
+      ['g', ' ', ' ', ' ', 'g'],
+      ['g', 'a', 'a', 'a', 'g'],
     ]
     const potion = new Potion(32, 0, stage)
     potion.vx = -1
@@ -66,7 +66,7 @@ describe('Potion - 壁での挙動（Windとの差異）', () => {
 describe('Potion - 上下の壁挙動', () => {
   it('天井に当たると上方向の速度が停止する', () => {
     const stage = [
-      ['a', 'a', 'a'],
+      ['g', 'g', 'g'],
       [' ', ' ', ' '],
     ]
     const potion = new Potion(16, 20, stage)
@@ -84,7 +84,7 @@ describe('Potion - 上下の壁挙動', () => {
   it('床に当たると下方向の速度が停止する', () => {
     const stage = [
       [' ', ' ', ' '],
-      ['a', 'a', 'a'],
+      ['g', 'a', 'g'],
     ]
     const potion = new Potion(16, 0, stage)
 
@@ -102,7 +102,7 @@ describe('Potion - 床の上で静止', () => {
   it('床の上では完全に静止する（上下左右とも動かない）', () => {
     const stage = [
       [' ', ' ', ' ', ' ', ' '],
-      ['a', 'a', 'a', 'a', 'a'],
+      ['g', 'a', 'a', 'a', 'g'],
     ]
     const potion = new Potion(32, 0, stage)
 

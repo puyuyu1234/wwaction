@@ -44,29 +44,35 @@ export class TilemapCollisionComponent {
   }
 
   /**
-   * 指定座標が壁（SOLID または PLATFORM）かどうかを判定
+   * 指定座標が指定されたブロックタイプのいずれかに該当するかを判定
    * @param x ワールド座標 X
    * @param y ワールド座標 Y
-   * @returns 壁なら true
+   * @param types 判定対象のブロックタイプ配列
+   * @returns いずれかに該当すれば true
    */
-  private isWall(x: number, y: number): boolean {
+  private isBlockType(x: number, y: number, types: CollisionType[]): boolean {
     const bx = Math.floor(x / BLOCKSIZE)
     const by = Math.floor(y / BLOCKSIZE)
 
-    // 上方向（y < 0）はジャンプできるよう壁扱いしない
+    // 上方向（y < 0）は常に false（どのタイプとも一致しない）
     if (y < 0) return false
 
     // ステージ外は壁扱い（エンティティが落下しないように）
-    if (!this.stage[by]?.[bx]) return true
+    if (!this.stage[by]?.[bx]) return types.includes(CollisionType.SOLID)
 
     const blockKey = this.stage[by][bx]
-    const blockType = BLOCKDATA[blockKey]?.type ?? CollisionType.NONE
-    return blockType === CollisionType.SOLID || blockType === CollisionType.PLATFORM
+    const blockData = BLOCKDATA[blockKey]
+
+    // BLOCKDATAに定義されていない場合はfalse
+    if (!blockData) return false
+
+    return types.includes(blockData.type)
   }
 
   /**
    * 左方向への移動で壁に衝突するかチェック
    * ヒットボックスの左辺が次フレームで壁に入るかを判定
+   * PLATFORM（一方通行足場）は左右から通過可能
    */
   checkLeftWall(): boolean {
     const hitbox = this.currentHitbox
@@ -75,12 +81,12 @@ export class TilemapCollisionComponent {
     // ヒットボックスの上から下まで BLOCKSIZE 刻みでチェック
     // left（境界の内側）の位置をチェック
     for (let y = hitbox.top; y < hitbox.bottom; y += BLOCKSIZE) {
-      if (this.isWall(nextLeft, y)) {
+      if (this.isBlockType(nextLeft, y, [CollisionType.SOLID])) {
         return true
       }
     }
     // 最後に bottom - 1（境界の内側）の位置もチェック（ループで飛ばされる可能性があるため）
-    if (this.isWall(nextLeft, hitbox.bottom - 1)) {
+    if (this.isBlockType(nextLeft, hitbox.bottom - 1, [CollisionType.SOLID])) {
       return true
     }
     return false
@@ -111,6 +117,7 @@ export class TilemapCollisionComponent {
   /**
    * 右方向への移動で壁に衝突するかチェック
    * ヒットボックスの右辺が次フレームで壁に入るかを判定
+   * PLATFORM（一方通行足場）は左右から通過可能
    */
   checkRightWall(): boolean {
     const hitbox = this.currentHitbox
@@ -119,12 +126,12 @@ export class TilemapCollisionComponent {
     // ヒットボックスの上から下まで BLOCKSIZE 刻みでチェック
     // right（境界の外側）の位置をチェック
     for (let y = hitbox.top; y < hitbox.bottom; y += BLOCKSIZE) {
-      if (this.isWall(nextRight, y)) {
+      if (this.isBlockType(nextRight, y, [CollisionType.SOLID])) {
         return true
       }
     }
     // 最後に bottom - 1（境界の内側）の位置もチェック（ループで飛ばされる可能性があるため）
-    if (this.isWall(nextRight, hitbox.bottom - 1)) {
+    if (this.isBlockType(nextRight, hitbox.bottom - 1, [CollisionType.SOLID])) {
       return true
     }
     return false
@@ -161,6 +168,7 @@ export class TilemapCollisionComponent {
   /**
    * 上方向への移動で壁に衝突するかチェック
    * ヒットボックスの上辺が次フレームで壁に入るかを判定
+   * PLATFORM（一方通行足場）は下から通過可能
    */
   checkUpWall(): boolean {
     const hitbox = this.currentHitbox
@@ -169,12 +177,12 @@ export class TilemapCollisionComponent {
     // ヒットボックスの左から右まで BLOCKSIZE 刻みでチェック
     // top（境界の内側）の位置をチェック
     for (let x = hitbox.left; x < hitbox.right; x += BLOCKSIZE) {
-      if (this.isWall(x, nextTop)) {
+      if (this.isBlockType(x, nextTop, [CollisionType.SOLID])) {
         return true
       }
     }
     // 最後に right - 1（境界の内側）の位置もチェック（ループで飛ばされる可能性があるため）
-    if (this.isWall(hitbox.right - 1, nextTop)) {
+    if (this.isBlockType(hitbox.right - 1, nextTop, [CollisionType.SOLID])) {
       return true
     }
     return false
@@ -194,6 +202,7 @@ export class TilemapCollisionComponent {
   /**
    * 下方向への移動で壁に衝突するかチェック
    * ヒットボックスの下辺が次フレームで壁に入るかを判定
+   * PLATFORM（一方通行足場）は上から降りることで着地可能
    */
   checkDownWall(): boolean {
     const hitbox = this.currentHitbox
@@ -202,12 +211,12 @@ export class TilemapCollisionComponent {
     // ヒットボックスの左から右まで BLOCKSIZE 刻みでチェック
     // bottom（境界の外側）の位置をチェック
     for (let x = hitbox.left; x < hitbox.right; x += BLOCKSIZE) {
-      if (this.isWall(x, nextBottom)) {
+      if (this.isBlockType(x, nextBottom, [CollisionType.SOLID, CollisionType.PLATFORM])) {
         return true
       }
     }
     // 最後に right - 1（境界の内側）の位置もチェック（ループで飛ばされる可能性があるため）
-    if (this.isWall(hitbox.right - 1, nextBottom)) {
+    if (this.isBlockType(hitbox.right - 1, nextBottom, [CollisionType.SOLID, CollisionType.PLATFORM])) {
       return true
     }
     return false
@@ -230,6 +239,7 @@ export class TilemapCollisionComponent {
   /**
    * 右側が崖かどうかをチェック
    * 接地している時に、ヒットボックスの右下に地面がないかを判定
+   * PLATFORMも足場として判定する
    */
   checkRightSideCliff(): boolean {
     const hitbox = this.currentHitbox
@@ -238,12 +248,13 @@ export class TilemapCollisionComponent {
     const checkRight = hitbox.right
 
     // 右下の足元に地面がない = 右側が崖
-    return !this.isWall(checkRight, checkBottom)
+    return !this.isBlockType(checkRight, checkBottom, [CollisionType.SOLID, CollisionType.PLATFORM])
   }
 
   /**
    * 左側が崖かどうかをチェック
    * 接地している時に、ヒットボックスの左下に地面がないかを判定
+   * PLATFORMも足場として判定する
    */
   checkLeftSideCliff(): boolean {
     const hitbox = this.currentHitbox
@@ -252,6 +263,6 @@ export class TilemapCollisionComponent {
     const checkLeft = hitbox.left
 
     // 左下の足元に地面がない = 左側が崖
-    return !this.isWall(checkLeft, checkBottom)
+    return !this.isBlockType(checkLeft, checkBottom, [CollisionType.SOLID, CollisionType.PLATFORM])
   }
 }

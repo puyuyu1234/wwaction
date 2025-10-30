@@ -7,7 +7,7 @@ describe('TilemapCollisionComponent', () => {
   describe('左壁の衝突判定', () => {
     it('左壁を検出する', () => {
       const stage = [
-        ['a', ' ', ' '], // 'a' = PLATFORM
+        ['g', ' ', ' '], // 'g' = SOLID
       ]
       const entity = {
         x: 16,
@@ -24,7 +24,7 @@ describe('TilemapCollisionComponent', () => {
     })
 
     it('左壁で停止する', () => {
-      const stage = [['a', ' ', ' ']]
+      const stage = [['g', ' ', ' ']]
       const entity = {
         x: 20,
         y: 0,
@@ -43,7 +43,7 @@ describe('TilemapCollisionComponent', () => {
     })
 
     it('左壁で跳ね返る', () => {
-      const stage = [['a', ' ', ' ']]
+      const stage = [['g', ' ', ' ']]
       const entity = {
         x: 18,
         y: 0,
@@ -63,7 +63,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('左壁に配置後、速度0では左壁衝突判定に引っかからない', () => {
       const stage = [
-        ['a', ' ', ' '], // 左壁 (x=0-15)
+        ['g', ' ', ' '], // 左壁 (x=0-15)
       ]
       const entity = {
         x: 18,
@@ -96,7 +96,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('左壁に配置後、左向き速度があれば左壁衝突判定に引っかかる', () => {
       const stage = [
-        ['a', ' ', ' '], // 左壁 (x=0-15)
+        ['g', ' ', ' '], // 左壁 (x=0-15)
       ]
       const entity = {
         x: 18,
@@ -128,7 +128,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('左壁に配置後、右向き速度があれば左壁衝突判定に引っかからない', () => {
       const stage = [
-        ['a', ' ', ' '], // 左壁 (x=0-15)
+        ['g', ' ', ' '], // 左壁 (x=0-15)
       ]
       const entity = {
         x: 18,
@@ -161,7 +161,7 @@ describe('TilemapCollisionComponent', () => {
 
   describe('右壁の衝突判定', () => {
     it('右壁を検出する', () => {
-      const stage = [[' ', ' ', 'a']]
+      const stage = [[' ', ' ', 'g']]
       const entity = {
         x: 16,
         y: 0,
@@ -177,7 +177,7 @@ describe('TilemapCollisionComponent', () => {
     })
 
     it('右壁で停止する', () => {
-      const stage = [[' ', ' ', 'a']]
+      const stage = [[' ', ' ', 'g']]
       const entity = {
         x: 16,
         y: 0,
@@ -196,7 +196,7 @@ describe('TilemapCollisionComponent', () => {
     })
 
     it('右壁で跳ね返る', () => {
-      const stage = [[' ', ' ', 'a']]
+      const stage = [[' ', ' ', 'g']]
       const entity = {
         x: 16,
         y: 0,
@@ -216,7 +216,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('右壁に配置後、速度0でも右壁衝突判定に引っかかるが位置は変わらない', () => {
       const stage = [
-        [' ', ' ', 'a'], // 右壁 (x=32-47)
+        [' ', ' ', 'g'], // 右壁 (x=32-47)
       ]
       const entity = {
         x: 16,
@@ -255,7 +255,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('右壁に配置後、右向き速度があれば右壁衝突判定に引っかかる', () => {
       const stage = [
-        [' ', ' ', 'a'], // 右壁 (x=32-47)
+        [' ', ' ', 'g'], // 右壁 (x=32-47)
       ]
       const entity = {
         x: 16,
@@ -287,7 +287,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('右壁に配置後、左向き速度があれば右壁衝突判定に引っかからない', () => {
       const stage = [
-        [' ', ' ', 'a'], // 右壁 (x=32-47)
+        [' ', ' ', 'g'], // 右壁 (x=32-47)
       ]
       const entity = {
         x: 16,
@@ -321,7 +321,7 @@ describe('TilemapCollisionComponent', () => {
   describe('上壁の衝突判定', () => {
     it('上壁を検出する', () => {
       const stage = [
-        ['a', 'a', 'a'],
+        ['g', 'g', 'g'],
         [' ', ' ', ' '],
       ]
       const entity = {
@@ -340,7 +340,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('上壁で停止する', () => {
       const stage = [
-        ['a', 'a', 'a'],
+        ['g', 'g', 'g'],
         [' ', ' ', ' '],
       ]
       const entity = {
@@ -362,7 +362,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('上壁に配置後、速度0では上壁衝突判定に引っかからない', () => {
       const stage = [
-        ['a', 'a', 'a'], // 上壁 (y=0-15)
+        ['g', 'g', 'g'], // 上壁 (y=0-15)
         [' ', ' ', ' '], // 空白 (y=16-31)
       ]
       const entity = {
@@ -396,7 +396,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('上壁に配置後、上向き速度があれば上壁衝突判定に引っかかる', () => {
       const stage = [
-        ['a', 'a', 'a'], // 上壁 (y=0-15)
+        ['g', 'g', 'g'], // 上壁 (y=0-15)
         [' ', ' ', ' '], // 空白 (y=16-31)
       ]
       const entity = {
@@ -432,7 +432,7 @@ describe('TilemapCollisionComponent', () => {
 
     it('上壁に配置後、下向き速度があれば上壁衝突判定に引っかからない', () => {
       const stage = [
-        ['a', 'a', 'a'], // 上壁 (y=0-15)
+        ['g', 'g', 'g'], // 上壁 (y=0-15)
         [' ', ' ', ' '], // 空白 (y=16-31)
       ]
       const entity = {
@@ -621,6 +621,99 @@ describe('TilemapCollisionComponent', () => {
       // 次フレームで下壁判定を再度チェック（上向きなので衝突しない）
       const hitDownWallAgain = collision.checkDownWall()
       expect(hitDownWallAgain).toBe(false)
+    })
+  })
+
+  describe('PLATFORM (一方通行足場) の衝突判定', () => {
+    it('PLATFORMは下から衝突する（着地できる）', () => {
+      const stage = [
+        [' ', ' ', ' '],
+        ['a', 'a', 'a'], // 'a' = PLATFORM
+      ]
+      const entity = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 5, // 下向き速度
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      expect(collision.checkDownWall()).toBe(true)
+    })
+
+    it('PLATFORMは左から通過できる', () => {
+      const stage = [['a', ' ', ' ']] // 'a' = PLATFORM
+      const entity = {
+        x: 16,
+        y: 0,
+        vx: -5, // 左向き速度
+        vy: 0,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      expect(collision.checkLeftWall()).toBe(false)
+    })
+
+    it('PLATFORMは右から通過できる', () => {
+      const stage = [[' ', ' ', 'a']] // 'a' = PLATFORM
+      const entity = {
+        x: 16,
+        y: 0,
+        vx: 5, // 右向き速度
+        vy: 0,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      expect(collision.checkRightWall()).toBe(false)
+    })
+
+    it('PLATFORMは下から通過できる（ジャンプで突き抜ける）', () => {
+      const stage = [
+        ['a', 'a', 'a'], // 'a' = PLATFORM
+        [' ', ' ', ' '],
+      ]
+      const entity = {
+        x: 0,
+        y: 16,
+        vx: 0,
+        vy: -5, // 上向き速度
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      expect(collision.checkUpWall()).toBe(false)
+    })
+
+    it('PLATFORMは崖判定で足場として扱われる', () => {
+      const stage = [
+        ['a', ' ', ' '], // 'a' = PLATFORM (足場)
+        [' ', ' ', ' '], // 右側が崖
+      ]
+      const entity = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        width: 16,
+        height: 16,
+        hitbox: new Rectangle(0, 0, 16, 16),
+      }
+      const collision = new TilemapCollisionComponent(entity, stage)
+
+      // 右側が崖かどうか
+      const isCliff = collision.checkRightSideCliff()
+      expect(isCliff).toBe(true) // PLATFORMの右側は崖
     })
   })
 

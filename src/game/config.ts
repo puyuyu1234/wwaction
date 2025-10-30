@@ -62,7 +62,7 @@ export const AUDIO_ASSETS = {
  * キー: ステージマップ内の文字
  * 値: ブロックの性質
  */
-export const BLOCKDATA: Record<string, BlockData> = {
+export const BLOCKDATA: Partial<Record<string, BlockData>> = {
   ' ': { frame: [0], type: CollisionType.NONE },
   a: { frame: [1], type: CollisionType.PLATFORM },
   b: { frame: [2], type: CollisionType.PLATFORM },
