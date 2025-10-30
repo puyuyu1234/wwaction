@@ -25,6 +25,7 @@ export class Gurasan extends Entity {
     super('gurasan', rect, hitbox, stage, ['enemy'])
 
     this.vx = -0.5 // 左方向に移動
+    this.scaleX = 1 // 敵は左向き時に scaleX = 1
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
@@ -32,11 +33,10 @@ export class Gurasan extends Entity {
 
     // 風との衝突反応を設定: 分裂する
     this.collisionReaction.on('wind', () => {
-      // Nasake を生成（現在の速度の半分で移動）
+      // Nasake を生成（現在の速度の半分で移動、向きを引き継ぐ）
       const nasake = new Nasake(this.x, this.y, this.stage)
-      // TODO: scaleX は未実装のため、向きの設定は後で追加
-      // nasake.scaleX = this.vx * -2
       nasake.vx = this.vx / 2
+      nasake.scaleX = this.scaleX // 向きを引き継ぐ
 
       // SunGlass を生成（逆方向に跳ねる）
       const sunGlass = new SunGlass(this.x, this.y, -this.vx, this.stage)
@@ -57,13 +57,13 @@ export class Gurasan extends Entity {
     // 壁判定（跳ね返る）
     if (this.tilemap.checkLeftWall() && this.vx < 0) {
       this.tilemap.bounceAtLeftWall()
-      // 向きを反転
-      // TODO: scaleX はまだ実装されていないため、後で追加
+      // 向きを反転（敵は vx > 0 で scaleX = -1）
+      this.scaleX = -1 // 右向き
     }
     if (this.tilemap.checkRightWall() && this.vx > 0) {
       this.tilemap.bounceAtRightWall()
       // 向きを反転
-      // TODO: scaleX はまだ実装されていないため、後で追加
+      this.scaleX = 1 // 左向き
     }
     if (this.tilemap.checkUpWall() && this.vy < 0) {
       this.tilemap.stopAtUpWall()

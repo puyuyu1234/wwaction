@@ -13,6 +13,7 @@ import { SpriteActor } from '@/engine/actor/SpriteActor'
 export class Entity extends SpriteActor {
   vx = 0
   vy = 0
+  scaleX = 1 // 向き（1 = 右, -1 = 左）
 
   protected collisionReaction = new CollisionReactionComponent()
 

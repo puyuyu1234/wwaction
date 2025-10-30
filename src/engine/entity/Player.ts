@@ -91,8 +91,10 @@ export class Player extends Entity {
     // 左右移動
     if (this.input.isKeyDown('KeyA')) {
       this.vx = -this.MOVE_SPEED
+      this.scaleX = -1 // 左向き
     } else if (this.input.isKeyDown('KeyD')) {
       this.vx = this.MOVE_SPEED
+      this.scaleX = 1 // 右向き
     } else {
       this.vx = 0
     }
@@ -141,8 +143,8 @@ export class Player extends Entity {
     // HPを減らす（最小0）
     this.hp = Math.max(0, this.hp - num)
 
-    // ノックバック（scaleXの逆方向に押し出す）
-    this.vx = this.vx > 0 ? -1 : 1
+    // ノックバック（向きの逆方向に押し出す）
+    this.vx = this.scaleX > 0 ? -1 : 1
 
     // 無敵時間を設定（約0.8秒）
     this.noHitboxTime = 50

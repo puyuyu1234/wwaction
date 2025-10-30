@@ -20,13 +20,13 @@ export class GurasanNotFall extends Gurasan {
     // 壁判定（跳ね返る）
     if (this.tilemap.checkLeftWall() && this.vx < 0) {
       this.tilemap.bounceAtLeftWall()
-      // 向きを反転
-      // TODO: scaleX はまだ実装されていないため、後で追加
+      // 向きを反転（敵は vx > 0 で scaleX = -1）
+      this.scaleX = -1 // 右向き
     }
     if (this.tilemap.checkRightWall() && this.vx > 0) {
       this.tilemap.bounceAtRightWall()
       // 向きを反転
-      // TODO: scaleX はまだ実装されていないため、後で追加
+      this.scaleX = 1 // 左向き
     }
     if (this.tilemap.checkUpWall() && this.vy < 0) {
       this.tilemap.stopAtUpWall()
@@ -38,12 +38,12 @@ export class GurasanNotFall extends Gurasan {
       // 右側が崖 → 左方向へ
       if (this.tilemap.checkRightSideCliff()) {
         this.vx = -Math.abs(this.vx)
-        // TODO: scaleX = 1
+        this.scaleX = 1 // 敵は左向き時に scaleX = 1
       }
       // 左側が崖 → 右方向へ
       if (this.tilemap.checkLeftSideCliff()) {
         this.vx = Math.abs(this.vx)
-        // TODO: scaleX = -1
+        this.scaleX = -1 // 敵は右向き時に scaleX = -1
       }
     }
 
