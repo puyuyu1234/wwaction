@@ -27,7 +27,8 @@ export class SunGlass extends Entity {
     const hitbox = new Rectangle(-8, -8, 16, 16)
 
     // タグなし（誰も参照しないため）
-    super('sunglass', rect, hitbox, stage, [])
+    // imageKey は 'entity' スプライトシートを参照
+    super('entity', rect, hitbox, stage, [])
 
     this.vx = vx
 
@@ -38,6 +39,10 @@ export class SunGlass extends Entity {
     this.collisionReaction.on('wind', () => {
       CommonBehaviors.windJump(this)
     })
+
+    // スプライトアニメーション初期化
+    // entity.json では 'sunGlass' という名前で定義されている
+    this.playAnimation('sunGlass')
   }
 
   update() {

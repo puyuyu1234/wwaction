@@ -58,6 +58,7 @@ export class Game {
       resolution: 1, // ピクセルアート用に解像度を1に固定
       antialias: false,
       autoDensity: false, // 解像度を1に固定する場合はfalseにする
+      roundPixels: true, // サブピクセルレンダリングを防ぐ（スプライトブリーディング対策）
     })
 
     // AssetLoaderを初期化してスプライトシートを読み込み
@@ -66,6 +67,7 @@ export class Game {
     await assetLoader.loadSpritesheet('player', 'spritesheets/player.json')
     await assetLoader.loadSpritesheet('entity', 'spritesheets/entity.json')
     await assetLoader.loadSpritesheet('wind', 'spritesheets/wind.json')
+    await assetLoader.loadSpritesheet('tileset', 'spritesheets/tileset.json')
 
     // リサイズ処理を設定
     this.setupResize()
@@ -150,10 +152,16 @@ export class Game {
     // Fixed timestep: deltaTime を蓄積して、FRAME_TIME ごとに update
     this.accumulator += deltaTime
 
-    // 最大5フレーム分までキャッチアップ（無限ループ防止）
+    // 5フレーム以上遅延した場合は、古いフレームを全てスキップ
     const maxFrames = 5
-    let frames = 0
+    if (this.accumulator >= this.FRAME_TIME * maxFrames) {
+      // 遅延が大きすぎる場合、accumulatorをリセットして最新状態に追いつく
+      this.accumulator = 0
+      console.warn(`Frame skip: accumulator reset (lag detected)`)
+    }
 
+    // 通常のフレーム処理
+    let frames = 0
     while (this.accumulator >= this.FRAME_TIME && frames < maxFrames) {
       this.update()
       this.accumulator -= this.FRAME_TIME

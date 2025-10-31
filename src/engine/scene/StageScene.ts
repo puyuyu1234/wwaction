@@ -13,6 +13,7 @@ import { Scene } from './Scene'
 
 import { AudioManager } from '@/audio/AudioManager'
 import { HPBar } from '@/engine/actor/HPBar'
+import { TilemapSprite } from '@/engine/actor/TilemapSprite'
 
 /**
  * ステージシーン
@@ -24,6 +25,7 @@ export class StageScene extends Scene {
   private entities: Entity[] = [] // プレイヤーを含む全エンティティ
   private stageGraphics: Graphics
   private entitiesGraphics: Graphics
+  private tilemapSprite!: TilemapSprite // タイルマップスプライト描画
   private camera: Container
   private debugText!: Text
   private hpBar!: HPBar // HP表示（通常UI）
@@ -59,10 +61,12 @@ export class StageScene extends Scene {
     this.camera = new Container()
     this.container.addChild(this.camera)
 
-    // ステージ描画用Graphics
+    // タイルマップスプライト描画（スプライトシート使用）
+    this.tilemapSprite = new TilemapSprite(this.stage, this.camera)
+
+    // ステージ描画用Graphics（TilemapSprite実装後は不要）
     this.stageGraphics = new Graphics()
     this.camera.addChild(this.stageGraphics)
-    this.renderStage()
 
     // エンティティ描画用Graphics
     this.entitiesGraphics = new Graphics()
@@ -75,7 +79,7 @@ export class StageScene extends Scene {
       for (let x = 0; x < this.stage[y].length; x++) {
         if (this.stage[y][x] === '0') {
           playerX = x * BLOCKSIZE
-          playerY = y * BLOCKSIZE
+          playerY = y * BLOCKSIZE - 16
         }
       }
     }
@@ -324,21 +328,22 @@ export class StageScene extends Scene {
 
   /**
    * ステージ（タイルマップ）描画
+   * TilemapSprite実装後は使用しない（デバッグ用に残してある）
    */
-  private renderStage() {
-    this.stageGraphics.clear()
+  // private renderStage() {
+  //   this.stageGraphics.clear()
 
-    for (let y = 0; y < this.stage.length; y++) {
-      for (let x = 0; x < this.stage[y].length; x++) {
-        const block = this.stage[y][x]
-        if (block === ' ' || block === '0') continue
+  //   for (let y = 0; y < this.stage.length; y++) {
+  //     for (let x = 0; x < this.stage[y].length; x++) {
+  //       const block = this.stage[y][x]
+  //       if (block === ' ' || block === '0') continue
 
-        // デバッグ用: 壁を白で描画
-        this.stageGraphics.rect(x * BLOCKSIZE, y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-        this.stageGraphics.fill(0xffffff)
-      }
-    }
-  }
+  //       // デバッグ用: 壁を白で描画
+  //       this.stageGraphics.rect(x * BLOCKSIZE, y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+  //       this.stageGraphics.fill(0xffffff)
+  //     }
+  //   }
+  // }
 
   /**
    * 全エンティティ描画（プレイヤー含む）
@@ -351,8 +356,9 @@ export class StageScene extends Scene {
 
       if (sprite) {
         // AnimatedSprite で描画
-        sprite.x = entity.x
-        sprite.y = entity.y
+        // 座標を整数に丸めてサブピクセルレンダリングを防ぐ（スプライトブリーディング対策）
+        sprite.x = Math.floor(entity.x)
+        sprite.y = Math.floor(entity.y)
         sprite.scale.x = entity.scaleX // 向きを反映
 
         // まだ追加されていなければ追加
@@ -400,6 +406,7 @@ export class StageScene extends Scene {
    */
   end() {
     this.audio.stopMusic()
+    this.tilemapSprite.destroy() // タイルマップスプライトの破棄
     super.end()
   }
 }

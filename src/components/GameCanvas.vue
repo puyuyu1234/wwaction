@@ -3,7 +3,6 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 import { Game } from '@/engine/core/Game'
 import { StageScene } from '@/engine/scene/StageScene'
-import { TitleScene } from '@/engine/scene/TitleScene'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const audioEnabled = ref(false)
@@ -17,14 +16,7 @@ onMounted(async () => {
   await game.init()
 
   // TitleSceneを最初のシーンとして設定
-  const titleScene = new TitleScene(game.getInput(), game.getBaseWidth(), game.getBaseHeight())
-
-  // キー入力でStageSceneに遷移
-  titleScene.setOnStartGame(() => {
-    // StageSceneに遷移（AudioManagerは既に初期化済み）
-    const stageScene = new StageScene(0, game!.getInput(), game!.getBaseWidth(), game!.getBaseHeight())
-    game!.changeScene(stageScene)
-  })
+  const titleScene = new StageScene(0, game.getInput(), game.getBaseWidth(), game.getBaseHeight())
 
   game.changeScene(titleScene)
   game.start()
@@ -63,8 +55,11 @@ onUnmounted(() => {
 
 <style scoped>
 canvas {
+  width: 100vw;
+  height: 100vh;
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   outline: 2px solid rgba(255, 255, 255, 0.2);

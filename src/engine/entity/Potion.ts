@@ -29,7 +29,8 @@ export class Potion extends Entity {
     const hitbox = new Rectangle(-4, -4, 8, 12)
 
     // タグ 'healing': Playerの衝突反応で参照される
-    super('potion', rect, hitbox, stage, ['healing'])
+    // imageKey は 'entity' スプライトシートを参照
+    super('entity', rect, hitbox, stage, ['healing'])
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
@@ -39,6 +40,9 @@ export class Potion extends Entity {
     this.collisionReaction.on('wind', () => {
       CommonBehaviors.windJump(this)
     })
+
+    // スプライトアニメーション初期化
+    this.playAnimation('potion')
   }
 
   update() {

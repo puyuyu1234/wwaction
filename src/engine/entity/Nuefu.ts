@@ -29,7 +29,8 @@ export class Nuefu extends Entity {
     const hitbox = new Rectangle(-4, -4, 8, 12)
 
     // タグ 'enemy': Playerの衝突反応で参照される（ダメージを与える）
-    super('nuefu', rect, hitbox, stage, ['enemy'])
+    // imageKey は 'entity' スプライトシートを参照
+    super('entity', rect, hitbox, stage, ['enemy'])
 
     this.vx = -0.5 // 左方向に移動
     this.scaleX = 1 // 敵は左向き時に scaleX = 1
@@ -42,6 +43,9 @@ export class Nuefu extends Entity {
     this.collisionReaction.on('wind', () => {
       CommonBehaviors.windJump(this)
     })
+
+    // スプライトアニメーション初期化
+    this.playAnimation('nuefu')
   }
 
   update() {

@@ -1,4 +1,4 @@
-import { Assets, Spritesheet, Texture } from 'pixi.js'
+import { Assets, Spritesheet, Texture, SCALE_MODES } from 'pixi.js'
 
 /**
  * アニメーション速度情報（参考用）
@@ -45,8 +45,22 @@ export class AssetLoader {
    */
   async loadSpritesheet(key: string, jsonPath: string) {
     // PixiJS標準のSpritesheetを読み込み
-    const spritesheet = await Assets.load<Spritesheet>(jsonPath)
+    // data.cachePrefix でフレーム名にプレフィックスを付けてキャッシュ衝突を回避
+    const spritesheet = await Assets.load<Spritesheet>({
+      src: jsonPath,
+      alias: key,
+      data: {
+        cachePrefix: `${key}_`, // 'player_frame_0', 'entity_frame_0' のように区別
+      },
+    })
     this.spritesheets.set(key, spritesheet)
+
+    // ピクセルアート用にテクスチャのスケールモードをNEARESTに設定（スプライトブリーディング対策）
+    Object.values(spritesheet.textures).forEach((texture) => {
+      if (texture.source) {
+        texture.source.scaleMode = SCALE_MODES.NEAREST
+      }
+    })
 
     // アニメーション速度情報も読み込み（.info.json）
     try {

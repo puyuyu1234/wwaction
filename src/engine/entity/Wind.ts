@@ -32,6 +32,9 @@ export class Wind extends Entity {
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, stage)
+
+    // スプライトアニメーション初期化
+    this.playAnimation('wind')
   }
 
   update() {

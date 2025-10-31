@@ -29,7 +29,8 @@ export class Nasake extends Entity {
 
     // タグなし（誰も参照しないため）
     // 将来ダメージを与える敵にする場合は ['enemy'] を追加
-    super('nasake', rect, hitbox, stage, [])
+    // imageKey は 'entity' スプライトシートを参照
+    super('entity', rect, hitbox, stage, [])
 
     this.vx = -0.25 // 左方向にゆっくり移動
     this.scaleX = 1 // 敵は左向き時に scaleX = 1
@@ -42,6 +43,9 @@ export class Nasake extends Entity {
     this.collisionReaction.on('wind', () => {
       CommonBehaviors.windJump(this)
     })
+
+    // スプライトアニメーション初期化
+    this.playAnimation('nasake')
   }
 
   update() {

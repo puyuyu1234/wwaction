@@ -29,7 +29,8 @@ export class Gurasan extends Entity {
     const hitbox = new Rectangle(-4, -4, 8, 12)
 
     // タグ 'enemy': プレイヤーとの衝突判定で使用
-    super('gurasan', rect, hitbox, stage, ['enemy'])
+    // imageKey は 'entity' スプライトシートを参照
+    super('entity', rect, hitbox, stage, ['enemy'])
 
     this.vx = -0.5 // 左方向に移動
     this.scaleX = 1 // 敵は左向き時に scaleX = 1
@@ -55,6 +56,9 @@ export class Gurasan extends Entity {
       // 自分は消滅
       this.destroy()
     })
+
+    // スプライトアニメーション初期化
+    this.playAnimation('gurasan')
   }
 
   update() {

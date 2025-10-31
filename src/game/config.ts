@@ -201,7 +201,7 @@ export const STAGEDATA: StageData[] = [
         '                                                 gbbbh        klllll',
         '                                 de              qlllr        klllll',
         '                               gbbbbh            qlllr      abbullll',
-        ' 0  de                gh       qllllr            qlllr      kllmllll',
+        '    de                gh0      qllllr            qlllr      kllmllll',
         'bbbbbbh  nop      f  gish 1 nooqllllr      np   nqlllr nop  kllmllll',
         'llllllsbbbbbh   gbbbbillsbbbbbbillllr    gbbbbbbbbbbbbbbbbbbwllmllll',
         'llllltbbbullr   qlllllvbbbwlllllllllr    qllllllllllllllllllrllmllll',
