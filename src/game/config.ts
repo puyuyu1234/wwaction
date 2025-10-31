@@ -60,6 +60,9 @@ export const AUDIO_ASSETS = {
   },
 } as const
 
+// スプライトシート定義は scripts/generate-spritesheets-simple.ts で
+// public/assets/spritesheets/*.json として生成済み
+
 /**
  * ブロックデータマップ
  * キー: ステージマップ内の文字

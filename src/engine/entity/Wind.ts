@@ -15,8 +15,15 @@ export class Wind extends Entity {
   private tilemap: TilemapCollisionComponent
 
   constructor(x: number, y: number, vx: number, stage: string[][]) {
-    const rect = new Rectangle(x, y, 16, 16)
-    const hitbox = new Rectangle(2, 1, 12, 15)
+    // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
+    // スプライトサイズ: 16x16、中心座標に変換: x+8, y+8
+    const centerX = x + 8
+    const centerY = y + 8
+    const rect = new Rectangle(centerX, centerY, 16, 16)
+
+    // hitboxも中心基準に変換: legacy(3,0,10,16) → 中心基準(-5,-8,10,16)
+    // 計算: (3-8, 0-8) = (-5, -8)
+    const hitbox = new Rectangle(-5, -8, 10, 16)
     // タグ 'wind': Playerの衝突反応で参照される
     super('wind', rect, hitbox, stage, ['wind'])
 

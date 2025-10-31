@@ -16,8 +16,15 @@ export class SunGlass extends Entity {
   private physics: PhysicsComponent
 
   constructor(x: number, y: number, vx: number, stage: string[][]) {
-    const rect = new Rectangle(x, y, 16, 16)
-    const hitbox = new Rectangle(0, 0, 16, 16)
+    // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
+    // スプライトサイズ: 16x16、中心座標に変換: x+8, y+8
+    const centerX = x + 8
+    const centerY = y + 8
+    const rect = new Rectangle(centerX, centerY, 16, 16)
+
+    // hitboxも中心基準に変換: legacy(0,0,16,16) → 中心基準(-8,-8,16,16)
+    // 計算: (0-8, 0-8) = (-8, -8)
+    const hitbox = new Rectangle(-8, -8, 16, 16)
 
     // タグなし（誰も参照しないため）
     super('sunglass', rect, hitbox, stage, [])

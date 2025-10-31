@@ -17,8 +17,15 @@ export class Nasake extends Entity {
   private tilemap: TilemapCollisionComponent
 
   constructor(x: number, y: number, stage: string[][]) {
-    const rect = new Rectangle(x, y, 16, 16)
-    const hitbox = new Rectangle(4, 4, 8, 12)
+    // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
+    // スプライトサイズ: 16x16、中心座標に変換: x+8, y+8
+    const centerX = x + 8
+    const centerY = y + 8
+    const rect = new Rectangle(centerX, centerY, 16, 16)
+
+    // hitboxも中心基準に変換: legacy(4,4,8,12) → 中心基準(-4,-4,8,12)
+    // 計算: (4-8, 4-8) = (-4, -4)
+    const hitbox = new Rectangle(-4, -4, 8, 12)
 
     // タグなし（誰も参照しないため）
     // 将来ダメージを与える敵にする場合は ['enemy'] を追加

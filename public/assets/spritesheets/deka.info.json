@@ -1,0 +1,15 @@
+{
+  "note": "Animation speed reference (not used by PixiJS)",
+  "animations": {
+    "stand": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "purupuru": {
+      "freq": 12,
+      "animationSpeed": 0.08333333333333333,
+      "fps": 5
+    }
+  }
+}

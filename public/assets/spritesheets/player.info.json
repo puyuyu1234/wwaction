@@ -1,0 +1,55 @@
+{
+  "note": "Animation speed reference (not used by PixiJS)",
+  "animations": {
+    "stand": {
+      "freq": 6,
+      "animationSpeed": 0.16666666666666666,
+      "fps": 10
+    },
+    "walk": {
+      "freq": 6,
+      "animationSpeed": 0.16666666666666666,
+      "fps": 10
+    },
+    "jumpUp": {
+      "freq": 6,
+      "animationSpeed": 0.16666666666666666,
+      "fps": 10
+    },
+    "jumpDown": {
+      "freq": 6,
+      "animationSpeed": 0.16666666666666666,
+      "fps": 10
+    },
+    "wind": {
+      "freq": 3,
+      "animationSpeed": 0.3333333333333333,
+      "fps": 20
+    },
+    "windWalk": {
+      "freq": 3,
+      "animationSpeed": 0.3333333333333333,
+      "fps": 20
+    },
+    "windWalk2": {
+      "freq": 3,
+      "animationSpeed": 0.3333333333333333,
+      "fps": 20
+    },
+    "sit": {
+      "freq": 3,
+      "animationSpeed": 0.3333333333333333,
+      "fps": 20
+    },
+    "standUp": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "damage": {
+      "freq": 6,
+      "animationSpeed": 0.16666666666666666,
+      "fps": 10
+    }
+  }
+}

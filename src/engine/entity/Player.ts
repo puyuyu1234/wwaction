@@ -33,8 +33,15 @@ export class Player extends Entity {
   private tilemap: TilemapCollisionComponent
 
   constructor(x: number, y: number, stage: string[][], input: Input, hp: number, maxHp: number) {
-    const rect = new Rectangle(x, y, 16, 16)
-    const hitbox = new Rectangle(4, 0, 8, 16)
+    // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
+    // スプライトサイズ: 24x32、中心座標に変換: x+12, y+16
+    const centerX = x + 12
+    const centerY = y + 16
+    const rect = new Rectangle(centerX, centerY, 24, 32)
+
+    // hitboxも中心基準に変換: legacy(7,7,10,25) → 中心基準(-5,-9,10,25)
+    // 計算: (7-12, 7-16) = (-5, -9)
+    const hitbox = new Rectangle(-5, -9, 10, 25)
     super('player', rect, hitbox, stage, [])
 
     this.input = input
@@ -47,6 +54,9 @@ export class Player extends Entity {
 
     // 衝突反応を登録（元のJS実装の on("hitWind", ...) に相当）
     this.setupCollisionReactions()
+
+    // 初期アニメーション再生
+    this.playAnimation('stand')
   }
 
   /**
@@ -130,6 +140,30 @@ export class Player extends Entity {
 
     // 速度適用
     this.physics.applyVelocity()
+
+    // アニメーション更新
+    this.updatePlayerAnimation()
+  }
+
+  /**
+   * プレイヤーの状態に応じてアニメーションを切り替え
+   */
+  private updatePlayerAnimation() {
+    let nextAnimation = ''
+
+    // 状態に応じてアニメーション決定
+    if (this.vy < 0) {
+      nextAnimation = 'jumpUp'
+    } else if (this.vy > 0) {
+      nextAnimation = 'jumpDown'
+    } else if (this.vx === 0) {
+      nextAnimation = 'stand'
+    } else {
+      nextAnimation = 'walk'
+    }
+
+    // アニメーション切り替え
+    this.playAnimation(nextAnimation)
   }
 
   /**

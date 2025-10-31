@@ -10,10 +10,15 @@ import { Entity } from './Entity'
  */
 export class GoalEntity extends Entity {
   constructor(rect: Rectangle) {
-    // stageは不要だが、Entityの型に合わせて空配列を渡す
-    // hitboxは相対座標で(0,0)から始まる領域（全体が当たり判定）
-    const hitbox = new Rectangle(0, 0, rect.width, rect.height)
-    super('goal', rect, hitbox, [['']], ['goal'])
+    // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
+    // 中心座標に変換: x+width/2, y+height/2
+    const centerX = rect.x + rect.width / 2
+    const centerY = rect.y + rect.height / 2
+    const centerRect = new Rectangle(centerX, centerY, rect.width, rect.height)
+
+    // hitboxも中心基準に変換: legacy(0,0,w,h) → 中心基準(-w/2,-h/2,w,h)
+    const hitbox = new Rectangle(-rect.width / 2, -rect.height / 2, rect.width, rect.height)
+    super('goal', centerRect, hitbox, [['']], ['goal'])
   }
 
   // 物理演算不要（何もしない）

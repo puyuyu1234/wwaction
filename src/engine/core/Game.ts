@@ -1,5 +1,6 @@
 import { Application } from 'pixi.js'
 
+import { AssetLoader } from './AssetLoader'
 import { Input } from './Input'
 
 import { AudioManager } from '@/audio/AudioManager'
@@ -58,6 +59,13 @@ export class Game {
       antialias: false,
       autoDensity: false, // 解像度を1に固定する場合はfalseにする
     })
+
+    // AssetLoaderを初期化してスプライトシートを読み込み
+    const assetLoader = AssetLoader.getInstance()
+    await assetLoader.init()
+    await assetLoader.loadSpritesheet('player', 'spritesheets/player.json')
+    await assetLoader.loadSpritesheet('entity', 'spritesheets/entity.json')
+    await assetLoader.loadSpritesheet('wind', 'spritesheets/wind.json')
 
     // リサイズ処理を設定
     this.setupResize()

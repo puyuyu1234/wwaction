@@ -347,27 +347,41 @@ export class StageScene extends Scene {
     this.entitiesGraphics.clear()
 
     this.entities.forEach((entity) => {
-      // エンティティの種類に応じて色を変える
-      let color = 0xaaaaaa // デフォルト: グレー
-      if (entity.imageKey === 'player') {
-        color = 0xff0000 // プレイヤー: 赤
-      } else if (entity.imageKey === 'wind') {
-        color = 0x00ffff // 風: シアン
-      } else if (entity.imageKey === 'nasake') {
-        color = 0xff00ff // Nasake: マゼンタ
-      } else if (entity.imageKey === 'potion') {
-        color = 0x00ff00 // Potion: 緑
-      } else if (entity.imageKey === 'nuefu') {
-        color = 0xffaa00 // Nuefu: オレンジ
-      } else if (entity.imageKey === 'gurasan') {
-        color = 0xff6600 // Gurasan: 赤オレンジ
-      } else if (entity.imageKey === 'gurasanNotFall') {
-        color = 0xff3300 // GurasanNotFall: 濃い赤オレンジ
-      }
+      const sprite = entity.getAnimatedSprite()
 
-      // エンティティ本体
-      this.entitiesGraphics.rect(entity.x, entity.y, entity.width, entity.height)
-      this.entitiesGraphics.fill(color)
+      if (sprite) {
+        // AnimatedSprite で描画
+        sprite.x = entity.x
+        sprite.y = entity.y
+        sprite.scale.x = entity.scaleX // 向きを反映
+
+        // まだ追加されていなければ追加
+        if (!sprite.parent) {
+          this.camera.addChild(sprite)
+        }
+      } else {
+        // スプライトがない場合は従来の色付き矩形で描画
+        let color = 0xaaaaaa // デフォルト: グレー
+        if (entity.imageKey === 'player') {
+          color = 0xff0000 // プレイヤー: 赤
+        } else if (entity.imageKey === 'wind') {
+          color = 0x00ffff // 風: シアン
+        } else if (entity.imageKey === 'nasake') {
+          color = 0xff00ff // Nasake: マゼンタ
+        } else if (entity.imageKey === 'potion') {
+          color = 0x00ff00 // Potion: 緑
+        } else if (entity.imageKey === 'nuefu') {
+          color = 0xffaa00 // Nuefu: オレンジ
+        } else if (entity.imageKey === 'gurasan') {
+          color = 0xff6600 // Gurasan: 赤オレンジ
+        } else if (entity.imageKey === 'gurasanNotFall') {
+          color = 0xff3300 // GurasanNotFall: 濃い赤オレンジ
+        }
+
+        // エンティティ本体
+        this.entitiesGraphics.rect(entity.x, entity.y, entity.width, entity.height)
+        this.entitiesGraphics.fill(color)
+      }
 
       // ヒットボックス表示（デバッグ用）
       if (DEBUG) {
