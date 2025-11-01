@@ -69,7 +69,7 @@ export class AssetLoader {
       const infoData = await infoResponse.json()
 
       const speedMap = new Map<string, AnimationSpeedInfo>()
-      Object.entries(infoData.animations).forEach(([name, info]: [string, any]) => {
+      Object.entries(infoData.animations as Record<string, AnimationSpeedInfo>).forEach(([name, info]) => {
         speedMap.set(name, {
           freq: info.freq,
           animationSpeed: info.animationSpeed,

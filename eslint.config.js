@@ -76,7 +76,6 @@ export default [
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
-      '@typescript-eslint/no-unnecessary-condition': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
       '@typescript-eslint/prefer-optional-chain': 'warn',
 
@@ -165,6 +164,14 @@ export default [
       ],
       'import/newline-after-import': 'warn',
       'import/no-duplicates': 'error',
+    },
+  },
+
+  // テストファイル用の設定
+  {
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off', // テストではモック作成時にanyを許容
     },
   },
 

@@ -45,7 +45,7 @@ export class TilemapSprite {
         if (blockKey === ' ' || blockKey === '0') continue
 
         const blockData = BLOCKDATA[blockKey]
-        if (!blockData || !blockData.frame || blockData.frame.length === 0) {
+        if (!blockData?.frame || blockData.frame.length === 0) {
           console.log(`[TilemapSprite] No block data for "${blockKey}" at (${x}, ${y})`)
           continue
         }
