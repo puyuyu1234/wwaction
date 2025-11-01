@@ -29,6 +29,15 @@ export class Scene extends EventDispatcher {
    * アクターを削除
    */
   remove(actor: Actor) {
+    // PixiJSのSpriteActorの場合、AnimatedSpriteをコンテナから削除
+    if ('getAnimatedSprite' in actor && typeof actor.getAnimatedSprite === 'function') {
+      const sprite = (actor as { getAnimatedSprite: () => unknown }).getAnimatedSprite()
+      // spriteがPixiJSのDisplayObjectの場合のみ削除
+      if (sprite && typeof sprite === 'object' && 'parent' in sprite && sprite.parent) {
+        const displayObject = sprite as { parent: { removeChild: (child: unknown) => void } }
+        displayObject.parent.removeChild(sprite)
+      }
+    }
     this.actorsToRemove.push(actor)
   }
 

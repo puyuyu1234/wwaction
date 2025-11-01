@@ -19,8 +19,15 @@ export class Player extends Entity {
   private audio = AudioManager.getInstance()
   private coyoteTime = 0 // 空中にいる時間（コヨーテタイム用）
   private readonly COYOTE_TIME_MAX = 6 // コヨーテタイム最大フレーム数
-  private readonly MOVE_SPEED = 2
-  private readonly JUMP_POWER = -4
+  private readonly MOVE_SPEED = 1.5 // legacy実装に合わせて調整
+  private readonly JUMP_POWER = -3 // legacy実装に合わせて調整
+
+  // しゃがみ状態
+  public isCrouching = false
+  private isStandingUp = false // 立ち上がり中フラグ
+  private standUpTime = 0 // 立ち上がり経過時間
+
+  // 風生成関連（legacy実装ではクールダウンなし）
 
   // HP関連
   public hp: number
@@ -95,27 +102,68 @@ export class Player extends Entity {
       this.noHitboxTime--
     }
 
+    // 強制アニメーションフレームの更新
+    this.updateAnimationFrame()
+
     // 重力
     this.physics.applyGravity()
 
-    // 左右移動
-    if (this.input.isKeyDown('KeyA')) {
-      this.vx = -this.MOVE_SPEED
-      this.scaleX = -1 // 左向き
-    } else if (this.input.isKeyDown('KeyD')) {
-      this.vx = this.MOVE_SPEED
-      this.scaleX = 1 // 右向き
-    } else {
+    // 立ち上がり中の処理
+    if (this.isStandingUp) {
+      this.standUpTime++
+      if (this.standUpTime >= 3) {
+        // 3フレーム経過で立ち上がり完了
+        this.isStandingUp = false
+        this.standUpTime = 0
+      }
+      // 立ち上がり中は移動できない
       this.vx = 0
     }
+    // しゃがみ判定（地上でSキーを押している間）
+    else if (this.input.isKeyDown('KeyS') && this.coyoteTime === 0) {
+      // しゃがみ開始
+      if (!this.isCrouching) {
+        this.isCrouching = true
+        // hitboxを変更（しゃがみ時は高さが半分）
+        // legacy: new Rectangle(7, 16, 10, 16) → 中心基準 (-5, 0, 10, 16)
+        this.hitbox = new Rectangle(-5, 0, 10, 16)
+      }
+      this.vx = 0 // しゃがみ中は移動できない
+    }
+    // しゃがみ解除
+    else if (this.isCrouching) {
+      this.isCrouching = false
+      this.isStandingUp = true
+      this.standUpTime = 0
+      // hitboxを元に戻す
+      this.hitbox = new Rectangle(-5, -9, 10, 25)
+    }
+    // 通常時の移動
+    else {
+      if (this.input.isKeyDown('KeyA')) {
+        this.vx = -this.MOVE_SPEED
+        this.scaleX = -1 // 左向き
+      } else if (this.input.isKeyDown('KeyD')) {
+        this.vx = this.MOVE_SPEED
+        this.scaleX = 1 // 右向き
+      } else {
+        this.vx = 0
+      }
+    }
 
-    // ジャンプ（コヨーテタイム対応）
-    if (this.input.isKeyPressed('KeyW')) {
+    // ジャンプ（コヨーテタイム対応、しゃがんでいない時のみ）
+    if (this.input.isKeyPressed('KeyW') && !this.isCrouching && !this.isStandingUp) {
       if (this.coyoteTime < this.COYOTE_TIME_MAX) {
         this.vy = this.JUMP_POWER
         this.coyoteTime = this.COYOTE_TIME_MAX // ジャンプしたらコヨーテタイム消費
         this.audio.playSound(SFX_KEYS.JUMP)
       }
+    }
+
+    // 風生成（スペースキー）
+    // legacy実装ではクールダウンなし、連打可能
+    if (this.input.isKeyPressed('Space')) {
+      this.createWindWithAnimation()
     }
 
     // 壁判定（停止）
@@ -151,8 +199,16 @@ export class Player extends Entity {
   private updatePlayerAnimation() {
     let nextAnimation = ''
 
+    // 立ち上がり状態を最優先
+    if (this.isStandingUp) {
+      nextAnimation = 'standUp'
+    }
+    // しゃがみ状態
+    else if (this.isCrouching) {
+      nextAnimation = 'sit'
+    }
     // 状態に応じてアニメーション決定
-    if (this.vy < 0) {
+    else if (this.vy < 0) {
       nextAnimation = 'jumpUp'
     } else if (this.vy > 0) {
       nextAnimation = 'jumpDown'
@@ -203,6 +259,60 @@ export class Player extends Entity {
   heal(num: number) {
     this.hp = Math.min(this.maxHp, this.hp + num)
     this.audio.playSound(SFX_KEYS.HEAL)
+  }
+
+  /**
+   * 風を生成する（アニメーション付き）
+   * プレイヤーの状態に応じて風の方向とアニメーションを変える
+   */
+  private createWindWithAnimation() {
+    let windVx = 0
+
+    // しゃがみ中は真下に風を出す
+    if (this.isCrouching) {
+      windVx = 0
+      this.playAnimationForced('wind', 12)
+    }
+    // 歩き中は windWalk / windWalk2 を交互に
+    else if (this.vx !== 0) {
+      windVx = this.scaleX > 0 ? 2 : -2
+      // 前回のアニメーションに応じて切り替え
+      if (this.currentAnimationName === 'windWalk2') {
+        this.playAnimationForced('windWalk', 12)
+      } else {
+        this.playAnimationForced('windWalk2', 12)
+      }
+    }
+    // 立ち状態は wind
+    else {
+      windVx = this.scaleX > 0 ? 2 : -2
+      this.playAnimationForced('wind', 12)
+    }
+
+    // 風の初期位置（プレイヤーの中心）
+    // legacy実装では、風をプレイヤー中心に配置した後、
+    // StageSceneで6フレーム分update()を呼んで衝突判定しながら前進させる
+    const windX = this.x
+    const windY = this.y
+
+    // createWindイベントを発火（StageSceneで受け取る）
+    this.dispatch('createWind', { x: windX, y: windY, vx: windVx })
+  }
+
+  /**
+   * 風を生成する（後方互換性のため残す）
+   * プレイヤーの向きに応じて風を発射
+   */
+  createWind() {
+    // 風の速度を決定（向きに応じて、legacy実装に合わせて±2）
+    const windVx = this.scaleX > 0 ? 2 : -2
+
+    // 風の初期位置（プレイヤーの中心から少し前方）
+    const windX = this.x + (this.scaleX > 0 ? 8 : -8)
+    const windY = this.y
+
+    // createWindイベントを発火（StageSceneで受け取る）
+    this.dispatch('createWind', { x: windX, y: windY, vx: windVx })
   }
 
   /**

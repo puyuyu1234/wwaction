@@ -6,6 +6,7 @@ import { Nasake } from '@entity/Nasake'
 import { Nuefu } from '@entity/Nuefu'
 import { Player } from '@entity/Player'
 import { Potion } from '@entity/Potion'
+import { Wind } from '@entity/Wind'
 import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA } from '@game/config'
 import { Graphics, Container, Text } from 'pixi.js'
 
@@ -36,6 +37,11 @@ export class StageScene extends Scene {
   private stageHeight: number // ステージ高さ（ピクセル）
   private viewportWidth: number // ビューポート幅（Game.tsのbaseWidthから取得）
   private viewportHeight: number // ビューポート高さ（Game.tsのbaseHeightから取得）
+
+  // 風プール管理（legacy実装に合わせて2個のWindを使いまわす）
+  private windPool: Wind[] = []
+  private windPoolIndex = 0
+  private vanishingWinds: Array<{ wind: Wind; timer: number }> = [] // 消滅エフェクト管理
 
   constructor(stageIndex: number, input: Input, viewportWidth = 320, viewportHeight = 240) {
     super()
@@ -102,6 +108,16 @@ export class StageScene extends Scene {
       this.hpBar.onDamage(damage)
     })
 
+    // プレイヤーの風生成イベントをリッスン
+    this.player.on('createWind', (data: { x: number; y: number; vx: number }) => {
+      this.createWind(data.x, data.y, data.vx)
+    })
+
+    // 風プールを初期化（legacy実装に合わせて2個）
+    // 画面外に配置して非表示状態にする
+    this.windPool = [new Wind(-100, -100, 0, this.stage), new Wind(-100, -100, 0, this.stage)]
+    this.windPool.forEach((wind) => this.addEntity(wind))
+
     // デバッグテキスト（開発時のみ表示）
     if (DEBUG) {
       this.debugText = new Text({
@@ -138,10 +154,28 @@ export class StageScene extends Scene {
     // HP表示更新
     this.hpBar.update()
 
+    // 消滅エフェクト更新（12フレーム後に削除）
+    this.updateVanishingWinds()
+
     // デバッグ情報更新（開発時のみ）
     if (DEBUG) {
       this.updateDebugInfo()
     }
+  }
+
+  /**
+   * 消滅エフェクトの更新と削除
+   */
+  private updateVanishingWinds() {
+    // タイマーを更新して、12フレーム経過したら削除
+    this.vanishingWinds = this.vanishingWinds.filter((entry) => {
+      entry.timer++
+      if (entry.timer >= 12) {
+        entry.wind.destroy()
+        return false // 配列から削除
+      }
+      return true // 配列に残す
+    })
   }
 
   /**
@@ -210,6 +244,42 @@ export class StageScene extends Scene {
     entity.on('destroy', () => {
       this.removeEntity(entity)
     })
+  }
+
+  /**
+   * 風エンティティを生成（legacy実装：プール方式）
+   * プレイヤーからのイベントで呼ばれる
+   */
+  private createWind(x: number, y: number, vx: number) {
+    // 音声再生
+    // this.audio.playSound(SFX_KEYS.WIND) // 将来的に実装
+
+    // 風プールから次の風を取得（交互に使いまわす）
+    this.windPoolIndex = (this.windPoolIndex + 1) % this.windPool.length
+    const wind = this.windPool[this.windPoolIndex]
+
+    // 古い風の位置に消滅エフェクトを生成（vanishアニメーション）
+    const vanishingWind = new Wind(wind.x, wind.y, 0, this.stage)
+    vanishingWind.vx = wind.vx
+    vanishingWind.vy = wind.vy
+    vanishingWind.playAnimation('vanish')
+    this.addEntity(vanishingWind)
+
+    // 消滅エフェクト管理リストに追加（12フレーム後に削除）
+    this.vanishingWinds.push({ wind: vanishingWind, timer: 0 })
+
+    // 風を再配置（プレイヤーの中心座標）
+    wind.x = x
+    wind.y = y
+    wind.vy = 0
+
+    // 風を6フレーム分前進させて初期位置を決定（衝突判定あり）
+    // 引数vxで指定された速度で前進させる（しゃがみ時は0）
+    wind.vx = vx
+    for (let i = 0; i < 6; i++) {
+      wind.update()
+    }
+    // updateで得られた速度をそのまま使う（壁で跳ね返った場合、速度が反転している）
   }
 
   /**

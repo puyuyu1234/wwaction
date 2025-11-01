@@ -16,6 +16,7 @@ export class SpriteActor extends Actor {
   imageKey: string
   protected animatedSprite?: AnimatedSprite
   protected currentAnimationName: string | null = null
+  protected animationStopFrame = 0 // 強制アニメーション中の残りフレーム数
 
   constructor(imageKey: string, rectangle: Rectangle, tags: string[] = []) {
     super(rectangle.x, rectangle.y, tags)
@@ -29,6 +30,11 @@ export class SpriteActor extends Actor {
    * @param animationName アニメーション名
    */
   playAnimation(animationName: string) {
+    // 強制アニメーション中は切り替えない
+    if (this.animationStopFrame > 0) {
+      return
+    }
+
     // 既に同じアニメーションが再生中なら何もしない
     if (this.currentAnimationName === animationName) {
       return
@@ -80,6 +86,64 @@ export class SpriteActor extends Actor {
       this.animatedSprite.stop()
       this.animatedSprite.destroy()
       this.animatedSprite = undefined
+    }
+  }
+
+  /**
+   * 強制的にアニメーションを再生し、指定フレーム数だけ他のアニメーションに切り替わらないようにする
+   * @param animationName アニメーション名
+   * @param frames 固定するフレーム数
+   */
+  playAnimationForced(animationName: string, frames: number) {
+    // 既に同じアニメーションが再生中なら何もしない
+    if (this.currentAnimationName === animationName && this.animationStopFrame > 0) {
+      return
+    }
+
+    const loader = AssetLoader.getInstance()
+    const textures = loader.getAnimationTextures(this.imageKey, animationName)
+
+    if (!textures) {
+      console.warn(`Animation "${animationName}" not found for imageKey "${this.imageKey}"`)
+      return
+    }
+
+    // アニメーション速度とループ設定を取得
+    const animationSpeed = loader.getAnimationSpeed(this.imageKey, animationName)
+    const loop = loader.getAnimationLoop(this.imageKey, animationName)
+
+    // 既存の AnimatedSprite を破棄
+    if (this.animatedSprite) {
+      this.animatedSprite.destroy()
+    }
+
+    // 新しい AnimatedSprite を作成
+    this.animatedSprite = new AnimatedSprite(textures)
+    this.animatedSprite.animationSpeed = animationSpeed
+    this.animatedSprite.loop = loop
+    this.animatedSprite.autoUpdate = true
+
+    // アンカーポイントを中央に設定
+    this.animatedSprite.anchor.set(0.5, 0.5)
+
+    // animationSpeed=0（静止画）の場合は再生しない
+    if (animationSpeed > 0) {
+      this.animatedSprite.play()
+    } else {
+      this.animatedSprite.gotoAndStop(0)
+    }
+
+    // 強制アニメーション設定
+    this.animationStopFrame = frames
+    this.currentAnimationName = animationName
+  }
+
+  /**
+   * 強制アニメーションのフレームカウンタを減らす（毎フレーム呼ぶ）
+   */
+  updateAnimationFrame() {
+    if (this.animationStopFrame > 0) {
+      this.animationStopFrame--
     }
   }
 
