@@ -114,6 +114,16 @@ export class StageScene extends Scene {
       this.createWind(data.x, data.y, data.vx)
     })
 
+    // プレイヤーの死亡イベントをリッスン
+    this.player.on('death', () => {
+      this.onPlayerDeath()
+    })
+
+    // プレイヤーのリトライイベントをリッスン
+    this.player.on('reset', () => {
+      this.dispatch('retryStage', stageIndex)
+    })
+
     // 風プールを初期化（legacy実装に合わせて2個）
     // 画面外に配置して非表示状態にする
     this.windPool = [new Wind(-100, -100, 0, this.stage), new Wind(-100, -100, 0, this.stage)]
@@ -301,6 +311,41 @@ export class StageScene extends Scene {
 
     // すべてのイベントリスナーをクリーンアップしてメモリリークを防止
     entity.clearAllEvents()
+  }
+
+  /**
+   * プレイヤー死亡時の処理
+   * legacy実装：カメラ揺れ + 30フレーム後にオートリトライ
+   */
+  private onPlayerDeath() {
+    // カメラ揺れエフェクト（10フレーム）
+    const cameraX = this.cameraContainer.x
+    const cameraY = this.cameraContainer.y
+    let cameraShakeTime = 0
+
+    const cameraShakeInterval = setInterval(() => {
+      if (cameraShakeTime < 10) {
+        // ランダムに-5〜+5ピクセル揺らす
+        this.cameraContainer.x = cameraX + (Math.random() * 10 - 5)
+        this.cameraContainer.y = cameraY + (Math.random() * 10 - 5)
+        cameraShakeTime++
+      } else {
+        // 元の位置に戻す
+        this.cameraContainer.x = cameraX
+        this.cameraContainer.y = cameraY
+        clearInterval(cameraShakeInterval)
+      }
+    }, 16) // 約60fps（16ms）
+
+    // オートリトライ（30フレーム後）
+    let retryTimer = 0
+    const retryInterval = setInterval(() => {
+      retryTimer++
+      if (retryTimer >= 30) {
+        this.player.dispatch('reset')
+        clearInterval(retryInterval)
+      }
+    }, 16) // 約60fps（16ms）
   }
 
   /**

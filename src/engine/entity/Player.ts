@@ -8,6 +8,33 @@ import { Entity } from './Entity'
 
 import { AudioManager } from '@/audio/AudioManager'
 import { SFX_KEYS } from '@/game/config'
+import { PlayerState } from '@/game/types'
+
+/**
+ * プレイヤーの状態管理クラス
+ * legacy の PlayerState クラスに対応
+ */
+class PlayerStateManager {
+  private currentState: PlayerState = PlayerState.STAND
+  private stateTime = 0
+
+  changeState(newState: PlayerState) {
+    this.currentState = newState
+    this.stateTime = 0
+  }
+
+  update() {
+    this.stateTime++
+  }
+
+  getState(): PlayerState {
+    return this.currentState
+  }
+
+  getTime(): number {
+    return this.stateTime
+  }
+}
 
 /**
  * プレイヤーエンティティ
@@ -22,18 +49,17 @@ export class Player extends Entity {
   private readonly MOVE_SPEED = 1.5 // legacy実装に合わせて調整
   private readonly JUMP_POWER = -3 // legacy実装に合わせて調整
 
-  // しゃがみ状態
-  public isCrouching = false
-  private isStandingUp = false // 立ち上がり中フラグ
-  private standUpTime = 0 // 立ち上がり経過時間
-
-  // 風生成関連（legacy実装ではクールダウンなし）
+  // 状態管理
+  private stateManager = new PlayerStateManager()
 
   // HP関連
   public hp: number
   public maxHp: number
   private noHitboxTime = 0 // 無敵時間（ダメージ後の猶予）
   public isDead = false
+
+  // 落下死処理用（地面座標の記録）
+  private floorPositions: Array<{ x: number; y: number }> = []
 
   // Components（型安全に保持）
   private physics: PhysicsComponent
@@ -94,12 +120,32 @@ export class Player extends Entity {
   }
 
   update() {
+    // Rキーでリトライ
+    if (this.input.isKeyPressed('KeyR')) {
+      this.dispatch('reset')
+      return
+    }
+
     // 死亡時は更新しない
     if (this.isDead) return
 
-    // 無敵時間の更新
+    // 状態管理の更新
+    this.stateManager.update()
+
+    // 無敵時間の更新と点滅エフェクト
     if (this.noHitboxTime > 0) {
       this.noHitboxTime--
+      // 2フレームごとに点滅（legacy実装に合わせる）
+      const sprite = this.getAnimatedSprite()
+      if (sprite) {
+        sprite.alpha = this.noHitboxTime % 2 === 0 ? 0 : 1
+      }
+    } else {
+      // 無敵時間終了時は完全に表示
+      const sprite = this.getAnimatedSprite()
+      if (sprite) {
+        sprite.alpha = 1
+      }
     }
 
     // 強制アニメーションフレームの更新
@@ -108,63 +154,8 @@ export class Player extends Entity {
     // 重力
     this.physics.applyGravity()
 
-    // 立ち上がり中の処理
-    if (this.isStandingUp) {
-      this.standUpTime++
-      if (this.standUpTime >= 3) {
-        // 3フレーム経過で立ち上がり完了
-        this.isStandingUp = false
-        this.standUpTime = 0
-      }
-      // 立ち上がり中は移動できない
-      this.vx = 0
-    }
-    // しゃがみ判定（地上でSキーを押している間）
-    else if (this.input.isKeyDown('KeyS') && this.coyoteTime === 0) {
-      // しゃがみ開始
-      if (!this.isCrouching) {
-        this.isCrouching = true
-        // hitboxを変更（しゃがみ時は高さが半分）
-        // legacy: new Rectangle(7, 16, 10, 16) → 中心基準 (-5, 0, 10, 16)
-        this.hitbox = new Rectangle(-5, 0, 10, 16)
-      }
-      this.vx = 0 // しゃがみ中は移動できない
-    }
-    // しゃがみ解除
-    else if (this.isCrouching) {
-      this.isCrouching = false
-      this.isStandingUp = true
-      this.standUpTime = 0
-      // hitboxを元に戻す
-      this.hitbox = new Rectangle(-5, -9, 10, 25)
-    }
-    // 通常時の移動
-    else {
-      if (this.input.isKeyDown('KeyA')) {
-        this.vx = -this.MOVE_SPEED
-        this.scaleX = -1 // 左向き
-      } else if (this.input.isKeyDown('KeyD')) {
-        this.vx = this.MOVE_SPEED
-        this.scaleX = 1 // 右向き
-      } else {
-        this.vx = 0
-      }
-    }
-
-    // ジャンプ（コヨーテタイム対応、しゃがんでいない時のみ）
-    if (this.input.isKeyPressed('KeyW') && !this.isCrouching && !this.isStandingUp) {
-      if (this.coyoteTime < this.COYOTE_TIME_MAX) {
-        this.vy = this.JUMP_POWER
-        this.coyoteTime = this.COYOTE_TIME_MAX // ジャンプしたらコヨーテタイム消費
-        this.audio.playSound(SFX_KEYS.JUMP)
-      }
-    }
-
-    // 風生成（スペースキー）
-    // legacy実装ではクールダウンなし、連打可能
-    if (this.input.isKeyPressed('Space')) {
-      this.createWindWithAnimation()
-    }
+    // 状態に応じた処理
+    this.processStateInput()
 
     // 壁判定（停止）
     if (this.tilemap.checkLeftWall() && this.vx < 0) {
@@ -181,6 +172,9 @@ export class Player extends Entity {
     if (this.tilemap.checkDownWall() && this.vy > 0) {
       this.tilemap.stopAtDownWall()
       this.coyoteTime = 0 // 着地したらコヨーテタイムリセット
+
+      // 地面に接地したら座標を記録（落下死処理用）
+      this.recordFloorPosition()
     } else {
       // 空中にいる場合、コヨーテタイムを増やす
       this.coyoteTime++
@@ -194,28 +188,197 @@ export class Player extends Entity {
   }
 
   /**
+   * 状態に応じた入力処理
+   * legacy の processInput() に対応
+   */
+  private processStateInput() {
+    const state = this.stateManager.getState()
+    const stateTime = this.stateManager.getTime()
+
+    switch (state) {
+      case PlayerState.STAND:
+      case PlayerState.WALK:
+        // 地上にいない場合はJUMP状態に遷移
+        if (this.coyoteTime > 0) {
+          this.stateManager.changeState(PlayerState.JUMP)
+          break
+        }
+        this.handleMove()
+        this.handleJump()
+        this.handleCrouch()
+        this.handleWind()
+        break
+
+      case PlayerState.JUMP:
+        // 着地したらSTAND状態に遷移
+        if (this.coyoteTime === 0) {
+          this.stateManager.changeState(PlayerState.STAND)
+          break
+        }
+        this.handleMove()
+        this.handleJump()
+        this.handleWind()
+        break
+
+      case PlayerState.SIT:
+        this.vx = 0
+        // しゃがみ解除（Sキーを離した）
+        if (!this.input.isKeyDown('KeyS')) {
+          this.stateManager.changeState(PlayerState.STAND_UP)
+          // hitboxを元に戻す
+          this.hitbox = new Rectangle(-5, -9, 10, 25)
+        }
+        this.handleWind()
+        break
+
+      case PlayerState.STAND_UP:
+        this.vx = 0
+        // 3フレーム経過で立ち上がり完了
+        if (stateTime >= 3) {
+          this.stateManager.changeState(PlayerState.STAND)
+        }
+        break
+
+      case PlayerState.DAMAGE:
+        // ノックバック継続
+        // 10フレーム経過で通常状態に戻る
+        if (stateTime >= 10) {
+          this.stateManager.changeState(PlayerState.STAND)
+        }
+        break
+
+      case PlayerState.DAMAGE_PIT:
+        // 落とし穴ダメージ
+        // 40フレーム経過で地面に復帰
+        if (stateTime >= 40) {
+          this.fallPit()
+          this.stateManager.changeState(PlayerState.STAND)
+        }
+        break
+
+      default:
+        break
+    }
+  }
+
+  /**
+   * 移動処理
+   */
+  private handleMove() {
+    if (this.input.isKeyDown('KeyA')) {
+      this.vx = -this.MOVE_SPEED
+      this.scaleX = -1 // 左向き
+      // STAND → WALK
+      if (this.stateManager.getState() === PlayerState.STAND) {
+        this.stateManager.changeState(PlayerState.WALK)
+      }
+    } else if (this.input.isKeyDown('KeyD')) {
+      this.vx = this.MOVE_SPEED
+      this.scaleX = 1 // 右向き
+      // STAND → WALK
+      if (this.stateManager.getState() === PlayerState.STAND) {
+        this.stateManager.changeState(PlayerState.WALK)
+      }
+    } else {
+      this.vx = 0
+      // WALK → STAND
+      if (this.stateManager.getState() === PlayerState.WALK) {
+        this.stateManager.changeState(PlayerState.STAND)
+      }
+    }
+  }
+
+  /**
+   * ジャンプ処理
+   */
+  private handleJump() {
+    if (this.input.isKeyPressed('KeyW')) {
+      if (this.coyoteTime < this.COYOTE_TIME_MAX) {
+        this.stateManager.changeState(PlayerState.JUMP)
+        this.vy = this.JUMP_POWER
+        this.coyoteTime = this.COYOTE_TIME_MAX // ジャンプしたらコヨーテタイム消費
+        this.audio.playSound(SFX_KEYS.JUMP)
+      }
+    }
+  }
+
+  /**
+   * しゃがみ処理
+   */
+  private handleCrouch() {
+    if (this.input.isKeyDown('KeyS')) {
+      this.stateManager.changeState(PlayerState.SIT)
+      this.vx = 0
+      // hitboxを変更（しゃがみ時は高さが半分）
+      this.hitbox = new Rectangle(-5, 0, 10, 16)
+    }
+  }
+
+  /**
+   * 風生成処理
+   */
+  private handleWind() {
+    if (this.input.isKeyPressed('Space')) {
+      this.createWindWithAnimation()
+    }
+  }
+
+  /**
+   * 地面座標を記録（落下死処理用）
+   */
+  private recordFloorPosition() {
+    this.floorPositions.push({ x: this.x, y: this.y })
+    // 最大10個まで保持
+    if (this.floorPositions.length > 10) {
+      this.floorPositions.shift()
+    }
+  }
+
+  /**
+   * 落とし穴から復帰
+   * legacy の fallPit イベントに対応
+   */
+  private fallPit() {
+    if (this.floorPositions.length === 0) return
+
+    const lastFloor = this.floorPositions.shift()!
+    this.floorPositions = [lastFloor]
+    this.x = lastFloor.x
+    this.y = lastFloor.y
+    this.vx = 0
+    this.vy = 0
+  }
+
+  /**
    * プレイヤーの状態に応じてアニメーションを切り替え
    */
   private updatePlayerAnimation() {
+    const state = this.stateManager.getState()
     let nextAnimation = ''
 
-    // 立ち上がり状態を最優先
-    if (this.isStandingUp) {
-      nextAnimation = 'standUp'
-    }
-    // しゃがみ状態
-    else if (this.isCrouching) {
-      nextAnimation = 'sit'
-    }
-    // 状態に応じてアニメーション決定
-    else if (this.vy < 0) {
-      nextAnimation = 'jumpUp'
-    } else if (this.vy > 0) {
-      nextAnimation = 'jumpDown'
-    } else if (this.vx === 0) {
-      nextAnimation = 'stand'
-    } else {
-      nextAnimation = 'walk'
+    switch (state) {
+      case PlayerState.STAND:
+        nextAnimation = 'stand'
+        break
+      case PlayerState.WALK:
+        nextAnimation = 'walk'
+        break
+      case PlayerState.JUMP:
+        nextAnimation = this.vy <= 0 ? 'jumpUp' : 'jumpDown'
+        break
+      case PlayerState.SIT:
+        nextAnimation = 'sit'
+        break
+      case PlayerState.STAND_UP:
+        nextAnimation = 'standUp'
+        break
+      case PlayerState.DAMAGE:
+      case PlayerState.DAMAGE_PIT:
+        nextAnimation = 'damage'
+        break
+      default:
+        nextAnimation = 'stand'
+        break
     }
 
     // アニメーション切り替え
@@ -225,16 +388,24 @@ export class Player extends Entity {
   /**
    * ダメージを受ける
    * @param num ダメージ量
+   * @param isPit 落とし穴ダメージかどうか
    */
-  damage(num: number) {
+  damage(num: number, isPit = false) {
     // 無敵時間中はダメージを受けない
     if (this.noHitboxTime > 0) return
 
     // HPを減らす（最小0）
-    this.hp = Math.max(0, this.hp - num)
+    const nextHp = Math.max(0, this.hp - num)
+    const actualDamage = this.hp - nextHp
+    this.hp = nextHp
 
     // ノックバック（向きの逆方向に押し出す）
     this.vx = this.scaleX > 0 ? -1 : 1
+    if (isPit) {
+      this.vx = 0 // 落とし穴の場合は横移動なし
+    }
+    // 1フレーム分後退
+    this.x -= this.vx
 
     // 無敵時間を設定（約0.8秒）
     this.noHitboxTime = 50
@@ -243,12 +414,26 @@ export class Player extends Entity {
     this.audio.playSound(SFX_KEYS.DAMAGE)
 
     // ダメージイベント発火（HPBar更新用）
-    this.dispatch('playerDamage', num)
+    this.dispatch('playerDamage', actualDamage)
 
     // 死亡判定
     if (this.hp <= 0) {
       this.isDead = true
-      this.dispatch('death') // イベント発火（将来的にゲームオーバー処理で使用）
+      // 強制的にdamageアニメーションを100フレーム再生（legacy実装に合わせる）
+      this.playAnimationForced('damage', 100)
+      // 点滅を止める
+      const sprite = this.getAnimatedSprite()
+      if (sprite) {
+        sprite.alpha = 1
+      }
+      this.dispatch('death')
+    } else {
+      // 状態遷移
+      if (isPit) {
+        this.stateManager.changeState(PlayerState.DAMAGE_PIT)
+      } else {
+        this.stateManager.changeState(PlayerState.DAMAGE)
+      }
     }
   }
 
@@ -266,15 +451,16 @@ export class Player extends Entity {
    * プレイヤーの状態に応じて風の方向とアニメーションを変える
    */
   private createWindWithAnimation() {
+    const state = this.stateManager.getState()
     let windVx = 0
 
     // しゃがみ中は真下に風を出す
-    if (this.isCrouching) {
+    if (state === PlayerState.SIT) {
       windVx = 0
       this.playAnimationForced('wind', 12)
     }
     // 歩き中は windWalk / windWalk2 を交互に
-    else if (this.vx !== 0) {
+    else if (state === PlayerState.WALK) {
       windVx = this.scaleX > 0 ? 2 : -2
       // 前回のアニメーションに応じて切り替え
       if (this.currentAnimationName === 'windWalk2') {
@@ -338,6 +524,8 @@ export class Player extends Entity {
       maxHp: this.maxHp,
       invincible: this.isInvincible(),
       isDead: this.isDead,
+      state: this.stateManager.getState(),
+      stateTime: this.stateManager.getTime(),
     }
   }
 }

@@ -96,3 +96,33 @@ export interface TalkText {
   /** テキスト内容 */
   text: string
 }
+
+/**
+ * プレイヤーの状態
+ * legacy の PlayerState クラスに対応
+ */
+export enum PlayerState {
+  /** 立ち状態 */
+  STAND = 'stand',
+
+  /** 歩き状態 */
+  WALK = 'walk',
+
+  /** ジャンプ中 */
+  JUMP = 'jump',
+
+  /** しゃがみ中 */
+  SIT = 'sit',
+
+  /** しゃがみから立ち上がり中 */
+  STAND_UP = 'standUp',
+
+  /** ダメージ中（通常） */
+  DAMAGE = 'damage',
+
+  /** ダメージ中（落とし穴） */
+  DAMAGE_PIT = 'damagePit',
+
+  /** 水中 */
+  IN_WATER = 'inWater',
+}
