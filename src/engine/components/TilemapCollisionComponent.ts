@@ -26,10 +26,14 @@ export interface ICollisionEntity {
  * - isWall(x, y) は座標 (x, y) が壁かどうかを判定
  */
 export class TilemapCollisionComponent {
+  private stageHeight: number
+
   constructor(
     private entity: ICollisionEntity,
     private stage: string[][]
-  ) {}
+  ) {
+    this.stageHeight = stage.length * BLOCKSIZE
+  }
 
   /**
    * エンティティの現在のヒットボックス（ワールド座標）
@@ -55,10 +59,20 @@ export class TilemapCollisionComponent {
     const by = Math.floor(y / BLOCKSIZE)
 
     // 上方向（y < 0）は常に false（どのタイプとも一致しない）
+    // legacy実装: entity.js:147 → type = 0（空気）
     if (y < 0) return false
 
-    // ステージ外は壁扱い（エンティティが落下しないように）
-    if (!this.stage[by]?.[bx]) return types.includes(CollisionType.SOLID)
+    // ステージ外の判定（legacy実装に合わせる）
+    if (!this.stage[by]?.[bx]) {
+      // 左右の外は壁扱い（legacy: entity.js:146, 155 → type = 15）
+      if (x < 0 || x >= this.stage[0].length * BLOCKSIZE) {
+        return types.includes(CollisionType.SOLID)
+      }
+      // 下方向は空気扱い（落下できるように）
+      // legacy: entity.js:154 → type = 0（空気）
+      // 画面外落下判定（stageHeight + 32）は checkDamageBlock() で行う
+      return false
+    }
 
     const blockKey = this.stage[by][bx]
     const blockData = BLOCKDATA[blockKey]
@@ -285,5 +299,85 @@ export class TilemapCollisionComponent {
 
     // 左下の足元に地面がない = 左側が崖
     return !this.isBlockType(checkLeft, checkBottom, [CollisionType.SOLID, CollisionType.PLATFORM])
+  }
+
+  /**
+   * ダメージブロック（床トゲ・落とし穴）との衝突判定
+   * legacy実装: type が DAMAGE (3) のブロックと画面外判定
+   * @returns { damage: number, isPit: boolean } | null
+   */
+  checkDamageBlock(): { damage: number; isPit: boolean } | null {
+    const hitbox = this.currentHitbox
+
+    // 画面外判定（ステージ高さ + 32px を超えたら落とし穴）
+    // legacy実装: entity.js:148-152
+    if (hitbox.bottom > this.stageHeight + 32) {
+      return { damage: 1, isPit: true }
+    }
+
+    // ヒットボックス内の全座標をBLOCKSIZE刻みでチェック
+    for (let y = hitbox.top; y < hitbox.bottom; y += BLOCKSIZE) {
+      for (let x = hitbox.left; x < hitbox.right; x += BLOCKSIZE) {
+        const bx = Math.floor(x / BLOCKSIZE)
+        const by = Math.floor(y / BLOCKSIZE)
+
+        // ステージ範囲外はスキップ
+        if (!this.stage[by]?.[bx]) continue
+
+        const blockKey = this.stage[by][bx]
+        const blockData = BLOCKDATA[blockKey]
+
+        // BLOCKDATAに定義されていない場合はスキップ
+        if (!blockData) continue
+
+        // DAMAGEタイプのブロックをチェック
+        if (blockData.type === CollisionType.DAMAGE && blockData.param?.damage) {
+          // ダメージブロックのhitboxを計算（ブロック座標基準）
+          const damageHitbox = blockData.param.hitbox
+            ? new Rectangle(
+                bx * BLOCKSIZE + blockData.param.hitbox.x,
+                by * BLOCKSIZE + blockData.param.hitbox.y,
+                blockData.param.hitbox.width,
+                blockData.param.hitbox.height
+              )
+            : new Rectangle(bx * BLOCKSIZE, by * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+
+          // エンティティのヒットボックスと衝突判定
+          if (hitbox.hitTest(damageHitbox)) {
+            return {
+              damage: blockData.param.damage,
+              isPit: false, // 通常のダメージブロック
+            }
+          }
+        }
+      }
+    }
+
+    // 右下隅もチェック（ループで飛ばされる可能性があるため）
+    const bx = Math.floor((hitbox.right - 1) / BLOCKSIZE)
+    const by = Math.floor((hitbox.bottom - 1) / BLOCKSIZE)
+    if (this.stage[by]?.[bx]) {
+      const blockKey = this.stage[by][bx]
+      const blockData = BLOCKDATA[blockKey]
+      if (blockData?.type === CollisionType.DAMAGE && blockData.param?.damage) {
+        const damageHitbox = blockData.param.hitbox
+          ? new Rectangle(
+              bx * BLOCKSIZE + blockData.param.hitbox.x,
+              by * BLOCKSIZE + blockData.param.hitbox.y,
+              blockData.param.hitbox.width,
+              blockData.param.hitbox.height
+            )
+          : new Rectangle(bx * BLOCKSIZE, by * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+
+        if (hitbox.hitTest(damageHitbox)) {
+          return {
+            damage: blockData.param.damage,
+            isPit: false,
+          }
+        }
+      }
+    }
+
+    return null
   }
 }

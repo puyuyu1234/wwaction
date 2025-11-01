@@ -183,6 +183,12 @@ export class Player extends Entity {
     // 速度適用
     this.physics.applyVelocity()
 
+    // ダメージブロック判定（速度適用後にチェック）
+    const damageBlock = this.tilemap.checkDamageBlock()
+    if (damageBlock) {
+      this.damage(damageBlock.damage, damageBlock.isPit)
+    }
+
     // アニメーション更新
     this.updatePlayerAnimation()
   }
