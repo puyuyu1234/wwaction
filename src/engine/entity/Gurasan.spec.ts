@@ -95,10 +95,11 @@ describe('Gurasan - 風との衝突で分裂', () => {
     // ふるまい：「生成されるのは Nasake と SunGlass」
     expect(spawnedEntities.length).toBe(2)
 
-    // 生成されたエンティティの名前を確認
-    const entityNames = spawnedEntities.map((e) => e.imageKey)
-    expect(entityNames).toContain('nasake')
-    expect(entityNames).toContain('sunglass')
+    // 生成されたエンティティのクラス型を確認
+    const hasNasake = spawnedEntities.some((e) => e.constructor.name === 'Nasake')
+    const hasSunGlass = spawnedEntities.some((e) => e.constructor.name === 'SunGlass')
+    expect(hasNasake).toBe(true)
+    expect(hasSunGlass).toBe(true)
   })
 
   it('風に触れる前は分裂しない', () => {

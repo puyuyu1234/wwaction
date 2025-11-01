@@ -42,14 +42,21 @@ describe('Nuefu - 左右の壁反転', () => {
 describe('Nuefu - 崖判定（Nasakeとの差異）', () => {
   it('右側が崖なら左向きに方向転換する（落ちない）', () => {
     const stage = [
-      [' ', ' ', ' ', ' ', ' '],
-      ['a', 'a', 'a', ' ', ' '], // 右が崖
+      [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      ['a', 'a', 'a', 'a', ' ', ' ', ' '], // x=64から右が崖
     ]
     const nuefu = new Nuefu(16, 0, stage)
     nuefu.vx = 0.5 // 右向き
 
+    // 床に着地するまで待つ
+    for (let i = 0; i < 30; i++) {
+      nuefu.update()
+    }
+
+    const floorY = nuefu.y
+
     // 崖に到達するまで更新
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       nuefu.update()
       if (nuefu.vx < 0) break // 方向転換したら終了
     }
@@ -57,20 +64,27 @@ describe('Nuefu - 崖判定（Nasakeとの差異）', () => {
     // ふるまい：「崖で方向転換する」
     expect(nuefu.vx).toBeLessThan(0)
 
-    // ふるまい：「崖から落ちていない」
-    expect(nuefu.y).toBeLessThan(5)
+    // ふるまい：「崖から落ちていない（床の高さを維持）」
+    expect(nuefu.y).toBe(floorY)
   })
 
   it('左側が崖なら右向きに方向転換する（落ちない）', () => {
     const stage = [
-      [' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', 'a', 'a', 'a'], // 左が崖
+      [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', 'a', 'a', 'a', 'a'], // x=48から左が崖
     ]
-    const nuefu = new Nuefu(48, 0, stage)
+    const nuefu = new Nuefu(64, 0, stage)
     nuefu.vx = -0.5 // 左向き
 
+    // 床に着地するまで待つ
+    for (let i = 0; i < 30; i++) {
+      nuefu.update()
+    }
+
+    const floorY = nuefu.y
+
     // 崖に到達するまで更新
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       nuefu.update()
       if (nuefu.vx > 0) break // 方向転換したら終了
     }
@@ -78,8 +92,8 @@ describe('Nuefu - 崖判定（Nasakeとの差異）', () => {
     // ふるまい：「崖で方向転換する」
     expect(nuefu.vx).toBeGreaterThan(0)
 
-    // ふるまい：「崖から落ちていない」
-    expect(nuefu.y).toBeLessThan(5)
+    // ふるまい：「崖から落ちていない（床の高さを維持）」
+    expect(nuefu.y).toBe(floorY)
   })
 
   it('崖がない平坦な床では端まで直進する', () => {
