@@ -371,53 +371,26 @@ export class StageScene extends Scene {
     this.entitiesGraphics.clear()
 
     this.entities.forEach((entity) => {
-      const sprite = entity.getAnimatedSprite()
+      // エンティティ自身に描画を委譲
+      entity.render(this.cameraContainer)
 
-      if (sprite) {
-        // AnimatedSprite で描画
-        // 座標を整数に丸めてサブピクセルレンダリングを防ぐ（スプライトブリーディング対策）
-        sprite.x = Math.floor(entity.x)
-        sprite.y = Math.floor(entity.y)
-        sprite.scale.x = entity.scaleX // 向きを反映
-
-        // まだ追加されていなければ追加
-        if (!sprite.parent) {
-          this.cameraContainer.addChild(sprite)
-        }
-      } else {
-        // スプライトがない場合は従来の色付き矩形で描画
-        let color = 0xaaaaaa // デフォルト: グレー
-        if (entity.imageKey === 'player') {
-          color = 0xff0000 // プレイヤー: 赤
-        } else if (entity.imageKey === 'wind') {
-          color = 0x00ffff // 風: シアン
-        } else if (entity.imageKey === 'nasake') {
-          color = 0xff00ff // Nasake: マゼンタ
-        } else if (entity.imageKey === 'potion') {
-          color = 0x00ff00 // Potion: 緑
-        } else if (entity.imageKey === 'nuefu') {
-          color = 0xffaa00 // Nuefu: オレンジ
-        } else if (entity.imageKey === 'gurasan') {
-          color = 0xff6600 // Gurasan: 赤オレンジ
-        } else if (entity.imageKey === 'gurasanNotFall') {
-          color = 0xff3300 // GurasanNotFall: 濃い赤オレンジ
-        }
-
-        // エンティティ本体
-        this.entitiesGraphics.rect(entity.x, entity.y, entity.width, entity.height)
-        this.entitiesGraphics.fill(color)
-      }
-
-      // ヒットボックス表示（デバッグ用）
+      // デバッグ用ヒットボックス表示
       if (DEBUG) {
-        const hitbox = entity.currentHitbox
-        this.entitiesGraphics.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height)
-
-        // プレイヤーは緑、その他は黄色
-        const strokeColor = entity.imageKey === 'player' ? 0x00ff00 : 0xffff00
-        this.entitiesGraphics.stroke({ width: 1, color: strokeColor })
+        this.renderDebugHitbox(entity)
       }
     })
+  }
+
+  /**
+   * デバッグ用ヒットボックス描画
+   */
+  private renderDebugHitbox(entity: Entity) {
+    const hitbox = entity.currentHitbox
+    this.entitiesGraphics.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height)
+
+    // プレイヤーは緑、その他は黄色
+    const strokeColor = entity.imageKey === 'player' ? 0x00ff00 : 0xffff00
+    this.entitiesGraphics.stroke({ width: 1, color: strokeColor })
   }
 
   /**

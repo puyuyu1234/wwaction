@@ -1,6 +1,6 @@
 import { AssetLoader } from '@core/AssetLoader'
 import { Rectangle } from '@core/Rectangle'
-import { AnimatedSprite } from 'pixi.js'
+import { AnimatedSprite, Container } from 'pixi.js'
 
 
 import { Actor } from './Actor'
@@ -152,6 +152,24 @@ export class SpriteActor extends Actor {
    */
   getAnimatedSprite(): AnimatedSprite | undefined {
     return this.animatedSprite
+  }
+
+  /**
+   * スプライトを描画（Sceneから呼ばれる）
+   * @param container 描画先のPixiJSコンテナ
+   */
+  render(container: Container): void {
+    if (!this.animatedSprite) return
+
+    // 座標を整数に丸めてサブピクセルレンダリングを防ぐ（スプライトブリーディング対策）
+    this.animatedSprite.x = Math.floor(this.x)
+    this.animatedSprite.y = Math.floor(this.y)
+    this.animatedSprite.scale.x = this.scaleX
+
+    // コンテナに追加（初回のみ）
+    if (!this.animatedSprite.parent) {
+      container.addChild(this.animatedSprite)
+    }
   }
 
   get rectangle(): Rectangle {
