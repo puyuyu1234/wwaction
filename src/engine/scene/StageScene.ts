@@ -1,3 +1,4 @@
+import { Camera } from '@core/Camera'
 import { Input } from '@core/Input'
 import { Entity } from '@entity/Entity'
 import { Gurasan } from '@entity/Gurasan'
@@ -27,7 +28,8 @@ export class StageScene extends Scene {
   private stageGraphics: Graphics
   private entitiesGraphics: Graphics
   private tilemapSprite!: TilemapSprite // タイルマップスプライト描画
-  private camera: Container
+  private cameraContainer: Container
+  private camera: Camera
   private debugText!: Text
   private hpBar!: HPBar // HP表示（通常UI）
   private input: Input
@@ -35,8 +37,6 @@ export class StageScene extends Scene {
   // private stageIndex: number // 将来的にステージ別BGMで使用予定
   private stageWidth: number // ステージ幅（ピクセル）
   private stageHeight: number // ステージ高さ（ピクセル）
-  private viewportWidth: number // ビューポート幅（Game.tsのbaseWidthから取得）
-  private viewportHeight: number // ビューポート高さ（Game.tsのbaseHeightから取得）
 
   // 風プール管理（legacy実装に合わせて2個のWindを使いまわす）
   private windPool: Wind[] = []
@@ -47,8 +47,6 @@ export class StageScene extends Scene {
     super()
     this.input = input
     // this.stageIndex = stageIndex // 将来的にステージ別BGMで使用予定
-    this.viewportWidth = viewportWidth
-    this.viewportHeight = viewportHeight
 
     // ステージデータ取得
     const stageData = STAGEDATA[stageIndex]
@@ -64,19 +62,22 @@ export class StageScene extends Scene {
     this.stageHeight = this.stage.length * BLOCKSIZE
 
     // カメラコンテナ（スクロール用）
-    this.camera = new Container()
-    this.container.addChild(this.camera)
+    this.cameraContainer = new Container()
+    this.container.addChild(this.cameraContainer)
+
+    // カメラ制御
+    this.camera = new Camera(this.cameraContainer, viewportWidth, viewportHeight)
 
     // タイルマップスプライト描画（スプライトシート使用）
-    this.tilemapSprite = new TilemapSprite(this.stage, this.camera)
+    this.tilemapSprite = new TilemapSprite(this.stage, this.cameraContainer)
 
     // ステージ描画用Graphics（TilemapSprite実装後は不要）
     this.stageGraphics = new Graphics()
-    this.camera.addChild(this.stageGraphics)
+    this.cameraContainer.addChild(this.stageGraphics)
 
     // エンティティ描画用Graphics
     this.entitiesGraphics = new Graphics()
-    this.camera.addChild(this.entitiesGraphics)
+    this.cameraContainer.addChild(this.entitiesGraphics)
 
     // プレイヤー生成（ステージ内の '0' を探す）
     let playerX = 0
@@ -183,21 +184,14 @@ export class StageScene extends Scene {
    * プレイヤーを画面中央に配置し、ステージ境界でカメラを停止
    */
   private updateCamera() {
-    // プレイヤーの中心座標を基準にカメラ位置を計算
-    const playerCenterX = this.player.x + this.player.width / 2
-    const playerCenterY = this.player.y + this.player.height / 2
-
-    // カメラ位置（プレイヤーを画面中央に配置）
-    let cameraX = playerCenterX - this.viewportWidth / 2
-    let cameraY = playerCenterY - this.viewportHeight / 2
-
-    // ステージ境界でカメラを制限
-    cameraX = Math.max(0, Math.min(cameraX, this.stageWidth - this.viewportWidth))
-    cameraY = Math.max(0, Math.min(cameraY, this.stageHeight - this.viewportHeight))
-
-    // PixiJSではカメラ移動は Container.position をマイナス値で設定
-    this.camera.x = -Math.floor(cameraX)
-    this.camera.y = -Math.floor(cameraY)
+    this.camera.follow(
+      this.player.x,
+      this.player.y,
+      this.player.width,
+      this.player.height,
+      this.stageWidth,
+      this.stageHeight
+    )
   }
 
   /**
@@ -289,53 +283,8 @@ export class StageScene extends Scene {
    */
   startBGM(): void {
     if (this.audio.isReady()) {
-      // test.midを各トラック専用の音源設定で再生（6トラック対応）
       const midiPath = AUDIO_ASSETS.midi.test
-
-      const trackSynthMap = {
-        // Track 0: Noise, sine, 0.001, 0.5, 0, 0.001, -22dB
-        0: {
-          synthType: 'noise' as const,
-          waveform: 'sine' as const, // NoiseSynthではwaveformは使われないが型のために必要
-          envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.001 },
-          volume: -22,
-        },
-        // Track 1: Basic, square, 0.001, 0.15, 0, 0.001, -10dB
-        1: {
-          synthType: 'synth' as const,
-          waveform: 'square' as const,
-          envelope: { attack: 0.001, decay: 0.5, sustain: 0.15, release: 0.001 },
-          volume: -10,
-        },
-        // Track 2: Basic, sawtooth, 0.001, 1, 0.3, 1, -10dB
-        2: {
-          synthType: 'synth' as const,
-          waveform: 'sawtooth' as const,
-          envelope: { attack: 0.001, decay: 0.7, sustain: 0.1, release: 1 },
-          volume: -10,
-        },
-        // Track 3: Basic, square, 0, 0.4, 0.001, 0.6, -15dB
-        3: {
-          synthType: 'synth' as const,
-          waveform: 'square' as const,
-          envelope: { attack: 0.4, decay: 0.001, sustain: 1, release: 0.6 },
-          volume: -15,
-        },
-        // Track 4: Basic, sawtooth, 0.001, 0.5, 0.1, 0.001, -10dB
-        4: {
-          synthType: 'synth' as const,
-          waveform: 'sawtooth' as const,
-          envelope: { attack: 0.001, decay: 0.5, sustain: 0.1, release: 0.001 },
-          volume: -10,
-        },
-        // Track 5: Basic, square, デフォルト設定
-        5: {
-          synthType: 'synth' as const,
-          waveform: 'square' as const,
-          envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 0.8 },
-        },
-      }
-
+      const trackSynthMap = AUDIO_ASSETS.midiTracks.test
       void this.audio.playMidi(midiPath, trackSynthMap, true) // 非同期だが待たない（失敗時はwarnのみ）
     }
   }
@@ -433,7 +382,7 @@ export class StageScene extends Scene {
 
         // まだ追加されていなければ追加
         if (!sprite.parent) {
-          this.camera.addChild(sprite)
+          this.cameraContainer.addChild(sprite)
         }
       } else {
         // スプライトがない場合は従来の色付き矩形で描画

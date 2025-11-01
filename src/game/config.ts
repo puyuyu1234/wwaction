@@ -58,6 +58,51 @@ export const AUDIO_ASSETS = {
   midi: {
     test: '/assets/sound/music/test.mid',
   },
+  midiTracks: {
+    test: {
+      // Track 0: Noise, sine, 0.001, 0.5, 0, 0.001, -22dB
+      0: {
+        synthType: 'noise' as const,
+        waveform: 'sine' as const, // NoiseSynthではwaveformは使われないが型のために必要
+        envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.001 },
+        volume: -22,
+      },
+      // Track 1: Basic, square, 0.001, 0.15, 0, 0.001, -10dB
+      1: {
+        synthType: 'synth' as const,
+        waveform: 'square' as const,
+        envelope: { attack: 0.001, decay: 0.5, sustain: 0.15, release: 0.001 },
+        volume: -10,
+      },
+      // Track 2: Basic, sawtooth, 0.001, 1, 0.3, 1, -10dB
+      2: {
+        synthType: 'synth' as const,
+        waveform: 'sawtooth' as const,
+        envelope: { attack: 0.001, decay: 0.7, sustain: 0.1, release: 1 },
+        volume: -10,
+      },
+      // Track 3: Basic, square, 0, 0.4, 0.001, 0.6, -15dB
+      3: {
+        synthType: 'synth' as const,
+        waveform: 'square' as const,
+        envelope: { attack: 0.4, decay: 0.001, sustain: 1, release: 0.6 },
+        volume: -15,
+      },
+      // Track 4: Basic, sawtooth, 0.001, 0.5, 0.1, 0.001, -10dB
+      4: {
+        synthType: 'synth' as const,
+        waveform: 'sawtooth' as const,
+        envelope: { attack: 0.001, decay: 0.5, sustain: 0.1, release: 0.001 },
+        volume: -10,
+      },
+      // Track 5: Basic, square, デフォルト設定
+      5: {
+        synthType: 'synth' as const,
+        waveform: 'square' as const,
+        envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 0.8 },
+      },
+    },
+  },
 } as const
 
 // スプライトシート定義は scripts/generate-spritesheets-simple.ts で
