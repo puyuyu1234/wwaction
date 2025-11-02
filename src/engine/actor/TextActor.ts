@@ -1,6 +1,7 @@
-import { Text, TextStyle } from 'pixi.js'
-import { Actor } from './Actor'
 import { FONT } from '@game/config'
+import { Text, TextStyle } from 'pixi.js'
+
+import { Actor } from './Actor'
 
 /**
  * テキスト描画アクター

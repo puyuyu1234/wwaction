@@ -1,4 +1,5 @@
 import { Graphics } from 'pixi.js'
+
 import { Actor } from './Actor'
 
 /**

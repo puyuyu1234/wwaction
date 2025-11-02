@@ -1,6 +1,6 @@
+import { GameSettings } from '@core/GameSettings'
 import * as Tone from 'tone'
 
-import { GameSettings } from '@core/GameSettings'
 import { MusicPlayer } from './MusicPlayer'
 import { SoundPlayer } from './SoundPlayer'
 import type { TrackSynthMap } from './synth/types'
