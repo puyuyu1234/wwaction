@@ -6,8 +6,8 @@ import { Gurasan } from './Gurasan'
  * - 崖で方向転換する（落ちない）
  */
 export class GurasanNotFall extends Gurasan {
-  constructor(x: number, y: number, stage: string[][]) {
-    super(x, y, stage)
+  constructor(centerX: number, centerY: number, stage: string[][]) {
+    super(centerX, centerY, stage)
   }
 
   update() {

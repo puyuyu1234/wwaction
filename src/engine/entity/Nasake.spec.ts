@@ -8,7 +8,7 @@ describe('Nasake - 左右の壁反転', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nasake = new Nasake(64, 0, stage)
+    const nasake = new Nasake(64 + 8, 0 + 8, stage)
 
     // 左向きに移動して壁に当たるまで（初期速度は -0.25）
     for (let i = 0; i < 300; i++) {
@@ -25,7 +25,7 @@ describe('Nasake - 左右の壁反転', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nasake = new Nasake(16, 0, stage)
+    const nasake = new Nasake(16 + 8, 0 + 8, stage)
     nasake.vx = 0.5 // 右向きに変更
 
     // 右向きに移動して壁に当たるまで
@@ -43,7 +43,7 @@ describe('Nasake - 左右の壁反転', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nasake = new Nasake(80, 0, stage)
+    const nasake = new Nasake(80 + 8, 0 + 8, stage)
 
     // 左壁で反転するまで
     for (let i = 0; i < 400; i++) {
@@ -70,7 +70,7 @@ describe('Nasake - 風との衝突反応', () => {
       [' ', ' ', ' '],
       ['a', 'a', 'a'],
     ]
-    const nasake = new Nasake(16, 0, stage)
+    const nasake = new Nasake(16 + 8, 0 + 8, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -97,7 +97,7 @@ describe('Nasake - 風との衝突反応', () => {
 
   it('風に触れると上方向の速度を持つ', () => {
     const stage = [[' ', ' ', ' ']]
-    const nasake = new Nasake(16, 16, stage)
+    const nasake = new Nasake(16 + 8, 16 + 8, stage)
 
     // 風との衝突を発生させる
     const mockWind = {
@@ -112,7 +112,7 @@ describe('Nasake - 風との衝突反応', () => {
 
   it('風以外のエンティティとの衝突では反応しない', () => {
     const stage = [[' ', ' ', ' ']]
-    const nasake = new Nasake(16, 16, stage)
+    const nasake = new Nasake(16 + 8, 16 + 8, stage)
 
     const initialVy = nasake.vy
 
@@ -135,7 +135,7 @@ describe('Nasake - 重力と床の挙動', () => {
       ['a', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nasake = new Nasake(32, 0, stage)
+    const nasake = new Nasake(32 + 8, 0 + 8, stage)
 
     // 着地するまで更新
     for (let i = 0; i < 20; i++) {
@@ -157,7 +157,7 @@ describe('Nasake - 重力と床の挙動', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const nasake = new Nasake(16, 0, stage)
+    const nasake = new Nasake(16 + 8, 0 + 8, stage)
 
     const initialVy = nasake.vy
 
@@ -174,7 +174,7 @@ describe('Nasake - 重力と床の挙動', () => {
 describe('Nasake - タグ確認', () => {
   it('敵タグを持たない（ダメージを与えない）', () => {
     const stage = [[' ']]
-    const nasake = new Nasake(0, 0, stage)
+    const nasake = new Nasake(0 + 8, 0 + 8, stage)
 
     // ふるまい：「enemyタグを持たない」
     expect(nasake.hasTag('enemy')).toBe(false)
@@ -182,7 +182,7 @@ describe('Nasake - タグ確認', () => {
 
   it('特定のタグを持たない（将来の拡張に備えて確認）', () => {
     const stage = [[' ']]
-    const nasake = new Nasake(0, 0, stage)
+    const nasake = new Nasake(0 + 8, 0 + 8, stage)
 
     // ふるまい：「現状はどのタグも持たない」
     expect(nasake.hasTag('wind')).toBe(false)

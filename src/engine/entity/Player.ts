@@ -63,11 +63,16 @@ export class Player extends Entity {
   private health: HealthComponent
   private fallDeath: FallDeathComponent
 
-  constructor(x: number, y: number, stage: string[][], input: Input, hp: number, maxHp: number) {
+  constructor(
+    centerX: number,
+    centerY: number,
+    stage: string[][],
+    input: Input,
+    hp: number,
+    maxHp: number
+  ) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
-    // スプライトサイズ: 24x32、中心座標に変換: x+12, y+16
-    const centerX = x + 12
-    const centerY = y + 16
+    // スプライトサイズ: 24x32
     const rect = new Rectangle(centerX, centerY, 24, 32)
 
     // hitboxも中心基準に変換: legacy(7,7,10,25) → 中心基準(-5,-9,10,25)

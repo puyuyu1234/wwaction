@@ -8,7 +8,7 @@ describe('Wind - 左右の壁跳ね返り', () => {
       ['g', ' ', ' ', ' ', ' '],
       ['g', ' ', ' ', ' ', ' '],
     ]
-    const wind = new Wind(20, 0, -2, stage) // 左向きに移動
+    const wind = new Wind(20 + 8, 0 + 8, -2, stage) // 左向きに移動
 
     // 左壁に当たるまで更新
     for (let i = 0; i < 20; i++) {
@@ -24,7 +24,7 @@ describe('Wind - 左右の壁跳ね返り', () => {
       [' ', ' ', ' ', ' ', 'g'],
       [' ', ' ', ' ', ' ', 'g'],
     ]
-    const wind = new Wind(16, 0, 2, stage) // 右向きに移動
+    const wind = new Wind(16 + 8, 0 + 8, 2, stage) // 右向きに移動
 
     // 右壁に当たるまで更新
     for (let i = 0; i < 20; i++) {
@@ -40,7 +40,7 @@ describe('Wind - 左右の壁跳ね返り', () => {
       ['g', ' ', ' ', ' ', ' ', ' ', 'g'],
       ['g', 'a', 'a', 'a', 'a', 'a', 'g'],
     ]
-    const wind = new Wind(48, 0, -1, stage) // 左向きに移動
+    const wind = new Wind(48 + 8, 0 + 8, -1, stage) // 左向きに移動
 
     // 左壁で跳ね返るまで
     for (let i = 0; i < 50; i++) {
@@ -66,7 +66,7 @@ describe('Wind - 上下の壁挙動', () => {
       ['g', 'g', 'g'],
       [' ', ' ', ' '],
     ]
-    const wind = new Wind(16, 20, 0, stage)
+    const wind = new Wind(16 + 8, 20 + 8, 0, stage)
     wind.vy = -3 // 上向きに移動
 
     // 天井に当たるまで更新
@@ -83,7 +83,7 @@ describe('Wind - 上下の壁挙動', () => {
       [' ', ' ', ' '],
       ['g', 'a', 'g'],
     ]
-    const wind = new Wind(16, 0, 0, stage)
+    const wind = new Wind(16 + 8, 0 + 8, 0, stage)
 
     // 重力で落下して床に当たるまで更新
     for (let i = 0; i < 30; i++) {
@@ -101,7 +101,7 @@ describe('Wind - 床の上で静止', () => {
       [' ', ' ', ' ', ' ', ' '],
       ['g', 'a', 'a', 'a', 'g'],
     ]
-    const wind = new Wind(16, 0, 0, stage)
+    const wind = new Wind(16 + 8, 0 + 8, 0, stage)
 
     // 着地するまで更新
     for (let i = 0; i < 20; i++) {
@@ -126,7 +126,7 @@ describe('Wind - 重力の影響', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const wind = new Wind(16, 0, 0, stage)
+    const wind = new Wind(16 + 8, 0 + 8, 0, stage)
 
     const initialVy = wind.vy
 
@@ -144,7 +144,7 @@ describe('Wind - 重力の影響', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const wind = new Wind(16, 0, 0, stage)
+    const wind = new Wind(16 + 8, 0 + 8, 0, stage)
 
     const initialY = wind.y
 

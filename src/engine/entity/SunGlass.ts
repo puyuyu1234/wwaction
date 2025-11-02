@@ -15,15 +15,12 @@ import { Entity } from './Entity'
 export class SunGlass extends Entity {
   private physics: PhysicsComponent
 
-  constructor(x: number, y: number, vx: number, stage: string[][]) {
-    console.log(`[SunGlass] コンストラクタ呼び出し: 左上座標=(${x}, ${y}), vx=${vx}`)
+  constructor(centerX: number, centerY: number, vx: number, stage: string[][]) {
+    console.log(`[SunGlass] コンストラクタ呼び出し: 中心座標=(${centerX}, ${centerY}), vx=${vx}`)
 
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
-    // スプライトサイズ: 16x16、中心座標に変換: x+8, y+8
-    const centerX = x + 8
-    const centerY = y + 8
+    // スプライトサイズ: 16x16
     const rect = new Rectangle(centerX, centerY, 16, 16)
-    console.log(`[SunGlass] 中心座標に変換: (${centerX}, ${centerY})`)
 
     // hitboxも中心基準に変換: legacy(0,0,16,16) → 中心基準(-8,-8,16,16)
     // 計算: (0-8, 0-8) = (-8, -8)

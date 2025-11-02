@@ -48,7 +48,7 @@ describe('Player - 床の上で静止', () => {
     ]
 
     // プレイヤーを空中に配置 (y=0)
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     // 十分なフレーム数を待って床に着地させる
     for (let i = 0; i < 50; i++) {
@@ -89,7 +89,7 @@ describe('Player - ジャンプ操作', () => {
       ['a', 'a', 'a', 'a', 'a'], // 床 (y=32~47)
     ]
 
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     // 床に着地するまで更新
     for (let i = 0; i < 50; i++) {
@@ -128,7 +128,7 @@ describe('Player - ジャンプ操作', () => {
       ['a', 'a', 'a', 'a', 'a'], // 床 (y=32~47)
     ]
 
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     // 床に着地するまで更新
     for (let i = 0; i < 50; i++) {
@@ -178,7 +178,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('初期HPが正しく設定される', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 5, 10)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 10)
 
     expect(player.hp).toBe(5)
     expect(player.maxHp).toBe(10)
@@ -187,7 +187,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('ダメージを受けるとHPが減少する', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     player.damage(2)
 
@@ -197,7 +197,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('HPが0になると死亡状態になる', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 3, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 3, 5)
 
     player.damage(3)
 
@@ -207,7 +207,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('HPが0未満にはならない', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 3, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 3, 5)
 
     player.damage(10) // 大ダメージ
 
@@ -220,7 +220,7 @@ describe('Player - HP/ダメージシステム', () => {
       [' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a'],
     ]
-    const player = new Player(0, 0, stage, input, 1, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 1, 5)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -245,7 +245,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('回復するとHPが増加する', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 3, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 3, 5)
 
     player.heal(2)
 
@@ -254,7 +254,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('回復してもmaxHpを超えない', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 4, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 4, 5)
 
     player.heal(5) // 大回復
 
@@ -263,7 +263,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('ダメージを受けると無敵時間が発生し、連続ダメージを受けない', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     // 1回目のダメージ
     player.damage(1)
@@ -285,7 +285,7 @@ describe('Player - HP/ダメージシステム', () => {
       [' ', ' ', ' '], // 空中 (y=16~31)
       ['a', 'a', 'a'], // 床 (y=32~47)
     ]
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     // 床に着地するまで更新
     for (let i = 0; i < 50; i++) {
@@ -316,7 +316,7 @@ describe('Player - HP/ダメージシステム', () => {
 
   it('ダメージを受けるとノックバックする', () => {
     const stage = [[' ']]
-    const player = new Player(0, 0, stage, input, 5, 5)
+    const player = new Player(0 + 12, 0 + 16, stage, input, 5, 5)
 
     player.vx = 2 // 右に移動中
 

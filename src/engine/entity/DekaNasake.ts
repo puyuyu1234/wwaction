@@ -66,11 +66,9 @@ export class DekaNasake extends Entity {
     run: 1, // 逃走時の速度
   } as const
 
-  constructor(x: number, y: number, stage: string[][]) {
+  constructor(centerX: number, centerY: number, stage: string[][]) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
-    // スプライトサイズ: 32x32、中心座標に変換: x+16, y+16
-    const centerX = x + 16
-    const centerY = y + 16
+    // スプライトサイズ: 32x32
     const rect = new Rectangle(centerX, centerY, 32, 32)
 
     // hitboxも中心基準に変換: legacy(8,6,16,26) → 中心基準(-8,-10,16,26)

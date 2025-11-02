@@ -8,7 +8,7 @@ describe('Potion - 壁での挙動（Windとの差異）', () => {
       ['g', ' ', ' ', ' ', ' '],
       ['g', 'a', 'a', 'a', 'g'],
     ]
-    const potion = new Potion(32, 0, stage)
+    const potion = new Potion(32 + 8, 0 + 8, stage)
     potion.vx = -1 // 左向きに移動
 
     // 左壁に当たるまで更新
@@ -25,7 +25,7 @@ describe('Potion - 壁での挙動（Windとの差異）', () => {
       [' ', ' ', ' ', ' ', 'g'],
       ['g', 'a', 'a', 'a', 'g'],
     ]
-    const potion = new Potion(16, 0, stage)
+    const potion = new Potion(16 + 8, 0 + 8, stage)
     potion.vx = 1 // 右向きに移動
 
     // 右壁に当たるまで更新
@@ -42,7 +42,7 @@ describe('Potion - 壁での挙動（Windとの差異）', () => {
       ['g', ' ', ' ', ' ', 'g'],
       ['g', 'a', 'a', 'a', 'g'],
     ]
-    const potion = new Potion(32, 0, stage)
+    const potion = new Potion(32 + 8, 0 + 8, stage)
     potion.vx = -1
 
     // 左壁に当たるまで更新
@@ -69,7 +69,7 @@ describe('Potion - 上下の壁挙動', () => {
       ['g', 'g', 'g'],
       [' ', ' ', ' '],
     ]
-    const potion = new Potion(16, 20, stage)
+    const potion = new Potion(16 + 8, 20 + 8, stage)
     potion.vy = -3 // 上向きに移動
 
     // 天井に当たるまで更新
@@ -86,7 +86,7 @@ describe('Potion - 上下の壁挙動', () => {
       [' ', ' ', ' '],
       ['g', 'a', 'g'],
     ]
-    const potion = new Potion(16, 0, stage)
+    const potion = new Potion(16 + 8, 0 + 8, stage)
 
     // 重力で落下して床に当たるまで更新
     for (let i = 0; i < 30; i++) {
@@ -104,7 +104,7 @@ describe('Potion - 床の上で静止', () => {
       [' ', ' ', ' ', ' ', ' '],
       ['g', 'a', 'a', 'a', 'g'],
     ]
-    const potion = new Potion(32, 0, stage)
+    const potion = new Potion(32 + 8, 0 + 8, stage)
 
     // 着地するまで更新
     for (let i = 0; i < 20; i++) {
@@ -131,7 +131,7 @@ describe('Potion - 重力の影響', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const potion = new Potion(16, 0, stage)
+    const potion = new Potion(16 + 8, 0 + 8, stage)
 
     const initialVy = potion.vy
 
@@ -149,7 +149,7 @@ describe('Potion - 重力の影響', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const potion = new Potion(16, 0, stage)
+    const potion = new Potion(16 + 8, 0 + 8, stage)
 
     const initialY = potion.y
 
@@ -166,7 +166,7 @@ describe('Potion - 重力の影響', () => {
 describe('Potion - タグ確認', () => {
   it('healingタグを持つ（Playerに回復効果を与える）', () => {
     const stage = [[' ']]
-    const potion = new Potion(0, 0, stage)
+    const potion = new Potion(0 + 8, 0 + 8, stage)
 
     // ふるまい：「healingタグを持つ」
     expect(potion.hasTag('healing')).toBe(true)
@@ -174,7 +174,7 @@ describe('Potion - タグ確認', () => {
 
   it('他のタグは持たない', () => {
     const stage = [[' ']]
-    const potion = new Potion(0, 0, stage)
+    const potion = new Potion(0 + 8, 0 + 8, stage)
 
     // ふるまい：「healing以外のタグは持たない」
     expect(potion.hasTag('enemy')).toBe(false)

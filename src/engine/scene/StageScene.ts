@@ -11,7 +11,16 @@ import { Nuefu } from '@entity/Nuefu'
 import { Player } from '@entity/Player'
 import { Potion } from '@entity/Potion'
 import { Wind } from '@entity/Wind'
-import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA, Z_INDEX, HPDATA } from '@game/config'
+import {
+  STAGEDATA,
+  BLOCKSIZE,
+  FONT,
+  DEBUG,
+  AUDIO_ASSETS,
+  ENTITYDATA,
+  Z_INDEX,
+  HPDATA,
+} from '@game/config'
 import { Graphics, Container, Text } from 'pixi.js'
 
 import { Scene } from './Scene'
@@ -134,13 +143,15 @@ export class StageScene extends Scene {
     this.cameraContainer.addChild(this.entitiesGraphics)
 
     // プレイヤー生成（ステージ内の '0' を探す）
-    let playerX = 0
-    let playerY = 0
+    let playerCenterX = 0
+    let playerCenterY = 0
     for (let y = 0; y < this.stage.length; y++) {
       for (let x = 0; x < this.stage[y].length; x++) {
         if (this.stage[y][x] === '0') {
-          playerX = x * BLOCKSIZE
-          playerY = y * BLOCKSIZE - 16
+          // 左上座標を中心座標に変換: プレイヤーは24x32なので+12, +16
+          // legacy実装では y-16 されているため、それに合わせる
+          playerCenterX = x * BLOCKSIZE + 12
+          playerCenterY = y * BLOCKSIZE - 16 + 16
         }
       }
     }
@@ -151,7 +162,7 @@ export class StageScene extends Scene {
     const maxHp = HPDATA[difficulty] // EASY=7, NORMAL=5, HARD=3, LUNATIC=1
 
     // プレイヤーもentitiesリストに追加
-    this.player = new Player(playerX, playerY, this.stage, input, maxHp, maxHp)
+    this.player = new Player(playerCenterX, playerCenterY, this.stage, input, maxHp, maxHp)
     this.entities.push(this.player)
     this.add(this.player)
 
@@ -207,7 +218,7 @@ export class StageScene extends Scene {
     })
 
     // 風プールを初期化（legacy実装に合わせて2個）
-    // 画面外に配置して非表示状態にする
+    // 画面外に配置して非表示状態にする（中心座標として渡す）
     this.windPool = [new Wind(-100, -100, 0, this.stage), new Wind(-100, -100, 0, this.stage)]
     this.windPool.forEach((wind) => this.addEntity(wind))
 
@@ -352,12 +363,13 @@ export class StageScene extends Scene {
    */
   private spawnEntitiesFromStage() {
     // エンティティファクトリー（クラス名 → コンストラクタのマッピング）
+    // 左上座標を中心座標に変換して渡す: (x, y) → (x+8, y+8)
     const entityFactory = {
-      Nasake: (x: number, y: number) => new Nasake(x, y, this.stage),
-      Gurasan: (x: number, y: number) => new Gurasan(x, y, this.stage),
-      Potion: (x: number, y: number) => new Potion(x, y, this.stage),
-      GurasanNotFall: (x: number, y: number) => new GurasanNotFall(x, y, this.stage),
-      Nuefu: (x: number, y: number) => new Nuefu(x, y, this.stage),
+      Nasake: (x: number, y: number) => new Nasake(x + 8, y + 8, this.stage),
+      Gurasan: (x: number, y: number) => new Gurasan(x + 8, y + 8, this.stage),
+      Potion: (x: number, y: number) => new Potion(x + 8, y + 8, this.stage),
+      GurasanNotFall: (x: number, y: number) => new GurasanNotFall(x + 8, y + 8, this.stage),
+      Nuefu: (x: number, y: number) => new Nuefu(x + 8, y + 8, this.stage),
     } as const
 
     // ステージを走査してエンティティを配置
@@ -368,7 +380,8 @@ export class StageScene extends Scene {
         // ボスのスポーン位置（'*' ブロック）
         if (char === '*' && this.stageData.param?.boss) {
           const BossClass = this.stageData.param.boss
-          const boss = new BossClass(x * BLOCKSIZE, y * BLOCKSIZE, this.stage)
+          // 左上座標を中心座標に変換: DekaNasakeは32x32なので+16
+          const boss = new BossClass(x * BLOCKSIZE + 16, y * BLOCKSIZE + 16, this.stage)
           this.boss = boss
           this.addEntity(boss)
           continue
@@ -422,8 +435,8 @@ export class StageScene extends Scene {
     const wind = this.windPool[this.windPoolIndex]
 
     // 古い風の位置に消滅エフェクトを生成（vanishアニメーション）
-    // wind.x, wind.y は中心座標なので、Windコンストラクタ(左上座標を期待)用に変換
-    const vanishingWind = new Wind(wind.x - 8, wind.y - 8, 0, this.stage)
+    // wind.x, wind.y は中心座標なので、そのまま渡す
+    const vanishingWind = new Wind(wind.x, wind.y, 0, this.stage)
     vanishingWind.vx = wind.vx
     vanishingWind.vy = wind.vy
     vanishingWind.playAnimation('vanish')
@@ -630,7 +643,7 @@ export class StageScene extends Scene {
    */
   private renderDebugHitbox(entity: Entity) {
     const hitbox = entity.currentHitbox
-    this.entitiesGraphics.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height)
+    this.entitiesGraphics.rect(hitbox.x, hitbox.y, hitbox.width - 1, hitbox.height - 1)
 
     // プレイヤーは緑、その他は黄色
     const strokeColor = entity.imageKey === 'player' ? 0x00ff00 : 0xffff00

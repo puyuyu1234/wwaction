@@ -22,7 +22,7 @@ describe('Goal - ゴールエンティティ', () => {
 
     // プレイヤーをゴール近くに配置
     const input = new Input()
-    const player = new Player(stageWidth - 20, 16, stage, input, 3, 3)
+    const player = new Player(stageWidth - 20 + 12, 16 + 16, stage, input, 3, 3)
 
     // nextStageイベントが発火したかを記録
     let nextStageEventFired = false

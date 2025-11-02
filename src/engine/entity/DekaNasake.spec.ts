@@ -9,7 +9,7 @@ describe('DekaNasake - 左右の壁反転', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(80, 16, stage)
+    const deka = new DekaNasake(80 + 16, 16 + 16, stage)
 
     // 左向きに移動して壁に当たるまで（初期速度は -0.75）
     for (let i = 0; i < 300; i++) {
@@ -27,7 +27,7 @@ describe('DekaNasake - 左右の壁反転', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(16, 16, stage)
+    const deka = new DekaNasake(16 + 16, 16 + 16, stage)
 
     // 右向きに移動して壁に当たるまで
     for (let i = 0; i < 200; i++) {
@@ -45,7 +45,7 @@ describe('DekaNasake - 左右の壁反転', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(80, 16, stage)
+    const deka = new DekaNasake(80 + 16, 16 + 16, stage)
 
     // 左壁で反転するまで
     for (let i = 0; i < 400; i++) {
@@ -72,7 +72,7 @@ describe('DekaNasake - 風との衝突反応', () => {
       [' ', ' ', ' '],
       ['a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(16, 0, stage)
+    const deka = new DekaNasake(16 + 16, 0 + 16, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -99,7 +99,7 @@ describe('DekaNasake - 風との衝突反応', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(80, 0, stage)
+    const deka = new DekaNasake(80 + 16, 0 + 16, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -137,7 +137,7 @@ describe('DekaNasake - 風との衝突反応', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(48, 0, stage)
+    const deka = new DekaNasake(48 + 16, 0 + 16, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -184,7 +184,7 @@ describe('DekaNasake - 風との衝突反応', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(80, 0, stage)
+    const deka = new DekaNasake(80 + 16, 0 + 16, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -222,7 +222,7 @@ describe('DekaNasake - 風との衝突反応', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const deka = new DekaNasake(80, 0, stage)
+    const deka = new DekaNasake(80 + 16, 0 + 16, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -276,7 +276,7 @@ describe('DekaNasake - 重力と床の挙動', () => {
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
     // 初期座標を16pxグリッドに合わせる: (64, 16) → 中心 (80, 32)
-    const deka = new DekaNasake(64, 16, stage)
+    const deka = new DekaNasake(64 + 16, 16 + 16, stage)
 
     // 着地するまで更新（vyが0になるまで）
     for (let i = 0; i < 100; i++) {
@@ -300,7 +300,7 @@ describe('DekaNasake - 重力と床の挙動', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const deka = new DekaNasake(16, 16, stage)
+    const deka = new DekaNasake(16 + 16, 16 + 16, stage)
 
     const initialVy = deka.vy
 
@@ -317,7 +317,7 @@ describe('DekaNasake - 重力と床の挙動', () => {
 describe('DekaNasake - タグ確認', () => {
   it('enemyタグを持つ（プレイヤーにダメージを与える）', () => {
     const stage = [[' ']]
-    const deka = new DekaNasake(0, 0, stage)
+    const deka = new DekaNasake(0 + 16, 0 + 16, stage)
 
     // ふるまい：「enemyタグを持つ」
     expect(deka.hasTag('enemy')).toBe(true)
@@ -325,7 +325,7 @@ describe('DekaNasake - タグ確認', () => {
 
   it('windタグは持たない', () => {
     const stage = [[' ']]
-    const deka = new DekaNasake(0, 0, stage)
+    const deka = new DekaNasake(0 + 16, 0 + 16, stage)
 
     // ふるまい：「windタグは持たない」
     expect(deka.hasTag('wind')).toBe(false)

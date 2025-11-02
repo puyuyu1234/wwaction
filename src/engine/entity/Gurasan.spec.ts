@@ -8,7 +8,7 @@ describe('Gurasan - 左右の壁反転', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const gurasan = new Gurasan(64, 0, stage)
+    const gurasan = new Gurasan(64 + 8, 0 + 8, stage)
 
     // 左向きに移動して壁に当たるまで（初期速度は -0.5）
     for (let i = 0; i < 200; i++) {
@@ -25,7 +25,7 @@ describe('Gurasan - 左右の壁反転', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const gurasan = new Gurasan(16, 0, stage)
+    const gurasan = new Gurasan(16 + 8, 0 + 8, stage)
     gurasan.vx = 0.5 // 右向きに変更
 
     // 右向きに移動して壁に当たるまで
@@ -45,7 +45,7 @@ describe('Gurasan - 風との衝突で分裂', () => {
       [' ', ' ', ' '],
       ['a', 'a', 'a'],
     ]
-    const gurasan = new Gurasan(16, 0, stage)
+    const gurasan = new Gurasan(16 + 8, 0 + 8, stage)
 
     // spawnイベントとdestroyイベントを監視
     const spawnEvents: any[] = []
@@ -77,7 +77,7 @@ describe('Gurasan - 風との衝突で分裂', () => {
       [' ', ' ', ' '],
       ['a', 'a', 'a'],
     ]
-    const gurasan = new Gurasan(32, 0, stage)
+    const gurasan = new Gurasan(32 + 8, 0 + 8, stage)
 
     // spawnイベントで生成されたエンティティを記録
     const spawnedEntities: any[] = []
@@ -107,7 +107,7 @@ describe('Gurasan - 風との衝突で分裂', () => {
       [' ', ' ', ' '],
       ['a', 'a', 'a'],
     ]
-    const gurasan = new Gurasan(16, 0, stage)
+    const gurasan = new Gurasan(16 + 8, 0 + 8, stage)
 
     let spawnCount = 0
     gurasan.on('spawn', () => {
@@ -127,7 +127,7 @@ describe('Gurasan - 風との衝突で分裂', () => {
 describe('Gurasan - タグ確認', () => {
   it('敵タグを持つ（プレイヤーにダメージを与える）', () => {
     const stage = [[' ']]
-    const gurasan = new Gurasan(0, 0, stage)
+    const gurasan = new Gurasan(0 + 8, 0 + 8, stage)
 
     // ふるまい：「enemyタグを持つ」
     expect(gurasan.hasTag('enemy')).toBe(true)
@@ -135,7 +135,7 @@ describe('Gurasan - タグ確認', () => {
 
   it('風タグは持たない', () => {
     const stage = [[' ']]
-    const gurasan = new Gurasan(0, 0, stage)
+    const gurasan = new Gurasan(0 + 8, 0 + 8, stage)
 
     // ふるまい：「windタグは持たない」
     expect(gurasan.hasTag('wind')).toBe(false)
@@ -148,7 +148,7 @@ describe('Gurasan - 重力と床の挙動', () => {
       ['a', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const gurasan = new Gurasan(32, 0, stage)
+    const gurasan = new Gurasan(32 + 8, 0 + 8, stage)
 
     // 着地するまで更新
     for (let i = 0; i < 20; i++) {
@@ -170,7 +170,7 @@ describe('Gurasan - 重力と床の挙動', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const gurasan = new Gurasan(16, 0, stage)
+    const gurasan = new Gurasan(16 + 8, 0 + 8, stage)
 
     const initialVy = gurasan.vy
 

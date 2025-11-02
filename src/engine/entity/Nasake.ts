@@ -16,15 +16,12 @@ export class Nasake extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(x: number, y: number, stage: string[][]) {
-    console.log(`[Nasake] コンストラクタ呼び出し: 左上座標=(${x}, ${y})`)
+  constructor(centerX: number, centerY: number, stage: string[][]) {
+    console.log(`[Nasake] コンストラクタ呼び出し: 中心座標=(${centerX}, ${centerY})`)
 
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
-    // スプライトサイズ: 16x16、中心座標に変換: x+8, y+8
-    const centerX = x + 8
-    const centerY = y + 8
+    // スプライトサイズ: 16x16
     const rect = new Rectangle(centerX, centerY, 16, 16)
-    console.log(`[Nasake] 中心座標に変換: (${centerX}, ${centerY})`)
 
     // hitboxも中心基準に変換: legacy(4,4,8,12) → 中心基準(-4,-4,8,12)
     // 計算: (4-8, 4-8) = (-4, -4)

@@ -8,7 +8,7 @@ describe('Nuefu - 左右の壁反転', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nuefu = new Nuefu(64, 0, stage)
+    const nuefu = new Nuefu(64 + 8, 0 + 8, stage)
 
     // 左向きに移動して壁に当たるまで（初期速度は -0.5）
     for (let i = 0; i < 150; i++) {
@@ -25,7 +25,7 @@ describe('Nuefu - 左右の壁反転', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nuefu = new Nuefu(16, 0, stage)
+    const nuefu = new Nuefu(16 + 8, 0 + 8, stage)
     nuefu.vx = 0.5 // 右向きに変更
 
     // 右向きに移動して壁に当たるまで
@@ -45,7 +45,7 @@ describe('Nuefu - 崖判定（Nasakeとの差異）', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', ' '],
       ['a', 'a', 'a', 'a', ' ', ' ', ' '], // x=64から右が崖
     ]
-    const nuefu = new Nuefu(16, 0, stage)
+    const nuefu = new Nuefu(16 + 8, 0 + 8, stage)
     nuefu.vx = 0.5 // 右向き
 
     // 床に着地するまで待つ
@@ -73,7 +73,7 @@ describe('Nuefu - 崖判定（Nasakeとの差異）', () => {
       [' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', 'a', 'a', 'a', 'a'], // x=48から左が崖
     ]
-    const nuefu = new Nuefu(64, 0, stage)
+    const nuefu = new Nuefu(64 + 8, 0 + 8, stage)
     nuefu.vx = -0.5 // 左向き
 
     // 床に着地するまで待つ
@@ -101,7 +101,7 @@ describe('Nuefu - 崖判定（Nasakeとの差異）', () => {
       ['a', ' ', ' ', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'], // 平坦な床、崖なし
     ]
-    const nuefu = new Nuefu(48, 0, stage)
+    const nuefu = new Nuefu(48 + 8, 0 + 8, stage)
     nuefu.vx = -0.5 // 左向き
 
     // 着地するまで更新
@@ -129,7 +129,7 @@ describe('Nuefu - 風との衝突反応', () => {
       [' ', ' ', ' '],
       ['a', 'a', 'a'],
     ]
-    const nuefu = new Nuefu(16, 0, stage)
+    const nuefu = new Nuefu(16 + 8, 0 + 8, stage)
 
     // 床に着地させる
     for (let i = 0; i < 20; i++) {
@@ -156,7 +156,7 @@ describe('Nuefu - 風との衝突反応', () => {
 
   it('風に触れると上方向の速度を持つ', () => {
     const stage = [[' ', ' ', ' ']]
-    const nuefu = new Nuefu(16, 16, stage)
+    const nuefu = new Nuefu(16 + 8, 16 + 8, stage)
 
     // 風との衝突を発生させる
     const mockWind = {
@@ -171,7 +171,7 @@ describe('Nuefu - 風との衝突反応', () => {
 
   it('風以外のエンティティとの衝突では反応しない', () => {
     const stage = [[' ', ' ', ' ']]
-    const nuefu = new Nuefu(16, 16, stage)
+    const nuefu = new Nuefu(16 + 8, 16 + 8, stage)
 
     const initialVy = nuefu.vy
 
@@ -194,7 +194,7 @@ describe('Nuefu - 重力と床の挙動', () => {
       ['a', ' ', ' ', ' ', ' ', 'a'],
       ['a', 'a', 'a', 'a', 'a', 'a'],
     ]
-    const nuefu = new Nuefu(32, 0, stage)
+    const nuefu = new Nuefu(32 + 8, 0 + 8, stage)
 
     // 着地するまで更新
     for (let i = 0; i < 20; i++) {
@@ -216,7 +216,7 @@ describe('Nuefu - 重力と床の挙動', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' '],
     ]
-    const nuefu = new Nuefu(16, 0, stage)
+    const nuefu = new Nuefu(16 + 8, 0 + 8, stage)
 
     const initialVy = nuefu.vy
 
@@ -233,7 +233,7 @@ describe('Nuefu - 重力と床の挙動', () => {
 describe('Nuefu - タグ確認', () => {
   it('敵タグを持つ（Playerにダメージを与える）', () => {
     const stage = [[' ']]
-    const nuefu = new Nuefu(0, 0, stage)
+    const nuefu = new Nuefu(0 + 8, 0 + 8, stage)
 
     // ふるまい：「enemyタグを持つ」
     expect(nuefu.hasTag('enemy')).toBe(true)
@@ -241,7 +241,7 @@ describe('Nuefu - タグ確認', () => {
 
   it('他のタグは持たない', () => {
     const stage = [[' ']]
-    const nuefu = new Nuefu(0, 0, stage)
+    const nuefu = new Nuefu(0 + 8, 0 + 8, stage)
 
     // ふるまい：「enemy以外のタグは持たない」
     expect(nuefu.hasTag('wind')).toBe(false)
