@@ -3,7 +3,7 @@ import { GRAVITY } from '@game/config'
 /**
  * 物理演算Componentが要求するインターフェース
  */
-export interface IPhysicsEntity {
+interface IPhysicsEntity {
   vx: number
   vy: number
   x: number

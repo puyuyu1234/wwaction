@@ -6,14 +6,14 @@
 /**
  * 値を最小値と最大値の範囲内にクランプする
  */
-export const clamp = (x: number, min: number, max: number): number => {
+const clamp = (x: number, min: number, max: number): number => {
   return Math.min(Math.max(x, min), max)
 }
 
 /**
  * 線形補間
  */
-export const lerp = (start: number, end: number, t: number): number => {
+const lerp = (start: number, end: number, t: number): number => {
   return start + (end - start) * t
 }
 

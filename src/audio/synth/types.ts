@@ -1,17 +1,17 @@
 /**
  * オシレーター波形タイプ
  */
-export type WaveformType = 'square' | 'sawtooth' | 'triangle' | 'sine'
+type WaveformType = 'square' | 'sawtooth' | 'triangle' | 'sine'
 
 /**
  * シンセサイザータイプ
  */
-export type SynthType = 'synth' | 'noise'
+type SynthType = 'synth' | 'noise'
 
 /**
  * ADSR エンベロープ設定
  */
-export interface EnvelopeConfig {
+interface EnvelopeConfig {
   /** Attack時間（秒） */
   attack: number
   /** Decay時間（秒） */

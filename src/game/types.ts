@@ -5,6 +5,8 @@
 
 import type { Difficulty } from './config'
 
+import type { Entity } from '@/engine/entity/Entity'
+
 /**
  * ブロックの衝突判定タイプ
  */
@@ -84,22 +86,8 @@ export interface StageData {
   /** オプションパラメータ */
   param?: {
     /** ボスクラス（コンストラクタシグネチャ） */
-    boss?: new (x: number, y: number, stage: string[][]) => BossEntity
+    boss?: new (x: number, y: number, stage: string[][]) => Entity
   }
-}
-
-/**
- * ボスエンティティのインターフェース
- * 循環参照を避けるため、Entity型の代わりにこのインターフェースを使用
- */
-export interface BossEntity {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  update(): void
-  hasTag(tag: string): boolean
-  handleCollision(other: unknown): void
 }
 
 /**

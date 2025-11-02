@@ -3,7 +3,7 @@ import type { Entity } from '@entity/Entity'
 /**
  * 衝突時の反応を処理するハンドラ型
  */
-export type CollisionHandler = (other: Entity) => void
+type CollisionHandler = (other: Entity) => void
 
 /**
  * エンティティ間の衝突反応を管理するComponent（タグベース）

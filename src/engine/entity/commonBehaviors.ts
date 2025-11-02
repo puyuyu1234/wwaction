@@ -12,7 +12,7 @@ import type { Entity } from './Entity'
 /**
  * 風ジャンプの速度（上方向）
  */
-export const WIND_JUMP_POWER = -3
+const WIND_JUMP_POWER = -3
 
 export const CommonBehaviors = {
   /**

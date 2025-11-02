@@ -4,7 +4,7 @@ import { Assets, Spritesheet, Texture, SCALE_MODES } from 'pixi.js'
  * アニメーション速度情報（参考用）
  * スプライトシートJSONとは別に、.info.json から読み込む
  */
-export interface AnimationSpeedInfo {
+interface AnimationSpeedInfo {
   freq: number
   animationSpeed: number
   fps: number

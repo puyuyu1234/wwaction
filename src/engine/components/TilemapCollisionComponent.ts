@@ -5,7 +5,7 @@ import { CollisionType } from '@game/types'
 /**
  * 衝突判定Componentが要求するインターフェース
  */
-export interface ICollisionEntity {
+interface ICollisionEntity {
   x: number
   y: number
   vx: number
