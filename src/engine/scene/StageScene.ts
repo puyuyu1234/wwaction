@@ -1,6 +1,8 @@
 import { Camera } from '@core/Camera'
 import { Input } from '@core/Input'
+import { Rectangle } from '@core/Rectangle'
 import { Entity } from '@entity/Entity'
+import { Goal } from '@entity/Goal'
 import { Gurasan } from '@entity/Gurasan'
 import { GurasanNotFall } from '@entity/GurasanNotFall'
 import { Nasake } from '@entity/Nasake'
@@ -164,10 +166,28 @@ export class StageScene extends Scene {
       this.dispatch('changeScene', newScene)
     })
 
+    // プレイヤーのゴール到達イベントをリッスン
+    this.player.on('nextStage', () => {
+      // 次のステージに遷移
+      const newScene = new StageScene(
+        this.stageIndex + 1,
+        this.input,
+        this.viewportWidth,
+        this.viewportHeight
+      )
+      this.dispatch('changeScene', newScene)
+    })
+
     // 風プールを初期化（legacy実装に合わせて2個）
     // 画面外に配置して非表示状態にする
     this.windPool = [new Wind(-100, -100, 0, this.stage), new Wind(-100, -100, 0, this.stage)]
     this.windPool.forEach((wind) => this.addEntity(wind))
+
+    // ゴールエンティティを追加（ステージ右端の縦長領域）
+    // legacy実装: new Rectangle(this.stageWidth - 1, 0, 3, this.stageHeight)
+    const goalRect = new Rectangle(this.stageWidth - 1, 0, 3, this.stageHeight)
+    const goal = new Goal(goalRect, this.stage)
+    this.addEntity(goal)
 
     // デバッグテキスト（開発時のみ表示）
     if (DEBUG) {
