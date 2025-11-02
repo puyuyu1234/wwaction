@@ -391,6 +391,7 @@ export class StageScene extends Scene {
   /**
    * エンティティをシーンに追加
    * destroyイベントをリッスンして自動削除を設定
+   * spawnイベントをリッスンして子エンティティを追加
    */
   private addEntity(entity: Entity) {
     this.entities.push(entity)
@@ -399,6 +400,12 @@ export class StageScene extends Scene {
     // destroyイベントをリッスン
     entity.on('destroy', () => {
       this.removeEntity(entity)
+    })
+
+    // spawnイベントをリッスン（子エンティティの生成）
+    entity.on('spawn', (childEntity: Entity) => {
+      console.log('[StageScene] spawnイベント受信:', childEntity.constructor.name)
+      this.addEntity(childEntity)
     })
   }
 

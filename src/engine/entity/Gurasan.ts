@@ -41,19 +41,30 @@ export class Gurasan extends Entity {
 
     // 風との衝突反応を設定: 分裂する
     this.collisionReaction.on('wind', () => {
+      console.log('[Gurasan] 風に当たった！分裂開始')
+      console.log(`[Gurasan] 現在位置: (${this.x}, ${this.y})`)
+      console.log(`[Gurasan] 現在速度: vx=${this.vx}, vy=${this.vy}`)
+
       // Nasake を生成（現在の速度の半分で移動、向きを引き継ぐ）
-      const nasake = new Nasake(this.x, this.y, this.stage)
+      // this.x, this.y は中心座標なので、左上座標に変換（-8する）
+      const nasake = new Nasake(this.x - 8, this.y - 8, this.stage)
       nasake.vx = this.vx / 2
       nasake.scaleX = this.scaleX // 向きを引き継ぐ
+      console.log(`[Gurasan] Nasake生成: (${nasake.x}, ${nasake.y}), vx=${nasake.vx}`)
 
       // SunGlass を生成（逆方向に跳ねる）
-      const sunGlass = new SunGlass(this.x, this.y, -this.vx, this.stage)
+      // this.x, this.y は中心座標なので、左上座標に変換（-8する）
+      const sunGlass = new SunGlass(this.x - 8, this.y - 8, -this.vx, this.stage)
+      console.log(`[Gurasan] SunGlass生成: (${sunGlass.x}, ${sunGlass.y}), vx=${sunGlass.vx}`)
 
       // 生成イベントを発火（親に追加してもらうため）
+      console.log('[Gurasan] spawnイベント発火: nasake')
       this.dispatch('spawn', nasake)
+      console.log('[Gurasan] spawnイベント発火: sunGlass')
       this.dispatch('spawn', sunGlass)
 
       // 自分は消滅
+      console.log('[Gurasan] 自分を破棄')
       this.destroy()
     })
 
