@@ -8,7 +8,7 @@ import { Nuefu } from '@entity/Nuefu'
 import { Player } from '@entity/Player'
 import { Potion } from '@entity/Potion'
 import { Wind } from '@entity/Wind'
-import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA } from '@game/config'
+import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA, Z_INDEX } from '@game/config'
 import { Graphics, Container, Text } from 'pixi.js'
 
 import { Scene } from './Scene'
@@ -17,6 +17,7 @@ import { AudioManager } from '@/audio/AudioManager'
 import { Actor } from '@/engine/actor/Actor'
 import { HPBar } from '@/engine/actor/HPBar'
 import { TilemapSprite } from '@/engine/actor/TilemapSprite'
+import { TutorialUI } from '@/engine/actor/TutorialUI'
 
 /**
  * ステージシーン
@@ -33,6 +34,7 @@ export class StageScene extends Scene {
   private camera: Camera
   private debugText!: Text
   private hpBar!: HPBar // HP表示（通常UI）
+  private tutorialUI?: TutorialUI // チュートリアルUI（ステージ0のみ）
   private input: Input
   private audio = AudioManager.getInstance()
   // private stageIndex: number // 将来的にステージ別BGMで使用予定
@@ -70,6 +72,7 @@ export class StageScene extends Scene {
 
     // カメラコンテナ（スクロール用）
     this.cameraContainer = new Container()
+    this.cameraContainer.sortableChildren = true // z-index による描画順制御を有効化
     this.container.addChild(this.cameraContainer)
 
     // カメラ制御
@@ -77,13 +80,21 @@ export class StageScene extends Scene {
 
     // タイルマップスプライト描画（スプライトシート使用）
     this.tilemapSprite = new TilemapSprite(this.stage, this.cameraContainer)
+    this.tilemapSprite.tilemapContainer.zIndex = Z_INDEX.TILEMAP
+
+    // チュートリアルUI（ステージ0のみ - タイルマップの上、エンティティの下に描画）
+    if (stageIndex === 0) {
+      this.tutorialUI = new TutorialUI(this.input)
+    }
 
     // ステージ描画用Graphics（TilemapSprite実装後は不要）
     this.stageGraphics = new Graphics()
+    this.stageGraphics.zIndex = Z_INDEX.STAGE_DEBUG
     this.cameraContainer.addChild(this.stageGraphics)
 
     // エンティティ描画用Graphics
     this.entitiesGraphics = new Graphics()
+    this.entitiesGraphics.zIndex = Z_INDEX.ENTITY_DEBUG
     this.cameraContainer.addChild(this.entitiesGraphics)
 
     // プレイヤー生成（ステージ内の '0' を探す）
@@ -178,6 +189,12 @@ export class StageScene extends Scene {
 
     // HP表示更新
     this.hpBar.update()
+
+    // チュートリアルUI更新（ステージ0のみ）
+    if (this.tutorialUI) {
+      this.tutorialUI.update()
+      this.tutorialUI.render(this.cameraContainer, Z_INDEX.TUTORIAL_UI) // camera内 = ステージと一緒にスクロール
+    }
 
     // 消滅エフェクト更新（12フレーム後に削除）
     this.updateVanishingWinds()
@@ -431,8 +448,8 @@ export class StageScene extends Scene {
     this.entitiesGraphics.clear()
 
     this.entities.forEach((entity) => {
-      // エンティティ自身に描画を委譲
-      entity.render(this.cameraContainer)
+      // エンティティ自身に描画を委譲（z-index指定）
+      entity.render(this.cameraContainer, Z_INDEX.ENTITY)
 
       // デバッグ用ヒットボックス表示
       if (DEBUG) {

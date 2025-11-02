@@ -10,7 +10,7 @@ import { Container, Sprite } from 'pixi.js'
  */
 export class TilemapSprite {
   private stage: string[][]
-  private tilemapContainer: Container
+  public tilemapContainer: Container
 
   constructor(stage: string[][], parent: Container) {
     this.stage = stage

@@ -1,0 +1,10 @@
+{
+  "space": {
+    "animationSpeed": 0,
+    "loop": false
+  },
+  "space-pushed": {
+    "animationSpeed": 0,
+    "loop": false
+  }
+}

@@ -3,7 +3,7 @@
  * param.js から移植
  */
 
-import type { BlockData, StageData } from './types'
+import type { BlockData, StageData, UITypeData } from './types'
 import { CollisionType } from './types'
 
 /**
@@ -21,6 +21,23 @@ export const BLOCKSIZE = 16
  * 重力加速度 (ピクセル/フレーム²)
  */
 export const GRAVITY = 0.125
+
+/**
+ * 描画レイヤーのz-index定義
+ * PixiJSのsortableChildrenで使用
+ */
+export const Z_INDEX = {
+  /** タイルマップ（背景） */
+  TILEMAP: 0,
+  /** チュートリアルUI（地面の上、キャラクターの下） */
+  TUTORIAL_UI: 10,
+  /** ステージデバッグ描画 */
+  STAGE_DEBUG: 20,
+  /** エンティティ（プレイヤー、敵、風など） */
+  ENTITY: 100,
+  /** エンティティデバッグ描画（ヒットボックス） */
+  ENTITY_DEBUG: 200,
+} as const
 
 /**
  * 難易度ごとのHP
@@ -225,6 +242,60 @@ export const ENTITYDATA = {
   '4': { entityClass: 'GurasanNotFall' },
   '5': { entityClass: 'Nuefu' },
 } as const
+
+/**
+ * UIタイプデータマップ
+ * キー: UIキー文字
+ * 値: UI描画設定
+ */
+export const UI_TYPE_DATA: Record<string, UITypeData> = {
+  w: {
+    imageKey: 'entity',
+    animationKey: 'W',
+    pushedAnimationKey: 'W-pushed',
+    keyCode: 'KeyW',
+    width: 16,
+    height: 16,
+  },
+  a: {
+    imageKey: 'entity',
+    animationKey: 'A',
+    pushedAnimationKey: 'A-pushed',
+    keyCode: 'KeyA',
+    width: 16,
+    height: 16,
+  },
+  s: {
+    imageKey: 'entity',
+    animationKey: 'S',
+    pushedAnimationKey: 'S-pushed',
+    keyCode: 'KeyS',
+    width: 16,
+    height: 16,
+  },
+  d: {
+    imageKey: 'entity',
+    animationKey: 'D',
+    pushedAnimationKey: 'D-pushed',
+    keyCode: 'KeyD',
+    width: 16,
+    height: 16,
+  },
+  '+': {
+    imageKey: 'entity',
+    animationKey: '+',
+    width: 16,
+    height: 16,
+  },
+  ' ': {
+    imageKey: 'space',
+    animationKey: 'space',
+    pushedAnimationKey: 'space-pushed',
+    keyCode: 'Space',
+    width: 48,
+    height: 16,
+  },
+}
 
 /**
  * ステージデータ

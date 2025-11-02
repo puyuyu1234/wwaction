@@ -68,6 +68,7 @@ export class Game {
     await assetLoader.loadSpritesheet('entity', 'spritesheets/entity.json')
     await assetLoader.loadSpritesheet('wind', 'spritesheets/wind.json')
     await assetLoader.loadSpritesheet('tileset', 'spritesheets/tileset.json')
+    await assetLoader.loadSpritesheet('space', 'spritesheets/space.json')
 
     // リサイズ処理を設定
     this.setupResize()

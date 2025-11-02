@@ -126,3 +126,27 @@ export enum PlayerState {
   /** 水中 */
   IN_WATER = 'inWater',
 }
+
+/**
+ * UIタイプデータ
+ * legacy の UITypeData に対応
+ */
+export interface UITypeData {
+  /** 使用する画像キー */
+  imageKey: string
+
+  /** アニメーション名（通常時） */
+  animationKey: string
+
+  /** 押下時のアニメーション名（存在する場合） */
+  pushedAnimationKey?: string
+
+  /** 対応するキーコード（Input用） */
+  keyCode?: string
+
+  /** 幅 */
+  width: number
+
+  /** 高さ */
+  height: number
+}

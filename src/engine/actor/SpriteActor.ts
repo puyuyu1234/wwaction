@@ -157,14 +157,20 @@ export class SpriteActor extends Actor {
   /**
    * スプライトを描画（Sceneから呼ばれる）
    * @param container 描画先のPixiJSコンテナ
+   * @param zIndex z-index値（描画順制御用、省略可）
    */
-  render(container: Container): void {
+  render(container: Container, zIndex?: number): void {
     if (!this.animatedSprite) return
 
     // 座標を整数に丸めてサブピクセルレンダリングを防ぐ（スプライトブリーディング対策）
     this.animatedSprite.x = Math.floor(this.x)
     this.animatedSprite.y = Math.floor(this.y)
     this.animatedSprite.scale.x = this.scaleX
+
+    // z-indexが指定されていれば設定
+    if (zIndex !== undefined) {
+      this.animatedSprite.zIndex = zIndex
+    }
 
     // コンテナに追加（初回のみ）
     if (!this.animatedSprite.parent) {
