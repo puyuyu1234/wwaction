@@ -16,6 +16,7 @@ import { Scene } from './Scene'
 import { AudioManager } from '@/audio/AudioManager'
 import { Actor } from '@/engine/actor/Actor'
 import { HPBar } from '@/engine/actor/HPBar'
+import { ParallaxBackground } from '@/engine/actor/ParallaxBackground'
 import { TilemapSprite } from '@/engine/actor/TilemapSprite'
 import { TutorialUI } from '@/engine/actor/TutorialUI'
 
@@ -30,6 +31,7 @@ export class StageScene extends Scene {
   private stageGraphics: Graphics
   private entitiesGraphics: Graphics
   private tilemapSprite!: TilemapSprite // タイルマップスプライト描画
+  private parallaxBackground?: ParallaxBackground // 視差スクロール背景
   private cameraContainer: Container
   private camera: Camera
   private debugText!: Text
@@ -77,6 +79,19 @@ export class StageScene extends Scene {
 
     // カメラ制御
     this.camera = new Camera(this.cameraContainer, viewportWidth, viewportHeight)
+
+    // 視差スクロール背景（ステージデータのbg設定から生成）
+    if (stageData.bg && stageData.bg.length > 0) {
+      this.parallaxBackground = new ParallaxBackground(
+        stageData.bg,
+        this.stageWidth,
+        this.stageHeight,
+        0.5, // X軸視差レート（legacy実装に合わせて0.5倍速）
+        1.0 // Y軸視差レート（カメラと同じ速度）
+      )
+      this.parallaxBackground.container.zIndex = Z_INDEX.BACKGROUND
+      this.cameraContainer.addChild(this.parallaxBackground.container)
+    }
 
     // タイルマップスプライト描画（スプライトシート使用）
     this.tilemapSprite = new TilemapSprite(this.stage, this.cameraContainer)
@@ -180,6 +195,11 @@ export class StageScene extends Scene {
 
     // カメラ追従処理
     this.updateCamera()
+
+    // 背景スクロール更新（視差効果）
+    if (this.parallaxBackground) {
+      this.parallaxBackground.updateScroll(this.camera.x, this.camera.y)
+    }
 
     // エンティティ間の衝突判定
     this.checkCollisions()
@@ -475,6 +495,7 @@ export class StageScene extends Scene {
    */
   end() {
     this.audio.stopMusic()
+    this.parallaxBackground?.destroy() // 背景の破棄
     this.tilemapSprite.destroy() // タイルマップスプライトの破棄
     super.end()
   }

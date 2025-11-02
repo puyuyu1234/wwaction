@@ -27,7 +27,9 @@ export const GRAVITY = 0.125
  * PixiJSのsortableChildrenで使用
  */
 export const Z_INDEX = {
-  /** タイルマップ（背景） */
+  /** 視差スクロール背景（一番奥） */
+  BACKGROUND: -10,
+  /** タイルマップ（地面・オブジェクト） */
   TILEMAP: 0,
   /** チュートリアルUI（地面の上、キャラクターの下） */
   TUTORIAL_UI: 10,

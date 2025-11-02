@@ -8,11 +8,27 @@ export class Camera {
   private container: Container
   private viewportWidth: number
   private viewportHeight: number
+  private _x = 0 // カメラのX座標（視差スクロール用に公開）
+  private _y = 0 // カメラのY座標（視差スクロール用に公開）
 
   constructor(container: Container, viewportWidth: number, viewportHeight: number) {
     this.container = container
     this.viewportWidth = viewportWidth
     this.viewportHeight = viewportHeight
+  }
+
+  /**
+   * カメラのX座標を取得（視差スクロール背景用）
+   */
+  get x(): number {
+    return this._x
+  }
+
+  /**
+   * カメラのY座標を取得（視差スクロール背景用）
+   */
+  get y(): number {
+    return this._y
   }
 
   /**
@@ -43,6 +59,10 @@ export class Camera {
     // ステージ境界でカメラを制限
     cameraX = Math.max(0, Math.min(cameraX, stageWidth - this.viewportWidth))
     cameraY = Math.max(0, Math.min(cameraY, stageHeight - this.viewportHeight))
+
+    // カメラ座標を保存（視差スクロール背景用）
+    this._x = cameraX
+    this._y = cameraY
 
     // PixiJSではカメラ移動は Container.position をマイナス値で設定
     this.container.x = -Math.floor(cameraX)
