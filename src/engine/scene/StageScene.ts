@@ -32,6 +32,7 @@ import { TutorialUI } from '@/engine/actor/TutorialUI'
 export class StageScene extends Scene {
   private stage: string[][]
   private player: Player // デバッグ情報用に参照を保持
+  private boss?: Entity // ボス（存在する場合）
   private entities: Entity[] = [] // プレイヤーを含む全エンティティ
   private stageGraphics: Graphics
   private entitiesGraphics: Graphics
@@ -364,6 +365,15 @@ export class StageScene extends Scene {
       for (let x = 0; x < this.stage[y].length; x++) {
         const char = this.stage[y][x]
 
+        // ボスのスポーン位置（'*' ブロック）
+        if (char === '*' && this.stageData.param?.boss) {
+          const BossClass = this.stageData.param.boss
+          const boss = new BossClass(x * BLOCKSIZE, y * BLOCKSIZE, this.stage)
+          this.boss = boss
+          this.addEntity(boss)
+          continue
+        }
+
         // ENTITYDATAに定義されているキーか確認
         if (char in ENTITYDATA) {
           const entityKey = char as keyof typeof ENTITYDATA
@@ -566,6 +576,7 @@ export class StageScene extends Scene {
       `vx: ${debug.vx}  vy: ${debug.vy}`,
       `coyoteTime: ${debug.coyoteTime}/${debug.coyoteTimeMax}`,
       `onGround: ${debug.onGround}`,
+      this.boss ? `Boss: active` : '[no boss]',
       `KeyW:${keyW} KeyA:${keyA} KeyD:${keyD}`,
       `Keys: ${pressedKeys.join(', ') || 'none'}`,
     ].join('\n')

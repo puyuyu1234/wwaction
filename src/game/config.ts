@@ -6,6 +6,8 @@
 import type { BlockData, StageData, UITypeData } from './types'
 import { CollisionType } from './types'
 
+import { DekaNasake } from '@/engine/entity/DekaNasake'
+
 /**
  * デバッグモード
  * import.meta.env.DEV を使用して開発時のみtrue
@@ -487,7 +489,7 @@ export const STAGEDATA: StageData[] = [
     bg: ['y'],
     fg: [''],
     param: {
-      // boss: DekaNasake // 後で実装
+      boss: DekaNasake,
     },
   },
   {
@@ -624,7 +626,7 @@ export const STAGEDATA: StageData[] = [
     bg: ['y'],
     fg: [''],
     param: {
-      // boss: DekaNasake // 後で実装
+      boss: DekaNasake,
     },
   },
   {

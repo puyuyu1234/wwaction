@@ -67,6 +67,7 @@ export class Game {
     await assetLoader.loadSpritesheet('player', 'spritesheets/player.json')
     await assetLoader.loadSpritesheet('entity', 'spritesheets/entity.json')
     await assetLoader.loadSpritesheet('wind', 'spritesheets/wind.json')
+    await assetLoader.loadSpritesheet('deka', 'spritesheets/deka.json')
     await assetLoader.loadSpritesheet('tileset', 'spritesheets/tileset.json')
     await assetLoader.loadSpritesheet('space', 'spritesheets/space.json')
 

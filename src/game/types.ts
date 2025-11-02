@@ -83,9 +83,23 @@ export interface StageData {
 
   /** オプションパラメータ */
   param?: {
-    /** ボスクラス (後で実装) */
-    boss?: unknown
+    /** ボスクラス（コンストラクタシグネチャ） */
+    boss?: new (x: number, y: number, stage: string[][]) => BossEntity
   }
+}
+
+/**
+ * ボスエンティティのインターフェース
+ * 循環参照を避けるため、Entity型の代わりにこのインターフェースを使用
+ */
+export interface BossEntity {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  update(): void
+  hasTag(tag: string): boolean
+  handleCollision(other: unknown): void
 }
 
 /**
@@ -116,6 +130,20 @@ export enum PlayerState {
 
   /** 水中 */
   IN_WATER = 'inWater',
+}
+
+/**
+ * DekaNasake（ボス）の状態
+ */
+export enum DekaNasakeState {
+  /** 通常移動（ゆっくり） */
+  WALK = 'walk',
+
+  /** 風を受けた直後（待機中） */
+  HIT_WIND = 'hitWind',
+
+  /** 逃走中（高速移動） */
+  RUN = 'run',
 }
 
 /**
