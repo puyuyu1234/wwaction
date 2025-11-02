@@ -417,7 +417,6 @@ export class StageScene extends Scene {
 
     // spawnイベントをリッスン（子エンティティの生成）
     entity.on('spawn', (childEntity: Entity) => {
-      console.log('[StageScene] spawnイベント受信:', childEntity.constructor.name)
       this.addEntity(childEntity)
     })
   }

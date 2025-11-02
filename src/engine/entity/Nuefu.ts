@@ -47,40 +47,14 @@ export class Nuefu extends Entity {
   }
 
   update() {
-    // 重力
     this.physics.applyGravity()
 
-    // 壁判定（跳ね返る）
-    if (this.tilemap.checkLeftWall() && this.vx < 0) {
-      this.tilemap.bounceAtLeftWall()
-      // 向きを反転（敵は vx > 0 で scaleX = -1）
-      this.scaleX = -1 // 右向き
-    }
-    if (this.tilemap.checkRightWall() && this.vx > 0) {
-      this.tilemap.bounceAtRightWall()
-      // 向きを反転
-      this.scaleX = 1 // 左向き
-    }
-    if (this.tilemap.checkUpWall() && this.vy < 0) {
-      this.tilemap.stopAtUpWall()
-    }
-    if (this.tilemap.checkDownWall() && this.vy > 0) {
-      this.tilemap.stopAtDownWall()
+    // 横壁: 反転
+    CommonBehaviors.bounceHorizontalWalls(this, this.tilemap)
 
-      // 崖判定（接地している時のみ）
-      // 右側が崖 → 左方向へ
-      if (this.tilemap.checkRightSideCliff()) {
-        this.vx = -Math.abs(this.vx)
-        this.scaleX = 1 // 敵は左向き時に scaleX = 1
-      }
-      // 左側が崖 → 右方向へ
-      if (this.tilemap.checkLeftSideCliff()) {
-        this.vx = Math.abs(this.vx)
-        this.scaleX = -1 // 敵は右向き時に scaleX = -1
-      }
-    }
+    // 縦壁: 停止＋崖検知
+    CommonBehaviors.stopVerticalWallsWithCliffDetection(this, this.tilemap)
 
-    // 速度適用
     this.physics.applyVelocity()
   }
 }

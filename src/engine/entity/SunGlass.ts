@@ -16,8 +16,6 @@ export class SunGlass extends Entity {
   private physics: PhysicsComponent
 
   constructor(centerX: number, centerY: number, vx: number, stage: string[][]) {
-    console.log(`[SunGlass] コンストラクタ呼び出し: 中心座標=(${centerX}, ${centerY}), vx=${vx}`)
-
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
     // スプライトサイズ: 16x16
     const rect = new Rectangle(centerX, centerY, 16, 16)
@@ -43,7 +41,6 @@ export class SunGlass extends Entity {
     // スプライトアニメーション初期化
     // entity.json では 'sunGlass' という名前で定義されている
     this.playAnimation('sunGlass')
-    console.log(`[SunGlass] 初期化完了: 最終位置=(${this.x}, ${this.y})`)
   }
 
   update() {

@@ -17,8 +17,6 @@ export class Nasake extends Entity {
   private tilemap: TilemapCollisionComponent
 
   constructor(centerX: number, centerY: number, stage: string[][]) {
-    console.log(`[Nasake] コンストラクタ呼び出し: 中心座標=(${centerX}, ${centerY})`)
-
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
     // スプライトサイズ: 16x16
     const rect = new Rectangle(centerX, centerY, 16, 16)
@@ -46,32 +44,11 @@ export class Nasake extends Entity {
 
     // スプライトアニメーション初期化
     this.playAnimation('nasake')
-    console.log(`[Nasake] 初期化完了: 最終位置=(${this.x}, ${this.y})`)
   }
 
   update() {
-    // 重力
     this.physics.applyGravity()
-
-    // 壁判定（跳ね返る）
-    if (this.tilemap.checkLeftWall() && this.vx < 0) {
-      this.tilemap.bounceAtLeftWall()
-      // 向きを反転（敵は vx > 0 で scaleX = -1）
-      this.scaleX = -1 // 右向き
-    }
-    if (this.tilemap.checkRightWall() && this.vx > 0) {
-      this.tilemap.bounceAtRightWall()
-      // 向きを反転
-      this.scaleX = 1 // 左向き
-    }
-    if (this.tilemap.checkUpWall() && this.vy < 0) {
-      this.tilemap.stopAtUpWall()
-    }
-    if (this.tilemap.checkDownWall() && this.vy > 0) {
-      this.tilemap.stopAtDownWall()
-    }
-
-    // 速度適用
+    CommonBehaviors.bounceWalls(this, this.tilemap)
     this.physics.applyVelocity()
   }
 }

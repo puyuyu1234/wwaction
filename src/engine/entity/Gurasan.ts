@@ -2,6 +2,7 @@ import { PhysicsComponent } from '@components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
 import { Rectangle } from '@core/Rectangle'
 
+import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 import { Nasake } from './Nasake'
 import { SunGlass } from './SunGlass'
@@ -39,30 +40,21 @@ export class Gurasan extends Entity {
 
     // 風との衝突反応を設定: 分裂する
     this.collisionReaction.on('wind', () => {
-      console.log('[Gurasan] 風に当たった！分裂開始')
-      console.log(`[Gurasan] 現在位置: (${this.x}, ${this.y})`)
-      console.log(`[Gurasan] 現在速度: vx=${this.vx}, vy=${this.vy}`)
-
       // Nasake を生成（現在の速度の半分で移動、向きを引き継ぐ）
       // this.x, this.y は中心座標なので、そのまま渡す
       const nasake = new Nasake(this.x, this.y, this.stage)
       nasake.vx = this.vx / 2
       nasake.scaleX = this.scaleX // 向きを引き継ぐ
-      console.log(`[Gurasan] Nasake生成: (${nasake.x}, ${nasake.y}), vx=${nasake.vx}`)
 
       // SunGlass を生成（逆方向に跳ねる）
       // this.x, this.y は中心座標なので、そのまま渡す
       const sunGlass = new SunGlass(this.x, this.y, -this.vx, this.stage)
-      console.log(`[Gurasan] SunGlass生成: (${sunGlass.x}, ${sunGlass.y}), vx=${sunGlass.vx}`)
 
       // 生成イベントを発火（親に追加してもらうため）
-      console.log('[Gurasan] spawnイベント発火: nasake')
       this.dispatch('spawn', nasake)
-      console.log('[Gurasan] spawnイベント発火: sunGlass')
       this.dispatch('spawn', sunGlass)
 
       // 自分は消滅
-      console.log('[Gurasan] 自分を破棄')
       this.destroy()
     })
 
@@ -71,28 +63,8 @@ export class Gurasan extends Entity {
   }
 
   update() {
-    // 重力
     this.physics.applyGravity()
-
-    // 壁判定（跳ね返る）
-    if (this.tilemap.checkLeftWall() && this.vx < 0) {
-      this.tilemap.bounceAtLeftWall()
-      // 向きを反転（敵は vx > 0 で scaleX = -1）
-      this.scaleX = -1 // 右向き
-    }
-    if (this.tilemap.checkRightWall() && this.vx > 0) {
-      this.tilemap.bounceAtRightWall()
-      // 向きを反転
-      this.scaleX = 1 // 左向き
-    }
-    if (this.tilemap.checkUpWall() && this.vy < 0) {
-      this.tilemap.stopAtUpWall()
-    }
-    if (this.tilemap.checkDownWall() && this.vy > 0) {
-      this.tilemap.stopAtDownWall()
-    }
-
-    // 速度適用
+    CommonBehaviors.bounceWalls(this, this.tilemap)
     this.physics.applyVelocity()
   }
 }

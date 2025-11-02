@@ -1,6 +1,7 @@
 import { FallDeathComponent } from '@components/FallDeathComponent'
 import { HealthComponent } from '@components/HealthComponent'
 import { PhysicsComponent } from '@components/PhysicsComponent'
+import { StateManager } from '@components/StateManager'
 import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
 import { Input } from '@core/Input'
 import { Rectangle } from '@core/Rectangle'
@@ -12,31 +13,6 @@ import { AudioManager } from '@/audio/AudioManager'
 import { BLOCKSIZE, SFX_KEYS } from '@/game/config'
 import { PlayerState } from '@/game/types'
 
-/**
- * プレイヤーの状態管理クラス
- * legacy の PlayerState クラスに対応
- */
-class PlayerStateManager {
-  private currentState: PlayerState = PlayerState.STAND
-  private stateTime = 0
-
-  changeState(newState: PlayerState) {
-    this.currentState = newState
-    this.stateTime = 0
-  }
-
-  update() {
-    this.stateTime++
-  }
-
-  getState(): PlayerState {
-    return this.currentState
-  }
-
-  getTime(): number {
-    return this.stateTime
-  }
-}
 
 /**
  * プレイヤーエンティティ
@@ -52,7 +28,7 @@ export class Player extends Entity {
   private readonly JUMP_POWER = -3 // legacy実装に合わせて調整
 
   // 状態管理
-  private stateManager = new PlayerStateManager()
+  private stateManager = new StateManager<PlayerState>(PlayerState.STAND)
 
   // 死亡フラグ（アニメーション制御用）
   public isDead = false

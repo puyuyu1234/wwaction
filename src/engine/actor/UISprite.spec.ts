@@ -39,8 +39,8 @@ describe('UISprite', () => {
 
     const playAnimationSpy = vi.spyOn(uiSprite, 'playAnimation')
 
-    // Wキーを押す
-    input['keyTimeMap'].set('w', 1)
+    // Wキーを押す（KeyW = キーコード）
+    input['keyTimeMap'].set('KeyW', 1)
 
     uiSprite.update()
 

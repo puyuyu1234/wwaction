@@ -1,4 +1,5 @@
 import { PhysicsComponent } from '@components/PhysicsComponent'
+import { StateManager } from '@components/StateManager'
 import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
 import { Rectangle } from '@core/Rectangle'
 
@@ -6,31 +7,6 @@ import { Entity } from './Entity'
 
 import { DekaNasakeState } from '@/game/types'
 
-/**
- * DekaNasakeの状態管理クラス
- * PlayerStateManagerに倣った設計
- */
-class DekaNasakeStateManager {
-  private currentState: DekaNasakeState = DekaNasakeState.WALK
-  private stateTime = 0
-
-  changeState(newState: DekaNasakeState) {
-    this.currentState = newState
-    this.stateTime = 0
-  }
-
-  update() {
-    this.stateTime++
-  }
-
-  getState(): DekaNasakeState {
-    return this.currentState
-  }
-
-  getTime(): number {
-    return this.stateTime
-  }
-}
 
 /**
  * DekaNasake（デカナサケ）エンティティ - ボスキャラクター
@@ -49,7 +25,7 @@ export class DekaNasake extends Entity {
   private direction = -1
 
   /** 状態管理 */
-  private stateManager = new DekaNasakeStateManager()
+  private stateManager = new StateManager<DekaNasakeState>(DekaNasakeState.WALK)
 
   /** 崖検出のクールダウンタイマー */
   private cliffTimer = 120
