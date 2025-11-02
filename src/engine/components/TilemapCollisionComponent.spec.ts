@@ -788,7 +788,7 @@ describe('TilemapCollisionComponent', () => {
       expect(collision.checkRightWall()).toBe(true)
     })
 
-    it('ステージ下端（y >= stage高さ）は壁として扱われる', () => {
+    it('ステージ下端（y >= stage高さ）は壁として扱われない（落下死エリア）', () => {
       const stage = [
         [' ', ' ', ' '],
         [' ', ' ', ' '], // 高さ2ブロック = 32px
@@ -804,8 +804,8 @@ describe('TilemapCollisionComponent', () => {
       }
       const collision = new TilemapCollisionComponent(entity, stage)
 
-      // ふるまい：「ステージ下端は壁として検出される」
-      expect(collision.checkDownWall()).toBe(true)
+      // ふるまい：「ステージ下端は壁として検出されない（落下死判定は別処理）」
+      expect(collision.checkDownWall()).toBe(false)
     })
 
     it('ステージ上端（y < 0）は壁として扱われない（ジャンプ可能）', () => {
@@ -851,27 +851,5 @@ describe('TilemapCollisionComponent', () => {
       expect(entity.x).toBeGreaterThanOrEqual(0) // ステージ内に配置
     })
 
-    it('ステージ下端で停止する', () => {
-      const stage = [
-        [' ', ' ', ' '],
-        [' ', ' ', ' '], // 高さ2ブロック = 32px
-      ]
-      const entity = {
-        x: 16,
-        y: 24,
-        vx: 0,
-        vy: 10,
-        width: 16,
-        height: 16,
-        hitbox: new Rectangle(0, 0, 16, 16),
-      }
-      const collision = new TilemapCollisionComponent(entity, stage)
-
-      collision.stopAtDownWall()
-
-      // ふるまい：「ステージ下端で停止する」
-      expect(entity.vy).toBe(0)
-      expect(entity.y).toBeLessThanOrEqual(32) // ステージ高さ以内
-    })
   })
 })

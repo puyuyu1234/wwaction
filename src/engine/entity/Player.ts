@@ -1,3 +1,5 @@
+import { FallDeathComponent } from '@components/FallDeathComponent'
+import { HealthComponent } from '@components/HealthComponent'
 import { PhysicsComponent } from '@components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@components/TilemapCollisionComponent'
 import { Input } from '@core/Input'
@@ -52,19 +54,14 @@ export class Player extends Entity {
   // 状態管理
   private stateManager = new PlayerStateManager()
 
-  // HP関連
-  public hp: number
-  public maxHp: number
-  private noHitboxTime = 0 // 無敵時間（ダメージ後の猶予）
+  // 死亡フラグ（アニメーション制御用）
   public isDead = false
-
-  // 落下死処理用
-  private deathY: number // 落下死判定のY座標（ステージ高さ + 余裕）
-  private floorPositions: Array<{ x: number; y: number }> = []
 
   // Components（型安全に保持）
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
+  private health: HealthComponent
+  private fallDeath: FallDeathComponent
 
   constructor(x: number, y: number, stage: string[][], input: Input, hp: number, maxHp: number) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
@@ -79,17 +76,12 @@ export class Player extends Entity {
     super('player', rect, hitbox, stage, [])
 
     this.input = input
-    this.hp = hp
-    this.maxHp = maxHp
 
-    // 落下死判定位置を計算（ステージ高さ + 余裕）
-    // legacy実装: entity.js:148-152（stageHeight + 32）
-    const stageHeight = stage.length * BLOCKSIZE
-    this.deathY = stageHeight + 32
-
-    // 必要なComponentを初期化
+    // Componentを初期化
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.health = new HealthComponent(hp, maxHp)
+    this.fallDeath = new FallDeathComponent(stage.length * BLOCKSIZE)
 
     // 衝突反応を登録（元のJS実装の on("hitWind", ...) に相当）
     this.setupCollisionReactions()
@@ -138,20 +130,13 @@ export class Player extends Entity {
     // 状態管理の更新
     this.stateManager.update()
 
-    // 無敵時間の更新と点滅エフェクト
-    if (this.noHitboxTime > 0) {
-      this.noHitboxTime--
-      // 2フレームごとに点滅（legacy実装に合わせる）
-      const sprite = this.getAnimatedSprite()
-      if (sprite) {
-        sprite.alpha = this.noHitboxTime % 2 === 0 ? 0 : 1
-      }
-    } else {
-      // 無敵時間終了時は完全に表示
-      const sprite = this.getAnimatedSprite()
-      if (sprite) {
-        sprite.alpha = 1
-      }
+    // HP・無敵時間の更新
+    this.health.update()
+
+    // 点滅エフェクト
+    const sprite = this.getAnimatedSprite()
+    if (sprite) {
+      sprite.alpha = this.health.shouldBlink() ? 0 : 1
     }
 
     // 強制アニメーションフレームの更新
@@ -163,7 +148,7 @@ export class Player extends Entity {
     // 状態に応じた処理
     this.processStateInput()
 
-    // 壁判定（停止）
+    // 壁判定（速度適用前に衝突チェック）
     if (this.tilemap.checkLeftWall() && this.vx < 0) {
       this.tilemap.stopAtLeftWall()
     }
@@ -178,20 +163,22 @@ export class Player extends Entity {
     if (this.tilemap.checkDownWall() && this.vy > 0) {
       this.tilemap.stopAtDownWall()
       this.coyoteTime = 0 // 着地したらコヨーテタイムリセット
-
-      // 地面に接地したら座標を記録（落下死処理用）
-      this.recordFloorPosition()
     } else {
       // 空中にいる場合、コヨーテタイムを増やす
       this.coyoteTime++
     }
 
-    // 速度適用
+    // 速度適用（壁判定後、衝突しない速度で移動）
     this.physics.applyVelocity()
+
+    // 床に接地した場合、座標を記録（速度適用後の最終位置）
+    if (this.coyoteTime === 0) {
+      this.fallDeath.recordFloor(this.x, this.y)
+    }
 
     // 落下死判定（ステージ外に落下）
     // 1ダメージ + 直前の地面座標に復帰
-    if (this.y > this.deathY) {
+    if (this.fallDeath.checkFallDeath(this.y)) {
       this.damage(1, true) // isPit = true で落とし穴扱い
       return
     }
@@ -343,27 +330,15 @@ export class Player extends Entity {
   }
 
   /**
-   * 地面座標を記録（落下死処理用）
-   */
-  private recordFloorPosition() {
-    this.floorPositions.push({ x: this.x, y: this.y })
-    // 最大10個まで保持
-    if (this.floorPositions.length > 10) {
-      this.floorPositions.shift()
-    }
-  }
-
-  /**
    * 落とし穴から復帰
    * legacy の fallPit イベントに対応
    */
   private fallPit() {
-    if (this.floorPositions.length === 0) return
+    const pos = this.fallDeath.getRecoveryPosition()
+    if (!pos) return
 
-    const lastFloor = this.floorPositions.shift()!
-    this.floorPositions = [lastFloor]
-    this.x = lastFloor.x
-    this.y = lastFloor.y
+    this.x = pos.x
+    this.y = pos.y
     this.vx = 0
     this.vy = 0
   }
@@ -410,13 +385,11 @@ export class Player extends Entity {
    * @param isPit 落とし穴ダメージかどうか
    */
   damage(num: number, isPit = false) {
-    // 無敵時間中はダメージを受けない
-    if (this.noHitboxTime > 0) return
+    // HealthComponentでダメージ処理
+    const result = this.health.damage(num)
 
-    // HPを減らす（最小0）
-    const nextHp = Math.max(0, this.hp - num)
-    const actualDamage = this.hp - nextHp
-    this.hp = nextHp
+    // 無敵時間中はダメージを受けない
+    if (result.actualDamage === 0) return
 
     // ノックバック（向きの逆方向に押し出す）
     this.vx = this.scaleX > 0 ? -1 : 1
@@ -426,17 +399,14 @@ export class Player extends Entity {
     // 1フレーム分後退
     this.x -= this.vx
 
-    // 無敵時間を設定（約0.8秒）
-    this.noHitboxTime = 50
-
     // ダメージ音
     this.audio.playSound(SFX_KEYS.DAMAGE)
 
     // ダメージイベント発火（HPBar更新用）
-    this.dispatch('playerDamage', actualDamage)
+    this.dispatch('playerDamage', result.actualDamage)
 
     // 死亡判定
-    if (this.hp <= 0) {
+    if (result.isDead) {
       this.isDead = true
       // 強制的にdamageアニメーションを100フレーム再生（legacy実装に合わせる）
       this.playAnimationForced('damage', 100)
@@ -461,7 +431,7 @@ export class Player extends Entity {
    * @param num 回復量
    */
   heal(num: number) {
-    this.hp = Math.min(this.maxHp, this.hp + num)
+    this.health.heal(num)
     this.audio.playSound(SFX_KEYS.HEAL)
   }
 
@@ -524,7 +494,7 @@ export class Player extends Entity {
    * 無敵時間中かどうか
    */
   isInvincible(): boolean {
-    return this.noHitboxTime > 0
+    return this.health.isInvincible()
   }
 
   /**
@@ -539,12 +509,30 @@ export class Player extends Entity {
       coyoteTime: this.coyoteTime,
       coyoteTimeMax: this.COYOTE_TIME_MAX,
       onGround: this.coyoteTime === 0,
-      hp: this.hp,
-      maxHp: this.maxHp,
+      hp: this.health.getHp(),
+      maxHp: this.health.getMaxHp(),
       invincible: this.isInvincible(),
       isDead: this.isDead,
       state: this.stateManager.getState(),
       stateTime: this.stateManager.getTime(),
     }
+  }
+
+  /**
+   * HP取得（後方互換のためのgetter）
+   * HPBar等の外部モジュールが `player.hp` でアクセスするため、
+   * HealthComponentへの委譲を隠蔽する
+   */
+  get hp(): number {
+    return this.health.getHp()
+  }
+
+  /**
+   * 最大HP取得（後方互換のためのgetter）
+   * HPBar等の外部モジュールが `player.maxHp` でアクセスするため、
+   * HealthComponentへの委譲を隠蔽する
+   */
+  get maxHp(): number {
+    return this.health.getMaxHp()
   }
 }
