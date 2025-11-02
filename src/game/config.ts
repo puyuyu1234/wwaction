@@ -309,8 +309,6 @@ export const UI_TYPE_DATA: Record<string, UITypeData> = {
  */
 export const STAGEDATA: StageData[] = [
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                                    ',
@@ -336,6 +334,7 @@ export const STAGEDATA: StageData[] = [
   {
     name: 'チューリップ農園',
     engName: 'Tulip Plantation',
+    bgm: 'test',
     stages: [
       [
         '                                                                    ',
@@ -359,8 +358,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                                      ',
@@ -384,8 +381,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                            gbbh        ',
@@ -409,8 +404,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                      gbbbbh      ',
@@ -434,8 +427,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                                  ',
@@ -459,8 +450,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                    ',
@@ -487,8 +476,6 @@ export const STAGEDATA: StageData[] = [
     },
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                                     ',
@@ -512,8 +499,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                       ',
@@ -537,8 +522,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '             ABBBBJl',
@@ -581,8 +564,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                                              ',
@@ -606,8 +587,6 @@ export const STAGEDATA: StageData[] = [
     fg: [''],
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         'BBBBBBBBBBBBBBBJllll',
@@ -634,8 +613,6 @@ export const STAGEDATA: StageData[] = [
     },
   },
   {
-    name: '',
-    engName: '',
     stages: [
       [
         '                                        ',

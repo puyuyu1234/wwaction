@@ -20,14 +20,16 @@ export class StageName {
   private static readonly WAIT_TIME = 120
   private static readonly LETTER_DELAY = 2 // 文字ごとの遅延フレーム数
 
-  constructor(stageName: string, stageEngName: string, viewportWidth = 320) {
+  constructor(stageName: string, stageEngName: string | undefined, viewportWidth = 320) {
     // 黒い矩形を作成（左右から中央へ）
     this.rect1 = new RectActor(viewportWidth, 90, viewportWidth, 30, '#0008')
     this.rect2 = new RectActor(-viewportWidth, 60, viewportWidth, 30, '#0008')
 
     // ステージ名テキストを作成（文字ごとに分割）
     this.createStageNameText(stageName, 102, 16, 2, viewportWidth)
-    this.createStageNameText(stageEngName, 127, 12, 1, viewportWidth)
+    if (stageEngName) {
+      this.createStageNameText(stageEngName, 127, 12, 1, viewportWidth)
+    }
   }
 
   /**

@@ -56,6 +56,7 @@ export class StageScene extends Scene {
   private viewportWidth: number
   private viewportHeight: number
   private isRetry: boolean // リトライ時はステージ名表示を省略
+  private stageData: (typeof STAGEDATA)[number] // BGM参照用にステージデータを保持
 
   // 演出関連
   private openingTransition?: SceneTransition // シーン開始時の画面遷移演出
@@ -78,13 +79,13 @@ export class StageScene extends Scene {
     this.isRetry = isRetry
 
     // ステージデータ取得
-    const stageData = STAGEDATA[stageIndex]
-    if (!stageData?.stages?.[0]) {
+    this.stageData = STAGEDATA[stageIndex]
+    if (!this.stageData?.stages?.[0]) {
       throw new Error(`Stage ${stageIndex} not found`)
     }
 
     // stages[0] は string[] の配列なので、それを文字の2次元配列に変換
-    this.stage = stageData.stages[0].map((row) => row.split(''))
+    this.stage = this.stageData.stages[0].map((row) => row.split(''))
 
     // ステージサイズを計算
     this.stageWidth = this.stage[0].length * BLOCKSIZE
@@ -99,9 +100,9 @@ export class StageScene extends Scene {
     this.camera = new Camera(this.cameraContainer, viewportWidth, viewportHeight)
 
     // 視差スクロール背景（ステージデータのbg設定から生成）
-    if (stageData.bg && stageData.bg.length > 0) {
+    if (this.stageData.bg && this.stageData.bg.length > 0) {
       this.parallaxBackground = new ParallaxBackground(
-        stageData.bg,
+        this.stageData.bg,
         this.stageWidth,
         this.stageHeight,
         0.5, // X軸視差レート（legacy実装に合わせて0.5倍速）
@@ -228,24 +229,17 @@ export class StageScene extends Scene {
 
     // ステージ名表示演出（リトライ時は省略）
     // 開く演出より先に作成しておくが、z-indexで画面遷移演出を上にする
-    if (!this.isRetry && stageData.name) {
-      this.stageName = new StageName(stageData.name, stageData.engName, viewportWidth)
+    if (!this.isRetry && this.stageData.name) {
+      this.stageName = new StageName(this.stageData.name, this.stageData.engName, viewportWidth)
       this.stageName.addToContainer(this.container, Z_INDEX.STAGE_NAME)
     }
 
     // 画面遷移演出（開く）- ステージ名より上に表示
     this.openingTransition = new SceneTransition(true)
     this.openingTransition.addToContainer(this.container, Z_INDEX.SCENE_TRANSITION)
-    this.openingTransition.onComplete(() => {
-      // 開く演出が完了したらBGM開始
-      if (!this.isRetry) {
-        this.startBGM()
-      }
-    })
 
-    // コンストラクタでBGM開始を試みる（初期化済みの場合のみ再生）
-    // 開く演出中は無音、演出完了後に再生
-    if (this.isRetry) {
+    // BGM開始（リトライ時は引き継ぐため再生しない）
+    if (!this.isRetry) {
       this.startBGM()
     }
   }
@@ -442,10 +436,20 @@ export class StageScene extends Scene {
    * 初期化前なら無音のまま（シーンが変わるまで無音で問題なし）
    */
   startBGM(): void {
+    // stageData.bgm が undefined の場合は前のBGMを引き継ぐ（何もしない）
+    if (!this.stageData.bgm) {
+      return
+    }
+
     if (this.audio.isReady()) {
-      const midiPath = AUDIO_ASSETS.midi.test
-      const trackSynthMap = AUDIO_ASSETS.midiTracks.test
-      void this.audio.playMidi(midiPath, trackSynthMap, true) // 非同期だが待たない（失敗時はwarnのみ）
+      // bgm名からMIDIアセットを取得
+      const bgmKey = this.stageData.bgm as keyof typeof AUDIO_ASSETS.midi
+      const midiPath = AUDIO_ASSETS.midi[bgmKey]
+      const trackSynthMap = AUDIO_ASSETS.midiTracks[bgmKey]
+
+      if (midiPath && trackSynthMap) {
+        void this.audio.playMidi(midiPath, trackSynthMap, true) // 非同期だが待たない（失敗時はwarnのみ）
+      }
     }
   }
 
@@ -613,7 +617,8 @@ export class StageScene extends Scene {
    * シーン終了時の処理
    */
   end() {
-    this.audio.stopMusic()
+    // BGMは停止しない（次のシーンでbgmが指定されている場合は自動的に切り替わる）
+    // this.audio.stopMusic() を削除
     this.parallaxBackground?.destroy() // 背景の破棄
     this.tilemapSprite.destroy() // タイルマップスプライトの破棄
     super.end()

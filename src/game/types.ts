@@ -61,11 +61,11 @@ export interface BlockData {
  * ステージデータの型定義
  */
 export interface StageData {
-  /** ステージ名 (日本語) */
-  name: string
+  /** ステージ名 (日本語) - オプショナル */
+  name?: string
 
-  /** ステージ名 (英語) */
-  engName: string
+  /** ステージ名 (英語) - オプショナル */
+  engName?: string
 
   /** ステージマップデータ (string[][]) */
   stages: string[][]
@@ -76,13 +76,13 @@ export interface StageData {
   /** 前景レイヤー */
   fg: string[]
 
+  /** BGM名 (undefined = 前のBGMを引き継ぐ) */
+  bgm?: string
+
   /** オプションパラメータ */
   param?: {
     /** ボスクラス (後で実装) */
     boss?: unknown
-
-    /** BGM名 */
-    bgm?: string
   }
 }
 
