@@ -26,14 +26,10 @@ export interface ICollisionEntity {
  * - isWall(x, y) は座標 (x, y) が壁かどうかを判定
  */
 export class TilemapCollisionComponent {
-  private stageHeight: number
-
   constructor(
     private entity: ICollisionEntity,
     private stage: string[][]
-  ) {
-    this.stageHeight = stage.length * BLOCKSIZE
-  }
+  ) {}
 
   /**
    * エンティティの現在のヒットボックス（ワールド座標）
@@ -308,12 +304,6 @@ export class TilemapCollisionComponent {
    */
   checkDamageBlock(): { damage: number; isPit: boolean } | null {
     const hitbox = this.currentHitbox
-
-    // 画面外判定（ステージ高さ + 32px を超えたら落とし穴）
-    // legacy実装: entity.js:148-152
-    if (hitbox.bottom > this.stageHeight + 32) {
-      return { damage: 1, isPit: true }
-    }
 
     // ヒットボックス内の全座標をBLOCKSIZE刻みでチェック
     for (let y = hitbox.top; y < hitbox.bottom; y += BLOCKSIZE) {

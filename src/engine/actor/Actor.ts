@@ -11,6 +11,7 @@ export class Actor extends EventDispatcher {
   height = 0
   scaleX = 1 // 向き（1 = 右向き, -1 = 左向き）
   tags: Set<string>
+  time = 0 // 経過フレーム数（update() で自動インクリメント）
 
   constructor(x: number, y: number, tags: string[] = []) {
     super()

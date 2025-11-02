@@ -7,7 +7,7 @@ import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
 import { AudioManager } from '@/audio/AudioManager'
-import { SFX_KEYS } from '@/game/config'
+import { BLOCKSIZE, SFX_KEYS } from '@/game/config'
 import { PlayerState } from '@/game/types'
 
 /**
@@ -58,7 +58,8 @@ export class Player extends Entity {
   private noHitboxTime = 0 // 無敵時間（ダメージ後の猶予）
   public isDead = false
 
-  // 落下死処理用（地面座標の記録）
+  // 落下死処理用
+  private deathY: number // 落下死判定のY座標（ステージ高さ + 余裕）
   private floorPositions: Array<{ x: number; y: number }> = []
 
   // Components（型安全に保持）
@@ -80,6 +81,11 @@ export class Player extends Entity {
     this.input = input
     this.hp = hp
     this.maxHp = maxHp
+
+    // 落下死判定位置を計算（ステージ高さ + 余裕）
+    // legacy実装: entity.js:148-152（stageHeight + 32）
+    const stageHeight = stage.length * BLOCKSIZE
+    this.deathY = stageHeight + 32
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
@@ -182,6 +188,13 @@ export class Player extends Entity {
 
     // 速度適用
     this.physics.applyVelocity()
+
+    // 落下死判定（ステージ外に落下）
+    // 1ダメージ + 直前の地面座標に復帰
+    if (this.y > this.deathY) {
+      this.damage(1, true) // isPit = true で落とし穴扱い
+      return
+    }
 
     // ダメージブロック判定（速度適用後にチェック）
     const damageBlock = this.tilemap.checkDamageBlock()

@@ -67,6 +67,9 @@ export class Scene extends EventDispatcher {
 
     // アクター更新
     this.actors.forEach((actor) => {
+      // time をインクリメント（毎フレーム）
+      actor.time++
+
       if (actor.update) {
         actor.update()
       }

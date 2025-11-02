@@ -114,9 +114,18 @@ export class Game {
     if (this.currentScene) {
       this.currentScene.end()
       this.app.stage.removeChild(this.currentScene.container)
+      // 古いシーンのイベントリスナーをクリア
+      this.currentScene.clearAllEvents()
     }
     this.currentScene = scene
     this.app.stage.addChild(this.currentScene.container)
+
+    // シーンのイベントを監視（シーン遷移）
+    // Legacy の "changescene" イベントと同じパターン
+    this.currentScene.on('changeScene', (newScene: Scene) => {
+      this.changeScene(newScene)
+    })
+
     this.currentScene.start()
   }
 

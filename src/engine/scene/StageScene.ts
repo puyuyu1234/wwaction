@@ -14,6 +14,7 @@ import { Graphics, Container, Text } from 'pixi.js'
 import { Scene } from './Scene'
 
 import { AudioManager } from '@/audio/AudioManager'
+import { Actor } from '@/engine/actor/Actor'
 import { HPBar } from '@/engine/actor/HPBar'
 import { TilemapSprite } from '@/engine/actor/TilemapSprite'
 
@@ -43,10 +44,16 @@ export class StageScene extends Scene {
   private windPoolIndex = 0
   private vanishingWinds: Array<{ wind: Wind; timer: number }> = [] // 消滅エフェクト管理
 
+  private stageIndex: number // リトライ時に必要
+  private viewportWidth: number
+  private viewportHeight: number
+
   constructor(stageIndex: number, input: Input, viewportWidth = 320, viewportHeight = 240) {
     super()
     this.input = input
-    // this.stageIndex = stageIndex // 将来的にステージ別BGMで使用予定
+    this.stageIndex = stageIndex
+    this.viewportWidth = viewportWidth
+    this.viewportHeight = viewportHeight
 
     // ステージデータ取得
     const stageData = STAGEDATA[stageIndex]
@@ -121,7 +128,14 @@ export class StageScene extends Scene {
 
     // プレイヤーのリトライイベントをリッスン
     this.player.on('reset', () => {
-      this.dispatch('retryStage', stageIndex)
+      // 新しいStageSceneインスタンスを生成してシーン遷移
+      const newScene = new StageScene(
+        this.stageIndex,
+        this.input,
+        this.viewportWidth,
+        this.viewportHeight
+      )
+      this.dispatch('changeScene', newScene)
     })
 
     // 風プールを初期化（legacy実装に合わせて2個）
@@ -319,33 +333,34 @@ export class StageScene extends Scene {
    */
   private onPlayerDeath() {
     // カメラ揺れエフェクト（10フレーム）
+    // legacy: stage.js:56-69
     const cameraX = this.cameraContainer.x
     const cameraY = this.cameraContainer.y
-    let cameraShakeTime = 0
-
-    const cameraShakeInterval = setInterval(() => {
-      if (cameraShakeTime < 10) {
+    const cameraShakeActor = new Actor(0, 0)
+    cameraShakeActor.update = () => {
+      if (cameraShakeActor.time < 10) {
         // ランダムに-5〜+5ピクセル揺らす
-        this.cameraContainer.x = cameraX + (Math.random() * 10 - 5)
-        this.cameraContainer.y = cameraY + (Math.random() * 10 - 5)
-        cameraShakeTime++
+        const randomOffset = () => Math.random() * 10 - 5
+        this.cameraContainer.x = cameraX + randomOffset()
+        this.cameraContainer.y = cameraY + randomOffset()
       } else {
         // 元の位置に戻す
         this.cameraContainer.x = cameraX
         this.cameraContainer.y = cameraY
-        clearInterval(cameraShakeInterval)
+        this.remove(cameraShakeActor)
       }
-    }, 16) // 約60fps（16ms）
+    }
+    this.add(cameraShakeActor)
 
     // オートリトライ（30フレーム後）
-    let retryTimer = 0
-    const retryInterval = setInterval(() => {
-      retryTimer++
-      if (retryTimer >= 30) {
+    // legacy: stage.js:72-77
+    const retryActor = new Actor(0, 0)
+    retryActor.update = () => {
+      if (retryActor.time === 30) {
         this.player.dispatch('reset')
-        clearInterval(retryInterval)
       }
-    }, 16) // 約60fps（16ms）
+    }
+    this.add(retryActor)
   }
 
   /**
