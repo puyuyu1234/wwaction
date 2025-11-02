@@ -1,4 +1,5 @@
 import { Camera } from '@core/Camera'
+import { GameSettings } from '@core/GameSettings'
 import { Input } from '@core/Input'
 import { Rectangle } from '@core/Rectangle'
 import { Entity } from '@entity/Entity'
@@ -10,7 +11,7 @@ import { Nuefu } from '@entity/Nuefu'
 import { Player } from '@entity/Player'
 import { Potion } from '@entity/Potion'
 import { Wind } from '@entity/Wind'
-import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA, Z_INDEX } from '@game/config'
+import { STAGEDATA, BLOCKSIZE, FONT, DEBUG, AUDIO_ASSETS, ENTITYDATA, Z_INDEX, HPDATA } from '@game/config'
 import { Graphics, Container, Text } from 'pixi.js'
 
 import { Scene } from './Scene'
@@ -143,8 +144,13 @@ export class StageScene extends Scene {
       }
     }
 
-    // プレイヤーもentitiesリストに追加（HP: 5/5で初期化）
-    this.player = new Player(playerX, playerY, this.stage, input, 5, 5)
+    // 難易度設定からプレイヤーのHPを決定
+    const settings = GameSettings.getInstance()
+    const difficulty = settings.getDifficulty()
+    const maxHp = HPDATA[difficulty] // EASY=7, NORMAL=5, HARD=3, LUNATIC=1
+
+    // プレイヤーもentitiesリストに追加
+    this.player = new Player(playerX, playerY, this.stage, input, maxHp, maxHp)
     this.entities.push(this.player)
     this.add(this.player)
 

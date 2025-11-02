@@ -1,5 +1,6 @@
 import * as Tone from 'tone'
 
+import { GameSettings } from '@core/GameSettings'
 import { MusicPlayer } from './MusicPlayer'
 import { SoundPlayer } from './SoundPlayer'
 import type { TrackSynthMap } from './synth/types'
@@ -55,6 +56,11 @@ export class AudioManager {
 
       // マスター音量設定
       Tone.getDestination().volume.value = this.masterVolume
+
+      // GameSettingsから音量設定を読み込んで適用
+      const settings = GameSettings.getInstance()
+      this.setMusicVolume(settings.getBgmVolume())
+      this.setSoundVolume(settings.getSfxVolume())
 
       this.state = AudioState.READY
       console.log('🎵 AudioManager initialized')
@@ -121,6 +127,7 @@ export class AudioManager {
       console.warn('AudioManager not ready, MIDI will not play')
       return
     }
+    // MusicPlayer側で現在の音量設定を自動適用
     await this.music.playMidi(midiPath, trackSynthMap, loop)
   }
 

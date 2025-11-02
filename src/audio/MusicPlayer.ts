@@ -9,13 +9,17 @@ import type { MusicConfig } from './types'
  * BGM再生クラス
  * - MP3をループ再生（Tone.Player）
  * - MIDIをトラック別カスタム音源で再生（Tone.PolySynth + Tone.Part）
+ * - Tone.Volumeノードによるリアルタイム音量調整対応
  */
 export class MusicPlayer {
   private player: Tone.Player | null = null
   private currentPath: string | null = null
+  private currentVolume = -6 // 現在の音量設定を保持
 
   // MIDI再生用
   private synths: (Tone.PolySynth | Tone.NoiseSynth)[] = []
+  private synthVolumes: Tone.Volume[] = [] // 各シンセの初期音量を記憶
+  private masterVolume: Tone.Volume | null = null // MIDI全体のマスター音量
   private parts: Tone.Part[] = []
   private midiMode = false
 
@@ -57,7 +61,11 @@ export class MusicPlayer {
    * @param trackSynthMap トラック別シンセ設定
    * @param loop ループ再生するか
    */
-  async playMidi(midiPath: string, trackSynthMap: TrackSynthMap, loop = true): Promise<void> {
+  async playMidi(
+    midiPath: string,
+    trackSynthMap: TrackSynthMap,
+    loop = true
+  ): Promise<void> {
     // 既に同じMIDIが再生中なら何もしない
     if (this.currentPath === midiPath && this.midiMode && Tone.Transport.state === 'started') {
       return
@@ -71,6 +79,9 @@ export class MusicPlayer {
     const arrayBuffer = await response.arrayBuffer()
     const midi = new Midi(arrayBuffer)
 
+    // マスター音量ノードを作成（全トラック共通、現在の音量設定を適用）
+    this.masterVolume = new Tone.Volume(this.currentVolume).toDestination()
+
     // トラックごとにシンセとPartを作成
     midi.tracks.forEach((track, index) => {
       const synthConfig = trackSynthMap[index]
@@ -79,9 +90,17 @@ export class MusicPlayer {
         return
       }
 
-      // シンセ生成
-      const synth = SynthFactory.createSynth(synthConfig)
+      // シンセ生成（トラック個別音量を適用）
+      const trackVolume = synthConfig.volume ?? 0
+      const synthConfigWithVolume = { ...synthConfig, volume: trackVolume }
+      const synth = SynthFactory.createSynth(synthConfigWithVolume)
+
+      // トラック個別の音量ノードを作成してマスター音量に接続
+      const volumeNode = new Tone.Volume(0).connect(this.masterVolume!)
+      synth.connect(volumeNode)
+
       this.synths.push(synth)
+      this.synthVolumes.push(volumeNode)
 
       // ノートデータをTone.Part用に変換
       const notes = track.notes.map((note) => ({
@@ -139,9 +158,15 @@ export class MusicPlayer {
 
       this.parts.forEach((part) => part.dispose())
       this.synths.forEach((synth) => synth.dispose())
+      this.synthVolumes.forEach((vol) => vol.dispose())
+      if (this.masterVolume) {
+        this.masterVolume.dispose()
+        this.masterVolume = null
+      }
 
       this.parts = []
       this.synths = []
+      this.synthVolumes = []
       this.midiMode = false
     }
 
@@ -149,20 +174,21 @@ export class MusicPlayer {
   }
 
   /**
-   * BGM音量を設定
+   * BGM音量を設定（リアルタイム変更対応）
    * @param db 音量（dB、-Infinityから0まで）
    */
   setVolume(db: number): void {
+    // 現在の音量を保存
+    this.currentVolume = db
+
     // MP3の音量設定
     if (this.player) {
       this.player.volume.value = db
     }
 
-    // MIDIの音量設定（全シンセに適用）
-    if (this.midiMode) {
-      this.synths.forEach((synth) => {
-        synth.volume.value = db
-      })
+    // MIDIの音量設定（マスター音量ノードで一括調整）
+    if (this.midiMode && this.masterVolume) {
+      this.masterVolume.volume.value = db
     }
   }
 
@@ -170,13 +196,7 @@ export class MusicPlayer {
    * 現在のBGM音量を取得
    */
   getVolume(): number {
-    if (this.player) {
-      return this.player.volume.value
-    }
-    if (this.synths.length > 0) {
-      return this.synths[0].volume.value
-    }
-    return -6
+    return this.currentVolume
   }
 
   /**

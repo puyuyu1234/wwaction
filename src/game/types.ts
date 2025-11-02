@@ -3,6 +3,8 @@
  * param.js から移植
  */
 
+import type { Difficulty } from './config'
+
 /**
  * ブロックの衝突判定タイプ
  */
@@ -138,4 +140,18 @@ export interface UITypeData {
 
   /** 高さ */
   height: number
+}
+
+/**
+ * ゲーム設定データ
+ */
+export interface GameSettingsData {
+  /** 難易度 */
+  difficulty: Difficulty
+
+  /** BGM音量 (dB単位: -60 ~ 0) */
+  bgmVolume: number
+
+  /** SE音量 (dB単位: -60 ~ 0) */
+  sfxVolume: number
 }

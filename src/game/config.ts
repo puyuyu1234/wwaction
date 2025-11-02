@@ -46,6 +46,21 @@ export const Z_INDEX = {
 } as const
 
 /**
+ * 難易度レベル
+ */
+export enum Difficulty {
+  EASY = 0,
+  NORMAL = 1,
+  HARD = 2,
+  LUNATIC = 3,
+}
+
+/**
+ * 難易度名（表示用）
+ */
+export const DIFFICULTY_NAMES = ['EASY', 'NORMAL', 'HARD', 'LUNATIC'] as const
+
+/**
  * 難易度ごとのHP
  * [EASY, NORMAL, HARD, LUNATIC]
  */
