@@ -314,7 +314,8 @@ export class StageScene extends Scene {
     const wind = this.windPool[this.windPoolIndex]
 
     // 古い風の位置に消滅エフェクトを生成（vanishアニメーション）
-    const vanishingWind = new Wind(wind.x, wind.y, 0, this.stage)
+    // wind.x, wind.y は中心座標なので、Windコンストラクタ(左上座標を期待)用に変換
+    const vanishingWind = new Wind(wind.x - 8, wind.y - 8, 0, this.stage)
     vanishingWind.vx = wind.vx
     vanishingWind.vy = wind.vy
     vanishingWind.playAnimation('vanish')
@@ -329,12 +330,19 @@ export class StageScene extends Scene {
     wind.vy = 0
 
     // 風を6フレーム分前進させて初期位置を決定（衝突判定あり）
-    // 引数vxで指定された速度で前進させる（しゃがみ時は0）
-    wind.vx = vx
+    // legacy実装に合わせて、初期6フレームは「壁で止まる」モード
+    wind.setWallBehavior('stop')
+    // 初期速度はプレイヤーの向きで決定（this.player.scaleX）
+    wind.vx = this.player.scaleX > 0 ? 2 : -2
     for (let i = 0; i < 6; i++) {
       wind.update()
     }
-    // updateで得られた速度をそのまま使う（壁で跳ね返った場合、速度が反転している）
+
+    // 最終速度を設定（引数vxで上書き: 通常は±2、しゃがみ時は0）
+    wind.vx = vx
+
+    // 以降は「壁で跳ね返る」モード（legacy実装の backAtLRWall() に対応）
+    wind.setWallBehavior('bounce')
   }
 
   /**

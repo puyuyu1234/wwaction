@@ -443,13 +443,16 @@ export class Player extends Entity {
     const state = this.stateManager.getState()
     let windVx = 0
 
-    // しゃがみ中は真下に風を出す
+    // アニメーション選択とwindVx決定
+    // legacy実装: wind(vx) の引数が最終速度になる
+    // - しゃがみ中: wind(0) → windVx = 0
+    // - それ以外: wind(this.scaleX == 1 ? 2 : -2) → windVx = ±2
     if (state === PlayerState.SIT) {
+      // しゃがみ中は真下に風を出す（windVx = 0）
       windVx = 0
       this.playAnimationForced('wind', 12)
-    }
-    // 歩き中は windWalk / windWalk2 を交互に
-    else if (state === PlayerState.WALK) {
+    } else if (state === PlayerState.WALK) {
+      // 歩き中は windWalk / windWalk2 を交互に
       windVx = this.scaleX > 0 ? 2 : -2
       // 前回のアニメーションに応じて切り替え
       if (this.currentAnimationName === 'windWalk2') {
@@ -457,9 +460,8 @@ export class Player extends Entity {
       } else {
         this.playAnimationForced('windWalk2', 12)
       }
-    }
-    // 立ち状態は wind
-    else {
+    } else {
+      // 立ち・ジャンプ状態は wind（windVx = ±2）
       windVx = this.scaleX > 0 ? 2 : -2
       this.playAnimationForced('wind', 12)
     }
@@ -471,22 +473,7 @@ export class Player extends Entity {
     const windY = this.y
 
     // createWindイベントを発火（StageSceneで受け取る）
-    this.dispatch('createWind', { x: windX, y: windY, vx: windVx })
-  }
-
-  /**
-   * 風を生成する（後方互換性のため残す）
-   * プレイヤーの向きに応じて風を発射
-   */
-  createWind() {
-    // 風の速度を決定（向きに応じて、legacy実装に合わせて±2）
-    const windVx = this.scaleX > 0 ? 2 : -2
-
-    // 風の初期位置（プレイヤーの中心から少し前方）
-    const windX = this.x + (this.scaleX > 0 ? 8 : -8)
-    const windY = this.y
-
-    // createWindイベントを発火（StageSceneで受け取る）
+    // windVx: 最終的な風の速度（しゃがみ中は0、それ以外は±2）
     this.dispatch('createWind', { x: windX, y: windY, vx: windVx })
   }
 

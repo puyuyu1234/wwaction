@@ -14,7 +14,8 @@
     "lint:fix": "eslint . --ext .ts,.tsx,.vue --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,vue,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,vue,css,json}\"",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "deadcode": "ts-prune"
   },
   "dependencies": {
     "@tonejs/midi": "^2.0.28",
@@ -38,6 +39,7 @@
     "eslint-plugin-vue": "^10.5.1",
     "jsdom": "^27.0.1",
     "prettier": "^3.6.2",
+    "ts-prune": "^0.10.3",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vitest": "^4.0.3",

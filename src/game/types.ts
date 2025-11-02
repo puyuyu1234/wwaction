@@ -87,17 +87,6 @@ export interface StageData {
 }
 
 /**
- * 会話テキストの型定義
- */
-export interface TalkText {
-  /** 話者名 */
-  name: string
-
-  /** テキスト内容 */
-  text: string
-}
-
-/**
  * プレイヤーの状態
  * legacy の PlayerState クラスに対応
  */

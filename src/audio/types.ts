@@ -3,11 +3,6 @@
  */
 
 /**
- * 効果音定義マップ
- */
-export type SoundEffectMap = Record<string, string>
-
-/**
  * BGM設定
  */
 export interface MusicConfig {
