@@ -89,4 +89,14 @@ export class Scene extends EventDispatcher {
   end() {
     // サブクラスでオーバーライド
   }
+
+  /**
+   * シーン遷移をリクエスト
+   * Game に対してシーン切り替えを通知する
+   * 演出が必要な場合は、サブクラスでこのメソッドをオーバーライドして
+   * 演出完了後に super.changeScene(newScene) を呼ぶ
+   */
+  changeScene(newScene: Scene) {
+    this.dispatch('changeScene', newScene)
+  }
 }

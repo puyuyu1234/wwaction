@@ -19,6 +19,8 @@ import { AudioManager } from '@/audio/AudioManager'
 import { Actor } from '@/engine/actor/Actor'
 import { HPBar } from '@/engine/actor/HPBar'
 import { ParallaxBackground } from '@/engine/actor/ParallaxBackground'
+import { SceneTransition } from '@/engine/actor/SceneTransition'
+import { StageName } from '@/engine/actor/StageName'
 import { TilemapSprite } from '@/engine/actor/TilemapSprite'
 import { TutorialUI } from '@/engine/actor/TutorialUI'
 
@@ -53,13 +55,27 @@ export class StageScene extends Scene {
   private stageIndex: number // リトライ時に必要
   private viewportWidth: number
   private viewportHeight: number
+  private isRetry: boolean // リトライ時はステージ名表示を省略
 
-  constructor(stageIndex: number, input: Input, viewportWidth = 320, viewportHeight = 240) {
+  // 演出関連
+  private openingTransition?: SceneTransition // シーン開始時の画面遷移演出
+  private closingTransition?: SceneTransition // シーン終了時の画面遷移演出
+  private stageName?: StageName // ステージ名表示演出
+  private isTransitioning = false // 画面遷移中フラグ（重複遷移を防ぐ）
+
+  constructor(
+    stageIndex: number,
+    input: Input,
+    viewportWidth = 320,
+    viewportHeight = 240,
+    isRetry = false
+  ) {
     super()
     this.input = input
     this.stageIndex = stageIndex
     this.viewportWidth = viewportWidth
     this.viewportHeight = viewportHeight
+    this.isRetry = isRetry
 
     // ステージデータ取得
     const stageData = STAGEDATA[stageIndex]
@@ -156,14 +172,16 @@ export class StageScene extends Scene {
 
     // プレイヤーのリトライイベントをリッスン
     this.player.on('reset', () => {
-      // 新しいStageSceneインスタンスを生成してシーン遷移
+      // 新しいStageSceneインスタンスを生成してシーン遷移（リトライフラグをtrue）
       const newScene = new StageScene(
         this.stageIndex,
         this.input,
         this.viewportWidth,
-        this.viewportHeight
+        this.viewportHeight,
+        true // リトライ = ステージ名表示を省略
       )
-      this.dispatch('changeScene', newScene)
+      // Scene.changeScene() を呼ぶ（演出後に Game にシーン切り替えを通知）
+      this.changeScene(newScene)
     })
 
     // プレイヤーのゴール到達イベントをリッスン
@@ -173,9 +191,11 @@ export class StageScene extends Scene {
         this.stageIndex + 1,
         this.input,
         this.viewportWidth,
-        this.viewportHeight
+        this.viewportHeight,
+        false // 通常遷移 = ステージ名表示あり
       )
-      this.dispatch('changeScene', newScene)
+      // Scene.changeScene() を呼ぶ（演出後に Game にシーン切り替えを通知）
+      this.changeScene(newScene)
     })
 
     // 風プールを初期化（legacy実装に合わせて2個）
@@ -206,12 +226,63 @@ export class StageScene extends Scene {
       this.container.addChild(this.debugText) // camera外 = スクロールしない
     }
 
+    // ステージ名表示演出（リトライ時は省略）
+    // 開く演出より先に作成しておくが、z-indexで画面遷移演出を上にする
+    if (!this.isRetry && stageData.name) {
+      this.stageName = new StageName(stageData.name, stageData.engName, viewportWidth)
+      this.stageName.addToContainer(this.container, Z_INDEX.STAGE_NAME)
+    }
+
+    // 画面遷移演出（開く）- ステージ名より上に表示
+    this.openingTransition = new SceneTransition(true)
+    this.openingTransition.addToContainer(this.container, Z_INDEX.SCENE_TRANSITION)
+    this.openingTransition.onComplete(() => {
+      // 開く演出が完了したらBGM開始
+      if (!this.isRetry) {
+        this.startBGM()
+      }
+    })
+
     // コンストラクタでBGM開始を試みる（初期化済みの場合のみ再生）
-    this.startBGM()
+    // 開く演出中は無音、演出完了後に再生
+    if (this.isRetry) {
+      this.startBGM()
+    }
   }
 
   update() {
     super.update()
+
+    // 画面遷移演出の更新
+    if (this.openingTransition) {
+      if (!this.openingTransition.isFinished()) {
+        this.openingTransition.update()
+      } else {
+        // 演出完了後に破棄
+        this.openingTransition.destroy()
+        this.openingTransition = undefined
+      }
+    }
+
+    if (this.closingTransition && !this.closingTransition.isFinished()) {
+      this.closingTransition.update()
+    }
+
+    // ステージ名表示演出の更新
+    if (this.stageName) {
+      if (!this.stageName.isFinished()) {
+        this.stageName.update()
+      } else {
+        // 演出完了後に破棄
+        this.stageName.destroy()
+        this.stageName = undefined
+      }
+    }
+
+    // 画面遷移中は更新を停止（背景が破棄される可能性があるため）
+    if (this.isTransitioning) {
+      return
+    }
 
     // カメラ追従処理
     this.updateCamera()
@@ -390,6 +461,26 @@ export class StageScene extends Scene {
 
     // すべてのイベントリスナーをクリーンアップしてメモリリークを防止
     entity.clearAllEvents()
+  }
+
+  /**
+   * シーン遷移をリクエスト（オーバーライド）
+   * 画面遷移演出を行ってから Game にシーン切り替えを通知
+   */
+  changeScene(newScene: Scene): void {
+    // 既に遷移中なら無視（重複遷移を防ぐ）
+    if (this.isTransitioning) {
+      return
+    }
+    this.isTransitioning = true
+
+    // 画面遷移演出（閉じる）- 最前面に表示
+    this.closingTransition = new SceneTransition(false)
+    this.closingTransition.addToContainer(this.container, Z_INDEX.SCENE_TRANSITION)
+    this.closingTransition.onComplete(() => {
+      // 閉じる演出が完了したら Game にシーン切り替えを通知
+      super.changeScene(newScene)
+    })
   }
 
   /**

@@ -122,7 +122,9 @@ export class Game {
     this.app.stage.addChild(this.currentScene.container)
 
     // シーンのイベントを監視（シーン遷移）
-    // Legacy の "changescene" イベントと同じパターン
+    // StageScene 内で画面遷移演出が完了したら 'changeScene' イベントが発火
+    // Game がそれを受け取ってシーン切り替えを実行
+    // （Scene.changeScene() メソッド → StageScene の演出リスナー → 演出完了後に Game へ）
     this.currentScene.on('changeScene', (newScene: Scene) => {
       this.changeScene(newScene)
     })

@@ -39,6 +39,10 @@ export const Z_INDEX = {
   ENTITY: 100,
   /** エンティティデバッグ描画（ヒットボックス） */
   ENTITY_DEBUG: 200,
+  /** ステージ名表示演出 */
+  STAGE_NAME: 1000,
+  /** 画面遷移演出（最前面） */
+  SCENE_TRANSITION: 1001,
 } as const
 
 /**
