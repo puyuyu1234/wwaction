@@ -8,15 +8,6 @@ const stageData = ref<string[][]>([])
 const selectedTile = ref<string>(' ')
 const selectedStage = ref<number>(0)
 
-const handleLoad = async (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (!file) return
-
-  const text = await file.text()
-  const json = JSON.parse(text)
-  stageData.value = json.tiles
-}
-
 const loadStageByNumber = async (num: number) => {
   const numStr = num.toString().padStart(2, '0')
   try {
@@ -37,34 +28,29 @@ watch(selectedStage, (newStage) => {
 // 初期ロード
 loadStageByNumber(0)
 
-const handleSave = () => {
-  const json = JSON.stringify({ tiles: stageData.value }, null, 2)
-  const blob = new Blob([json], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `stage-${selectedStage.value.toString().padStart(2, '0')}.json`
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
-const handleNew = () => {
-  const width = 20
-  const height = 15
-  stageData.value = Array(height)
-    .fill(null)
-    .map(() => Array(width).fill(' '))
+const handleSave = async () => {
+  const numStr = selectedStage.value.toString().padStart(2, '0')
+  try {
+    const response = await fetch('/api/save-stage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        stageNumber: numStr,
+        data: stageData.value
+      })
+    })
+    if (!response.ok) throw new Error('Save failed')
+    alert(`Stage ${numStr} saved successfully!`)
+  } catch (error) {
+    console.error('Failed to save stage:', error)
+    alert('Failed to save stage')
+  }
 }
 </script>
 
 <template>
   <div class="editor">
     <div class="toolbar">
-      <button @click="handleNew">New</button>
-      <label class="file-btn">
-        Load File
-        <input type="file" accept=".json" @change="handleLoad" style="display: none" />
-      </label>
       <button @click="handleSave">Save</button>
     </div>
     <div class="main">
