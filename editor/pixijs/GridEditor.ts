@@ -1,5 +1,5 @@
 import { Application, Container, Sprite, Graphics, Spritesheet, Assets, SCALE_MODES, Text } from 'pixi.js'
-import { BLOCKDATA, BLOCKSIZE, ENTITYDATA } from '../../src/game/config'
+import { BLOCKDATA, BLOCKSIZE, ENTITYDATA, EDITOR_CONFIG } from '../../src/game/config'
 import { EventEmitter } from 'eventemitter3'
 
 /**
@@ -16,6 +16,9 @@ export class GridEditor extends EventEmitter {
   private entitySpritesheet?: Spritesheet
   private isDragging = false
   private container?: HTMLElement
+  private stageBorder?: Graphics // ステージ境界線
+  private actualStageWidth = 0 // 実際のステージ幅（空白除く）
+  private actualStageHeight = 0 // 実際のステージ高さ（空白除く）
 
   constructor(width: number, height: number) {
     super()
@@ -42,29 +45,6 @@ export class GridEditor extends EventEmitter {
 
     this.app.stage.addChild(this.grid)
     this.setupInteraction()
-
-    // コンテナサイズに合わせてリサイズ
-    if (container) {
-      this.resizeToContainer()
-      window.addEventListener('resize', () => this.resizeToContainer())
-    }
-  }
-
-  private resizeToContainer() {
-    if (!this.container) return
-
-    const containerWidth = this.container.clientWidth
-    const containerHeight = this.container.clientHeight
-    const canvasWidth = this.width * BLOCKSIZE
-    const canvasHeight = this.height * BLOCKSIZE
-
-    // アスペクト比を維持してスケール計算
-    const scale = Math.min(containerWidth / canvasWidth, containerHeight / canvasHeight)
-
-    // Canvas のサイズを更新
-    const canvas = this.app.canvas as HTMLCanvasElement
-    canvas.style.width = `${canvasWidth * scale}px`
-    canvas.style.height = `${canvasHeight * scale}px`
   }
 
   private async loadAssets() {
@@ -170,8 +150,9 @@ export class GridEditor extends EventEmitter {
   }
 
   private createTileSprite(tile: string, x: number, y: number): Sprite | Graphics {
-    const posX = x * BLOCKSIZE
-    const posY = y * BLOCKSIZE
+    // マージン分のオフセットを考慮
+    const posX = (x + EDITOR_CONFIG.MARGIN) * BLOCKSIZE
+    const posY = (y + EDITOR_CONFIG.MARGIN) * BLOCKSIZE
 
     // エンティティチェック（'0'=Player も含む）
     const entityData = ENTITYDATA[tile as keyof typeof ENTITYDATA]
@@ -235,6 +216,18 @@ export class GridEditor extends EventEmitter {
   }
 
   loadStage(data: string[][]) {
+    // 実際のステージサイズを計算（空白を除く最大範囲）
+    this.calculateActualStageSize(data)
+
+    // キャンバスサイズを動的に設定
+    const canvasWidth = this.actualStageWidth + EDITOR_CONFIG.MARGIN * 2
+    const canvasHeight = this.actualStageHeight + EDITOR_CONFIG.MARGIN * 2
+    this.width = canvasWidth
+    this.height = canvasHeight
+
+    // PixiJSアプリのサイズを更新
+    this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
+
     this.tiles = data
     this.sprites = Array(this.height)
       .fill(null)
@@ -244,22 +237,126 @@ export class GridEditor extends EventEmitter {
     // グリッド背景描画
     this.drawGridBackground()
 
-    // タイル配置
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        const tile = data[y]?.[x] ?? ' '
+    // ステージ境界線描画
+    this.drawStageBorder()
+
+    // タイル配置（ステージデータのみ、マージンは空）
+    for (let y = 0; y < data.length; y++) {
+      const row = data[y]
+      if (!row) continue
+      for (let x = 0; x < row.length; x++) {
+        const tile = row[x] ?? ' '
         this.setTile(x, y, tile)
+      }
+    }
+  }
+
+  /**
+   * 実際のステージサイズを計算（空白を除く）
+   */
+  private calculateActualStageSize(data: string[][]) {
+    let maxX = 0
+    let maxY = 0
+
+    for (let y = 0; y < data.length; y++) {
+      const row = data[y]
+      if (!row) continue
+
+      for (let x = 0; x < row.length; x++) {
+        const tile = row[x]
+        if (tile && tile !== ' ') {
+          maxX = Math.max(maxX, x + 1)
+          maxY = Math.max(maxY, y + 1)
+        }
+      }
+    }
+
+    // 最低サイズを保証（20x15）
+    this.actualStageWidth = Math.max(maxX, 20)
+    this.actualStageHeight = Math.max(maxY, 15)
+  }
+
+  /**
+   * ステージ境界線を描画
+   */
+  private drawStageBorder() {
+    // 既存の境界線を削除
+    if (this.stageBorder) {
+      this.grid.removeChild(this.stageBorder)
+      this.stageBorder.destroy()
+    }
+
+    // 新規境界線作成
+    this.stageBorder = new Graphics()
+    const borderX = EDITOR_CONFIG.MARGIN * BLOCKSIZE
+    const borderY = EDITOR_CONFIG.MARGIN * BLOCKSIZE
+    const borderWidth = this.actualStageWidth * BLOCKSIZE
+    const borderHeight = this.actualStageHeight * BLOCKSIZE
+
+    this.stageBorder
+      .rect(borderX, borderY, borderWidth, borderHeight)
+      .stroke({
+        width: EDITOR_CONFIG.STAGE_BORDER_WIDTH,
+        color: EDITOR_CONFIG.STAGE_BORDER_COLOR,
+      })
+
+    this.stageBorder.zIndex = 1000 // 最前面に表示
+    this.grid.addChild(this.stageBorder)
+    this.grid.sortableChildren = true
+  }
+
+  /**
+   * ステージサイズを更新してリロード
+   */
+  updateStageSize(width: number, height: number) {
+    this.actualStageWidth = Math.max(width, 20)
+    this.actualStageHeight = Math.max(height, 15)
+
+    // キャンバスサイズを再計算
+    const canvasWidth = this.actualStageWidth + EDITOR_CONFIG.MARGIN * 2
+    const canvasHeight = this.actualStageHeight + EDITOR_CONFIG.MARGIN * 2
+    this.width = canvasWidth
+    this.height = canvasHeight
+
+    // PixiJSアプリのサイズを更新
+    this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
+
+    // 境界線を再描画
+    this.drawStageBorder()
+
+    // グリッド背景を再描画
+    this.grid.removeChildren()
+    this.drawGridBackground()
+    this.drawStageBorder()
+
+    // スプライトを再配置
+    for (let y = 0; y < this.tiles.length; y++) {
+      for (let x = 0; x < (this.tiles[y]?.length ?? 0); x++) {
+        const tile = this.tiles[y][x]
+        if (tile) {
+          this.setTile(x, y, tile)
+        }
       }
     }
   }
 
   private drawGridBackground() {
     const bg = new Graphics()
+    const marginStart = EDITOR_CONFIG.MARGIN
+    const marginEnd = marginStart + this.actualStageWidth
+    const marginEndY = marginStart + this.actualStageHeight
+
     for (let y = 0; y <= this.height; y++) {
-      bg.moveTo(0, y * BLOCKSIZE).lineTo(this.width * BLOCKSIZE, y * BLOCKSIZE).stroke({ width: 1, color: 0x333333 })
+      // ステージ内かマージンかで色を変える
+      const isInStage = y >= marginStart && y <= marginEndY
+      const color = isInStage ? EDITOR_CONFIG.STAGE_GRID_COLOR : EDITOR_CONFIG.MARGIN_GRID_COLOR
+      bg.moveTo(0, y * BLOCKSIZE).lineTo(this.width * BLOCKSIZE, y * BLOCKSIZE).stroke({ width: 1, color })
     }
     for (let x = 0; x <= this.width; x++) {
-      bg.moveTo(x * BLOCKSIZE, 0).lineTo(x * BLOCKSIZE, this.height * BLOCKSIZE).stroke({ width: 1, color: 0x333333 })
+      // ステージ内かマージンかで色を変える
+      const isInStage = x >= marginStart && x <= marginEnd
+      const color = isInStage ? EDITOR_CONFIG.STAGE_GRID_COLOR : EDITOR_CONFIG.MARGIN_GRID_COLOR
+      bg.moveTo(x * BLOCKSIZE, 0).lineTo(x * BLOCKSIZE, this.height * BLOCKSIZE).stroke({ width: 1, color })
     }
     bg.zIndex = -1
     this.grid.addChild(bg)
