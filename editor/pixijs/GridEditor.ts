@@ -14,6 +14,8 @@ export class GridEditor extends EventEmitter {
   private height: number
   private tilesetSpritesheet?: Spritesheet
   private entitySpritesheet?: Spritesheet
+  private isDragging = false
+  private container?: HTMLElement
 
   constructor(width: number, height: number) {
     super()
@@ -24,12 +26,15 @@ export class GridEditor extends EventEmitter {
     this.grid = new Container()
   }
 
-  async init() {
+  async init(container?: HTMLElement) {
+    this.container = container
     this.app = new Application()
     await this.app.init({
       width: this.width * BLOCKSIZE,
       height: this.height * BLOCKSIZE,
       backgroundColor: 0x1a1a1a,
+      resolution: window.devicePixelRatio || 1,
+      autoDensity: true,
     })
 
     // アセット読込
@@ -37,6 +42,29 @@ export class GridEditor extends EventEmitter {
 
     this.app.stage.addChild(this.grid)
     this.setupInteraction()
+
+    // コンテナサイズに合わせてリサイズ
+    if (container) {
+      this.resizeToContainer()
+      window.addEventListener('resize', () => this.resizeToContainer())
+    }
+  }
+
+  private resizeToContainer() {
+    if (!this.container) return
+
+    const containerWidth = this.container.clientWidth
+    const containerHeight = this.container.clientHeight
+    const canvasWidth = this.width * BLOCKSIZE
+    const canvasHeight = this.height * BLOCKSIZE
+
+    // アスペクト比を維持してスケール計算
+    const scale = Math.min(containerWidth / canvasWidth, containerHeight / canvasHeight)
+
+    // Canvas のサイズを更新
+    const canvas = this.app.canvas as HTMLCanvasElement
+    canvas.style.width = `${canvasWidth * scale}px`
+    canvas.style.height = `${canvasHeight * scale}px`
   }
 
   private async loadAssets() {
@@ -73,12 +101,52 @@ export class GridEditor extends EventEmitter {
 
   private setupInteraction() {
     this.grid.eventMode = 'static'
+    const canvas = this.app.canvas as HTMLCanvasElement
+
+    // 右クリックメニューを無効化
+    canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+
+    // ドラッグ開始
     this.grid.on('pointerdown', (event) => {
       const x = Math.floor(event.globalX / BLOCKSIZE)
       const y = Math.floor(event.globalY / BLOCKSIZE)
+
+      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+        // 右クリック（button: 2）でスポイト
+        if (event.button === 2) {
+          const tile = this.tiles[y]?.[x]
+          if (tile) {
+            this.emit('tilePick', tile)
+          }
+          return
+        }
+
+        // 左クリックでタイル配置
+        this.isDragging = true
+        this.emit('tileClick', x, y)
+      }
+    })
+
+    // ドラッグ中
+    this.grid.on('pointermove', (event) => {
+      if (!this.isDragging) return
+
+      const x = Math.floor(event.globalX / BLOCKSIZE)
+      const y = Math.floor(event.globalY / BLOCKSIZE)
+
       if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
         this.emit('tileClick', x, y)
       }
+    })
+
+    // ドラッグ終了
+    this.grid.on('pointerup', () => {
+      this.isDragging = false
+    })
+    this.grid.on('pointerupoutside', () => {
+      this.isDragging = false
     })
   }
 

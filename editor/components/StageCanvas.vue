@@ -7,13 +7,16 @@ const props = defineProps<{
 }>()
 
 const stageData = defineModel<string[][]>('stageData')
+const emit = defineEmits<{
+  pickTile: [tile: string]
+}>()
 
 const canvasRef = ref<HTMLDivElement>()
 let editor: GridEditor | null = null
 
 onMounted(async () => {
   editor = new GridEditor(20, 15)
-  await editor.init()
+  await editor.init(canvasRef.value!)
   canvasRef.value!.appendChild(editor.app.canvas as HTMLCanvasElement)
 
   // 初期データ読込
@@ -27,6 +30,11 @@ onMounted(async () => {
 
     stageData.value[y][x] = props.selectedTile
     editor!.setTile(x, y, props.selectedTile)
+  })
+
+  // 右クリックでスポイト
+  editor.on('tilePick', (tile: string) => {
+    emit('pickTile', tile)
   })
 })
 
@@ -59,8 +67,5 @@ watch(
 .canvas-container :deep(canvas) {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain;
 }
 </style>

@@ -46,6 +46,10 @@ const handleSave = async () => {
     alert('Failed to save stage')
   }
 }
+
+const handlePickTile = (tile: string) => {
+  selectedTile.value = tile
+}
 </script>
 
 <template>
@@ -55,7 +59,11 @@ const handleSave = async () => {
     </div>
     <div class="main">
       <StageSidebar v-model="selectedStage" />
-      <StageCanvas v-model:stage-data="stageData" :selected-tile="selectedTile" />
+      <StageCanvas
+        v-model:stage-data="stageData"
+        :selected-tile="selectedTile"
+        @pick-tile="handlePickTile"
+      />
       <TilePalette v-model="selectedTile" />
     </div>
   </div>

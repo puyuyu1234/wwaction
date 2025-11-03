@@ -147,8 +147,8 @@ function createEntityPlaceholder(tile: string): string {
           v-for="tile in blockTiles"
           :key="tile"
           :class="{ active: modelValue === tile }"
-          @click="modelValue = tile"
           :title="tile === ' ' ? '(空)' : tile"
+          @click="modelValue = tile"
         >
           <img v-if="tileCanvases[tile]" :src="tileCanvases[tile]" alt="" />
         </button>
@@ -162,8 +162,8 @@ function createEntityPlaceholder(tile: string): string {
           v-for="tile in entityTiles"
           :key="tile"
           :class="{ active: modelValue === tile }"
-          @click="modelValue = tile"
           :title="tile"
+          @click="modelValue = tile"
         >
           <img v-if="tileCanvases[tile]" :src="tileCanvases[tile]" alt="" />
         </button>
@@ -174,7 +174,9 @@ function createEntityPlaceholder(tile: string): string {
 
 <style scoped>
 .palette {
-  width: 600px;
+  min-width: 200px;
+  max-width: 400px;
+  flex: 1 1 300px;
   padding: 10px;
   background: #2a2a2a;
   color: #fff;
@@ -205,14 +207,14 @@ h4 {
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 2px;
 }
 
 button {
-  padding: 4px;
+  padding: 2px;
   background: #1a1a1a;
-  border: 2px solid #444;
+  border: 1px solid #444;
   cursor: pointer;
   display: flex;
   align-items: center;
