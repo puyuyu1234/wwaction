@@ -63,6 +63,7 @@ export class Game {
 
     // AssetLoaderを初期化してスプライトシートを読み込み
     const assetLoader = AssetLoader.getInstance()
+    assetLoader.setRenderer(this.app.renderer) // Rendererを登録
     await assetLoader.init()
     await assetLoader.loadSpritesheet('player', 'spritesheets/player.json')
     await assetLoader.loadSpritesheet('entity', 'spritesheets/entity.json')

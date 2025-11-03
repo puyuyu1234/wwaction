@@ -345,7 +345,7 @@ export const STAGEDATA: StageData[] = [
         'lllllklllmllr   qlllllqlllrlllllllllr    qllllllllllllllllllrllmllll',
       ],
     ],
-    bg: ['y'],
+    bg: [' ', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y'],
     fg: [''],
   },
   {

@@ -1,4 +1,4 @@
-import { Assets, Spritesheet, Texture, SCALE_MODES } from 'pixi.js'
+import { Assets, Spritesheet, Texture, SCALE_MODES, Renderer } from 'pixi.js'
 
 /**
  * アニメーション速度情報（参考用）
@@ -19,6 +19,7 @@ export class AssetLoader {
   private static instance: AssetLoader
   private spritesheets = new Map<string, Spritesheet>()
   private animationSpeeds = new Map<string, Map<string, AnimationSpeedInfo>>()
+  private renderer?: Renderer
 
   private constructor() {}
 
@@ -122,5 +123,19 @@ export class AssetLoader {
     // TODO: JSON に loop 情報を追加するか、.info.json から読み込む
     const loopAnimations = ['stand', 'walk', 'jumpUp', 'jumpDown', 'damage', 'nasake', 'gurasan', 'nuefu', 'wind', 'purupuru']
     return loopAnimations.includes(animationName)
+  }
+
+  /**
+   * PixiJS Rendererを設定（Game初期化時に一度だけ呼ばれる）
+   */
+  setRenderer(renderer: Renderer) {
+    this.renderer = renderer
+  }
+
+  /**
+   * PixiJS Rendererを取得
+   */
+  getRenderer(): Renderer | undefined {
+    return this.renderer
   }
 }
