@@ -12,7 +12,7 @@ const canvasRef = ref<HTMLDivElement>()
 let editor: GridEditor | null = null
 
 onMounted(async () => {
-  editor = new GridEditor(40, 22)
+  editor = new GridEditor(20, 15)
   await editor.init()
   canvasRef.value!.appendChild(editor.app.canvas as HTMLCanvasElement)
 
@@ -53,6 +53,14 @@ watch(
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: auto;
+  overflow: hidden;
+}
+
+.canvas-container :deep(canvas) {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
 }
 </style>
