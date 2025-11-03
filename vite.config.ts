@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [vue()],
@@ -11,6 +12,14 @@ export default defineConfig({
       '@components': fileURLToPath(new URL('./src/engine/components', import.meta.url)),
       '@entity': fileURLToPath(new URL('./src/engine/entity', import.meta.url)),
       '@game': fileURLToPath(new URL('./src/game', import.meta.url))
+    }
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        editor: resolve(__dirname, 'editor/index.html')
+      }
     }
   }
 })

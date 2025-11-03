@@ -11,6 +11,9 @@ importers:
       '@tonejs/midi':
         specifier: ^2.0.28
         version: 2.0.28
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
       pixi.js:
         specifier: ^8.14.0
         version: 8.14.0
