@@ -1,4 +1,4 @@
-import { Application, Container, Sprite, Graphics, Spritesheet, Assets, SCALE_MODES } from 'pixi.js'
+import { Application, Container, Sprite, Graphics, Spritesheet, Assets, SCALE_MODES, Text } from 'pixi.js'
 import { BLOCKDATA, BLOCKSIZE, ENTITYDATA } from '../../src/game/config'
 import { EventEmitter } from 'eventemitter3'
 
@@ -173,18 +173,27 @@ export class GridEditor extends EventEmitter {
     const posX = x * BLOCKSIZE
     const posY = y * BLOCKSIZE
 
-    // エンティティチェック
+    // エンティティチェック（'0'=Player も含む）
     const entityData = ENTITYDATA[tile as keyof typeof ENTITYDATA]
-    if (entityData) {
+    const isEntity = entityData || tile === '0'
+    if (isEntity) {
       // エンティティはプレースホルダーで描画（仮）
       const placeholder = new Graphics()
         .rect(posX, posY, BLOCKSIZE, BLOCKSIZE)
         .fill(0xff00ff)
 
-      // ラベル追加
-      const text = new Graphics()
-        .rect(posX + 2, posY + 2, 12, 12)
-        .fill(0x000000)
+      // 文字ラベル追加
+      const text = new Text({
+        text: tile,
+        style: {
+          fontFamily: 'monospace',
+          fontSize: 12,
+          fill: 0xffffff,
+        },
+      })
+      text.x = posX + BLOCKSIZE / 2
+      text.y = posY + BLOCKSIZE / 2
+      text.anchor.set(0.5, 0.5)
       placeholder.addChild(text)
 
       return placeholder

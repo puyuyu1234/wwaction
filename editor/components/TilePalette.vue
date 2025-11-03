@@ -8,7 +8,7 @@ const modelValue = defineModel<string>()
 
 // タイルとエンティティを統合
 const blockTiles = Object.keys(BLOCKDATA)
-const entityTiles = Object.keys(ENTITYDATA)
+const entityTiles = ['0', ...Object.keys(ENTITYDATA)] // 0: Player を追加
 
 const tileCanvases = ref<Record<string, string>>({})
 
@@ -126,7 +126,7 @@ function createEntityPlaceholder(tile: string): string {
 
   ctx.fillStyle = '#ff00ff'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = '#000'
+  ctx.fillStyle = '#fff'
   ctx.font = '20px monospace'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
