@@ -1,9 +1,21 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 
 const selectedStage = defineModel<number>()
 
-// ステージ番号のリスト（0-12まで）
-const stages = Array.from({ length: 13 }, (_, i) => i)
+// ステージJSONファイルを動的に取得
+const stageFiles = import.meta.glob('/stages/stage-*.json')
+
+// ファイル名からステージ番号を抽出してソート
+const stages = computed(() => {
+  return Object.keys(stageFiles)
+    .map((path) => {
+      const match = path.match(/stage-(\d+)\.json$/)
+      return match ? Number.parseInt(match[1], 10) : null
+    })
+    .filter((num): num is number => num !== null)
+    .sort((a, b) => a - b)
+})
 </script>
 
 <template>
