@@ -21,22 +21,17 @@ const selectedTile = computed({
   }
 })
 
-// ステージ選択時に自動読み込み
+// ステージ選択時に自動読み込み（初回以外）
 watch(selectedStage, async (newStage) => {
   try {
     const data = await loadStage(newStage)
-    stageCanvasRef.value?.loadStage(data)
+    stageCanvasRef.value?.loadStageData(data)
   } catch {
     // エラーは composable 内で処理済み
   }
 })
 
-// 初期ロード
-loadStage(0).then(data => {
-  stageCanvasRef.value?.loadStage(data)
-}).catch(() => {
-  // エラーは composable 内で処理済み
-})
+// 初期ロードはStageCanvas側で実行
 
 const handleSave = async () => {
   if (!stageCanvasRef.value) return

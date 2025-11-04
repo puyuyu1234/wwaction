@@ -1,7 +1,8 @@
 import { EventEmitter } from 'eventemitter3'
-import { Application, Container, Sprite, Graphics, Spritesheet, Assets, SCALE_MODES, Text } from 'pixi.js'
+import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
 
 import { BLOCKDATA, BLOCKSIZE, ENTITYDATA, EDITOR_CONFIG } from '../../src/game/config'
+import { useAssets } from '../composables/useAssets'
 
 /**
  * ステージエディタのグリッド描画とインタラクション
@@ -49,41 +50,17 @@ export class GridEditor extends EventEmitter {
   }
 
   private async loadAssets() {
-    // PixiJS Assets を初期化
-    await Assets.init({ basePath: '/assets/' })
+    // useAssets composable を使用してアセット読込
+    const { loadAllSpritesheets } = useAssets()
+    const { tileset, entity } = await loadAllSpritesheets()
 
-    // タイルセットスプライトシート読込
-    this.tilesetSpritesheet = await Assets.load<Spritesheet>({
-      src: 'spritesheets/tileset.json',
-      alias: 'tileset',
-      data: { cachePrefix: 'tileset_' },
-    })
-
-    // エンティティスプライトシート読込
-    this.entitySpritesheet = await Assets.load<Spritesheet>({
-      src: 'spritesheets/entity.json',
-      alias: 'entity',
-      data: { cachePrefix: 'entity_' },
-    })
-
-    // ピクセルアート用にNEARESTスケール設定
-    const setNearestScale = (sheet?: Spritesheet) => {
-      if (!sheet) return
-      Object.values(sheet.textures).forEach((texture) => {
-        if (texture.source) {
-          texture.source.scaleMode = SCALE_MODES.NEAREST
-        }
-      })
-    }
-
-    setNearestScale(this.tilesetSpritesheet)
-    setNearestScale(this.entitySpritesheet)
+    this.tilesetSpritesheet = tileset
+    this.entitySpritesheet = entity
   }
 
   private setupInteraction() {
     this.grid.eventMode = 'static'
     this.grid.hitArea = this.app.screen
-    console.log('[GridEditor.setupInteraction] eventMode:', this.grid.eventMode, 'hitArea:', this.grid.hitArea)
     const canvas = this.app.canvas as HTMLCanvasElement
 
     // 右クリックメニューを無効化
@@ -96,20 +73,9 @@ export class GridEditor extends EventEmitter {
       const x = Math.floor(event.globalX / BLOCKSIZE)
       const y = Math.floor(event.globalY / BLOCKSIZE)
 
-      console.log('[GridEditor] pointerdown:', {
-        globalX: event.globalX,
-        globalY: event.globalY,
-        x,
-        y,
-        button: event.button,
-      })
-
-      // 範囲チェック削除（無制限に対応）
-
       // 右クリック（button: 2）でスポイト
       if (event.button === 2) {
         const tile = this.tiles[y]?.[x]
-        console.log('[GridEditor] 右クリック - tilePick:', tile)
         if (tile) {
           this.emit('tilePick', tile)
         }
@@ -117,7 +83,6 @@ export class GridEditor extends EventEmitter {
       }
 
       // 左クリックでタイル配置
-      console.log('[GridEditor] 左クリック - tileClick emit:', { x, y })
       this.isDragging = true
       this.emit('tileClick', x, y)
     })
@@ -228,7 +193,11 @@ export class GridEditor extends EventEmitter {
   }
 
   loadStage(data: string[][]) {
-    console.log('[GridEditor.loadStage] called, data size:', `${data.length}x${data[0]?.length || 0}`)
+    // 初期化チェック
+    if (!this.app) {
+      console.error('[GridEditor.loadStage] Application未初期化 - init()を先に呼んでください')
+      return
+    }
 
     // 実際のステージサイズを計算（空白を除く最大範囲）
     this.calculateActualStageSize(data)
@@ -239,19 +208,11 @@ export class GridEditor extends EventEmitter {
     this.width = canvasWidth
     this.height = canvasHeight
 
-    console.log('[GridEditor.loadStage] new size:', {
-      actualStageWidth: this.actualStageWidth,
-      actualStageHeight: this.actualStageHeight,
-      canvasWidth,
-      canvasHeight,
-    })
-
     // PixiJSアプリのサイズを更新
     this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
 
     // hitAreaも更新
     this.grid.hitArea = this.app.screen
-    console.log('[GridEditor.loadStage] hitArea updated:', this.grid.hitArea)
 
     this.tiles = data
     this.sprites = Array(this.height)

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 
 import { EDITOR_CONFIG } from '../../src/game/config'
 import { useStageEditor } from '../composables/useStageEditor'
+import { useStageLoader } from '../composables/useStageLoader'
 import { GridEditor } from '../pixijs/GridEditor'
 
 const { stageData, selectedTile, setTile, pickTile, stageSize } = useStageEditor()
@@ -15,25 +16,17 @@ onMounted(async () => {
   await editor.init(canvasRef.value!)
   canvasRef.value!.appendChild(editor.app.canvas as HTMLCanvasElement)
 
-  // 初期データ読込
-  if (stageData.value && stageData.value.length > 0) {
-    editor.loadStage(stageData.value)
-  }
+  // 初期ステージデータを読み込み
+  const { loadStage } = useStageLoader()
+  const data = await loadStage(0)
+  stageData.value = data
+  editor.loadStage(data)
 
   // クリックでタイル配置
   editor.on('tileClick', (canvasX: number, canvasY: number) => {
-    console.log('[StageCanvas] tileClick:', { canvasX, canvasY, MARGIN: EDITOR_CONFIG.MARGIN })
-
     // Canvas座標 → Stage座標に変換
     const stageX = canvasX - EDITOR_CONFIG.MARGIN
     const stageY = canvasY - EDITOR_CONFIG.MARGIN
-
-    console.log('[StageCanvas] converted to stage:', { stageX, stageY })
-
-    // 負の座標も許可（useStageEditorが配列の先頭に挿入）
-
-    // composableでタイル配置（自動拡張込み）
-    console.log('[StageCanvas] calling setTile:', { stageX, stageY, tile: selectedTile.value })
 
     // 負の座標の場合、配列が拡張されるので全体を再描画
     const wasNegative = stageX < 0 || stageY < 0
@@ -42,15 +35,12 @@ onMounted(async () => {
 
     if (wasNegative) {
       // 配列が左上に拡張された場合は全体を再描画
-      console.log('[StageCanvas] 負の座標により配列が拡張されたため、全体を再描画')
       editor!.loadStage(stageData.value)
     } else {
       // 正の座標の場合は部分的に更新
       editor!.setTile(stageX, stageY, selectedTile.value)
       editor!.updateStageSize(stageSize.value.width, stageSize.value.height)
     }
-
-    console.log('[StageCanvas] after update, stageSize:', stageSize.value)
   })
 
   // 右クリックでスポイト
@@ -67,23 +57,17 @@ onMounted(async () => {
   })
 })
 
-// 外部からステージ全体が変更された時のみ再描画（ステージ選択時など）
-watch(
-  () => stageData.value,
-  (newData, oldData) => {
-    // 配列の参照が変わった場合のみ再描画（新しいステージ読込時）
-    if (newData !== oldData && newData && newData.length > 0 && editor) {
-      editor.loadStage(newData)
-    }
-  }
-)
-
 // 外部からアクセス可能にする（App.vueから使用）
 defineExpose({
   stageData,
   selectedTile,
-  loadStage: (data: string[][]) => {
-    stageData.value = data
+  loadStageData: (data: string[][]) => {
+    if (editor && editor.app) {
+      stageData.value = data
+      editor.loadStage(data)
+    } else {
+      console.error('[StageCanvas.loadStageData] editor未初期化')
+    }
   }
 })
 </script>

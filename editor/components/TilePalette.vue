@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Application, Assets, Spritesheet, Sprite, Graphics } from 'pixi.js'
+import { Application, Sprite, Graphics } from 'pixi.js'
 import { ref, onMounted } from 'vue'
 
 import { BLOCKDATA, ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
+import { useAssets } from '../composables/useAssets'
 
 const modelValue = defineModel<string>()
 
@@ -21,21 +22,9 @@ onMounted(async () => {
     backgroundAlpha: 0,
   })
 
-  // アセット読込
-  await Assets.init({ basePath: '/assets/' })
-
-  const tilesetSheet = await Assets.load<Spritesheet>({
-    src: 'spritesheets/tileset.json',
-    alias: 'tileset-palette',
-    data: { cachePrefix: 'palette_tileset_' },
-  })
-
-  // ピクセルアート用設定
-  Object.values(tilesetSheet.textures).forEach((texture) => {
-    if (texture.source) {
-      texture.source.scaleMode = 'nearest'
-    }
-  })
+  // アセット読込（useAssets composable を使用）
+  const { loadTilesetSpritesheet } = useAssets()
+  const tilesetSheet = await loadTilesetSpritesheet()
 
   // 各タイルのプレビュー画像を生成
   for (const tile of blockTiles) {
