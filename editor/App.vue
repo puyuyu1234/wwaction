@@ -1,54 +1,53 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
+
+import StageCanvas from './components/StageCanvas.vue'
 import StageSidebar from './components/StageSidebar.vue'
 import TilePalette from './components/TilePalette.vue'
-import StageCanvas from './components/StageCanvas.vue'
+import { useStageLoader } from './composables/useStageLoader'
 
-const stageData = ref<string[][]>([])
-const selectedTile = ref<string>(' ')
-const selectedStage = ref<number>(0)
+const { selectedStage, loadStage, saveStage } = useStageLoader()
 
-const loadStageByNumber = async (num: number) => {
-  const numStr = num.toString().padStart(2, '0')
-  try {
-    const response = await fetch(`/stages/stage-${numStr}.json`)
-    if (!response.ok) throw new Error('Stage not found')
-    const json = await response.json()
-    stageData.value = json.map((row: string) => row.split(''))
-  } catch (error) {
-    console.error(`ステージ ${numStr} が見つかりません`, error)
+// StageCanvas の参照を取得（defineExpose で公開されたAPIにアクセス）
+const stageCanvasRef = ref<InstanceType<typeof StageCanvas>>()
+
+// v-model用のcomputed（オプショナルチェーン回避）
+const selectedTile = computed({
+  get: () => stageCanvasRef.value?.selectedTile ?? ' ',
+  set: (value) => {
+    if (stageCanvasRef.value) {
+      stageCanvasRef.value.selectedTile = value
+    }
   }
-}
+})
 
 // ステージ選択時に自動読み込み
-watch(selectedStage, (newStage) => {
-  loadStageByNumber(newStage)
+watch(selectedStage, async (newStage) => {
+  try {
+    const data = await loadStage(newStage)
+    stageCanvasRef.value?.loadStage(data)
+  } catch {
+    // エラーは composable 内で処理済み
+  }
 })
 
 // 初期ロード
-loadStageByNumber(0)
+loadStage(0).then(data => {
+  stageCanvasRef.value?.loadStage(data)
+}).catch(() => {
+  // エラーは composable 内で処理済み
+})
 
 const handleSave = async () => {
-  const numStr = selectedStage.value.toString().padStart(2, '0')
+  if (!stageCanvasRef.value) return
+
   try {
-    const response = await fetch('/api/save-stage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        stageNumber: numStr,
-        data: stageData.value
-      })
-    })
-    if (!response.ok) throw new Error('Save failed')
+    await saveStage(selectedStage.value, stageCanvasRef.value.stageData)
+    const numStr = selectedStage.value.toString().padStart(2, '0')
     alert(`Stage ${numStr} saved successfully!`)
-  } catch (error) {
-    console.error('Failed to save stage:', error)
+  } catch {
     alert('Failed to save stage')
   }
-}
-
-const handlePickTile = (tile: string) => {
-  selectedTile.value = tile
 }
 </script>
 
@@ -59,11 +58,7 @@ const handlePickTile = (tile: string) => {
     </div>
     <div class="main">
       <StageSidebar v-model="selectedStage" />
-      <StageCanvas
-        v-model:stage-data="stageData"
-        :selected-tile="selectedTile"
-        @pick-tile="handlePickTile"
-      />
+      <StageCanvas ref="stageCanvasRef" />
       <TilePalette v-model="selectedTile" />
     </div>
   </div>

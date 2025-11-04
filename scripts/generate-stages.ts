@@ -54,7 +54,7 @@ if (!metadataMatch) {
 const metadataArrayStr = metadataMatch[1]
 // DekaNasakeなどのクラス参照を一時的に文字列化して評価
 const metadataForEval = metadataArrayStr.replace(/:\s*([A-Z]\w+),/g, ': "$1",')
-// eslint-disable-next-line @typescript-eslint/no-implied-eval
+ 
 const metadata = new Function(`return ${metadataForEval}`)() as Array<{
   name?: string
   engName?: string
@@ -91,6 +91,7 @@ const output = `/**
  */
 
 import type { StageData } from './types'
+
 ${imports.join('\n')}
 
 export const STAGEDATA: StageData[] = ${stageDataCode}

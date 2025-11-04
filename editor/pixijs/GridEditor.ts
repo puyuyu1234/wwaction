@@ -1,6 +1,7 @@
-import { Application, Container, Sprite, Graphics, Spritesheet, Assets, SCALE_MODES, Text } from 'pixi.js'
-import { BLOCKDATA, BLOCKSIZE, ENTITYDATA, EDITOR_CONFIG } from '../../src/game/config'
 import { EventEmitter } from 'eventemitter3'
+import { Application, Container, Sprite, Graphics, Spritesheet, Assets, SCALE_MODES, Text } from 'pixi.js'
+
+import { BLOCKDATA, BLOCKSIZE, ENTITYDATA, EDITOR_CONFIG } from '../../src/game/config'
 
 /**
  * ステージエディタのグリッド描画とインタラクション

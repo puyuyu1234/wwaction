@@ -5,6 +5,7 @@
  */
 
 import type { StageData } from './types'
+
 import { DekaNasake } from '@/engine/entity/DekaNasake'
 
 export const STAGEDATA: StageData[] = [

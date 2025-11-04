@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { GridEditor } from '../pixijs/GridEditor'
+
 import { EDITOR_CONFIG } from '../../src/game/config'
+import { useStageEditor } from '../composables/useStageEditor'
+import { GridEditor } from '../pixijs/GridEditor'
 
-const props = defineProps<{
-  selectedTile: string
-}>()
-
-const stageData = defineModel<string[][]>('stageData')
-const emit = defineEmits<{
-  pickTile: [tile: string]
-}>()
+const { stageData, selectedTile, setTile, pickTile, stageSize } = useStageEditor()
 
 const canvasRef = ref<HTMLDivElement>()
 let editor: GridEditor | null = null
@@ -26,52 +21,35 @@ onMounted(async () => {
   }
 
   // クリックでタイル配置
-  editor.on('tileClick', (x: number, y: number) => {
-    if (!stageData.value || stageData.value.length === 0) return
-
-    // マージンを考慮した実際のステージ座標に変換
-    const stageX = x - EDITOR_CONFIG.MARGIN
-    const stageY = y - EDITOR_CONFIG.MARGIN
+  editor.on('tileClick', (canvasX: number, canvasY: number) => {
+    // Canvas座標 → Stage座標に変換
+    const stageX = canvasX - EDITOR_CONFIG.MARGIN
+    const stageY = canvasY - EDITOR_CONFIG.MARGIN
 
     // マージン範囲外は無視
     if (stageX < 0 || stageY < 0) return
 
-    // ステージデータを自動拡張
-    let needsResize = false
+    // composableでタイル配置（自動拡張込み）
+    setTile(stageX, stageY, selectedTile.value)
 
-    // Y方向の拡張
-    while (stageData.value.length <= stageY) {
-      const currentWidth = stageData.value.length > 0
-        ? Math.max(...stageData.value.map(row => row.length))
-        : 20
-      stageData.value.push(new Array(currentWidth).fill(' '))
-      needsResize = true
-    }
+    // GridEditorに描画を指示
+    editor!.setTile(stageX, stageY, selectedTile.value)
 
-    // X方向の拡張
-    if (!stageData.value[stageY]) {
-      stageData.value[stageY] = []
-    }
-    while (stageData.value[stageY].length <= stageX) {
-      stageData.value[stageY].push(' ')
-      needsResize = true
-    }
-
-    // タイル配置
-    stageData.value[stageY][stageX] = props.selectedTile
-    editor!.setTile(stageX, stageY, props.selectedTile)
-
-    // ステージサイズが変わった場合は再計算
-    if (needsResize) {
-      const maxX = Math.max(...stageData.value.map(row => row.length))
-      const maxY = stageData.value.length
-      editor!.updateStageSize(maxX, maxY)
-    }
+    // ステージサイズを更新
+    editor!.updateStageSize(stageSize.value.width, stageSize.value.height)
   })
 
   // 右クリックでスポイト
-  editor.on('tilePick', (tile: string) => {
-    emit('pickTile', tile)
+  editor.on('tilePick', (canvasX: number, canvasY: number) => {
+    // Canvas座標 → Stage座標に変換
+    const stageX = canvasX - EDITOR_CONFIG.MARGIN
+    const stageY = canvasY - EDITOR_CONFIG.MARGIN
+
+    // マージン範囲外は無視
+    if (stageX < 0 || stageY < 0) return
+
+    // composableでスポイト
+    pickTile(stageX, stageY)
   })
 })
 
@@ -85,6 +63,15 @@ watch(
     }
   }
 )
+
+// 外部からアクセス可能にする（App.vueから使用）
+defineExpose({
+  stageData,
+  selectedTile,
+  loadStage: (data: string[][]) => {
+    stageData.value = data
+  }
+})
 </script>
 
 <template>
