@@ -22,21 +22,35 @@ onMounted(async () => {
 
   // クリックでタイル配置
   editor.on('tileClick', (canvasX: number, canvasY: number) => {
+    console.log('[StageCanvas] tileClick:', { canvasX, canvasY, MARGIN: EDITOR_CONFIG.MARGIN })
+
     // Canvas座標 → Stage座標に変換
     const stageX = canvasX - EDITOR_CONFIG.MARGIN
     const stageY = canvasY - EDITOR_CONFIG.MARGIN
 
-    // マージン範囲外は無視
-    if (stageX < 0 || stageY < 0) return
+    console.log('[StageCanvas] converted to stage:', { stageX, stageY })
+
+    // 負の座標も許可（useStageEditorが配列の先頭に挿入）
 
     // composableでタイル配置（自動拡張込み）
+    console.log('[StageCanvas] calling setTile:', { stageX, stageY, tile: selectedTile.value })
+
+    // 負の座標の場合、配列が拡張されるので全体を再描画
+    const wasNegative = stageX < 0 || stageY < 0
+
     setTile(stageX, stageY, selectedTile.value)
 
-    // GridEditorに描画を指示
-    editor!.setTile(stageX, stageY, selectedTile.value)
+    if (wasNegative) {
+      // 配列が左上に拡張された場合は全体を再描画
+      console.log('[StageCanvas] 負の座標により配列が拡張されたため、全体を再描画')
+      editor!.loadStage(stageData.value)
+    } else {
+      // 正の座標の場合は部分的に更新
+      editor!.setTile(stageX, stageY, selectedTile.value)
+      editor!.updateStageSize(stageSize.value.width, stageSize.value.height)
+    }
 
-    // ステージサイズを更新
-    editor!.updateStageSize(stageSize.value.width, stageSize.value.height)
+    console.log('[StageCanvas] after update, stageSize:', stageSize.value)
   })
 
   // 右クリックでスポイト

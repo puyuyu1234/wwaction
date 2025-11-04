@@ -16,7 +16,8 @@ export class GridEditor extends EventEmitter {
   private tilesetSpritesheet?: Spritesheet
   private entitySpritesheet?: Spritesheet
   private isDragging = false
-  private stageBorder?: Graphics // ステージ境界線
+  private stageBorder?: Graphics // ステージ境界線（黄色）
+  private marginBorder?: Graphics // マージン境界線（赤）
   private actualStageWidth = 0 // 実際のステージ幅（空白除く）
   private actualStageHeight = 0 // 実際のステージ高さ（空白除く）
 
@@ -81,6 +82,8 @@ export class GridEditor extends EventEmitter {
 
   private setupInteraction() {
     this.grid.eventMode = 'static'
+    this.grid.hitArea = this.app.screen
+    console.log('[GridEditor.setupInteraction] eventMode:', this.grid.eventMode, 'hitArea:', this.grid.hitArea)
     const canvas = this.app.canvas as HTMLCanvasElement
 
     // 右クリックメニューを無効化
@@ -93,20 +96,30 @@ export class GridEditor extends EventEmitter {
       const x = Math.floor(event.globalX / BLOCKSIZE)
       const y = Math.floor(event.globalY / BLOCKSIZE)
 
-      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-        // 右クリック（button: 2）でスポイト
-        if (event.button === 2) {
-          const tile = this.tiles[y]?.[x]
-          if (tile) {
-            this.emit('tilePick', tile)
-          }
-          return
-        }
+      console.log('[GridEditor] pointerdown:', {
+        globalX: event.globalX,
+        globalY: event.globalY,
+        x,
+        y,
+        button: event.button,
+      })
 
-        // 左クリックでタイル配置
-        this.isDragging = true
-        this.emit('tileClick', x, y)
+      // 範囲チェック削除（無制限に対応）
+
+      // 右クリック（button: 2）でスポイト
+      if (event.button === 2) {
+        const tile = this.tiles[y]?.[x]
+        console.log('[GridEditor] 右クリック - tilePick:', tile)
+        if (tile) {
+          this.emit('tilePick', tile)
+        }
+        return
       }
+
+      // 左クリックでタイル配置
+      console.log('[GridEditor] 左クリック - tileClick emit:', { x, y })
+      this.isDragging = true
+      this.emit('tileClick', x, y)
     })
 
     // ドラッグ中
@@ -116,9 +129,8 @@ export class GridEditor extends EventEmitter {
       const x = Math.floor(event.globalX / BLOCKSIZE)
       const y = Math.floor(event.globalY / BLOCKSIZE)
 
-      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-        this.emit('tileClick', x, y)
-      }
+      // 範囲チェック削除（無制限に対応）
+      this.emit('tileClick', x, y)
     })
 
     // ドラッグ終了
@@ -216,6 +228,8 @@ export class GridEditor extends EventEmitter {
   }
 
   loadStage(data: string[][]) {
+    console.log('[GridEditor.loadStage] called, data size:', `${data.length}x${data[0]?.length || 0}`)
+
     // 実際のステージサイズを計算（空白を除く最大範囲）
     this.calculateActualStageSize(data)
 
@@ -225,8 +239,19 @@ export class GridEditor extends EventEmitter {
     this.width = canvasWidth
     this.height = canvasHeight
 
+    console.log('[GridEditor.loadStage] new size:', {
+      actualStageWidth: this.actualStageWidth,
+      actualStageHeight: this.actualStageHeight,
+      canvasWidth,
+      canvasHeight,
+    })
+
     // PixiJSアプリのサイズを更新
     this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
+
+    // hitAreaも更新
+    this.grid.hitArea = this.app.screen
+    console.log('[GridEditor.loadStage] hitArea updated:', this.grid.hitArea)
 
     this.tiles = data
     this.sprites = Array(this.height)
@@ -285,16 +310,20 @@ export class GridEditor extends EventEmitter {
       this.grid.removeChild(this.stageBorder)
       this.stageBorder.destroy()
     }
+    if (this.marginBorder) {
+      this.grid.removeChild(this.marginBorder)
+      this.marginBorder.destroy()
+    }
 
-    // 新規境界線作成
+    // ステージ境界線（黄色）
     this.stageBorder = new Graphics()
-    const borderX = EDITOR_CONFIG.MARGIN * BLOCKSIZE
-    const borderY = EDITOR_CONFIG.MARGIN * BLOCKSIZE
-    const borderWidth = this.actualStageWidth * BLOCKSIZE
-    const borderHeight = this.actualStageHeight * BLOCKSIZE
+    const stageX = EDITOR_CONFIG.MARGIN * BLOCKSIZE
+    const stageY = EDITOR_CONFIG.MARGIN * BLOCKSIZE
+    const stageWidth = this.actualStageWidth * BLOCKSIZE
+    const stageHeight = this.actualStageHeight * BLOCKSIZE
 
     this.stageBorder
-      .rect(borderX, borderY, borderWidth, borderHeight)
+      .rect(stageX, stageY, stageWidth, stageHeight)
       .stroke({
         width: EDITOR_CONFIG.STAGE_BORDER_WIDTH,
         color: EDITOR_CONFIG.STAGE_BORDER_COLOR,
@@ -302,6 +331,22 @@ export class GridEditor extends EventEmitter {
 
     this.stageBorder.zIndex = 1000 // 最前面に表示
     this.grid.addChild(this.stageBorder)
+
+    // マージン境界線（赤）- キャンバス全体の外枠
+    this.marginBorder = new Graphics()
+    const marginWidth = (this.actualStageWidth + EDITOR_CONFIG.MARGIN * 2) * BLOCKSIZE
+    const marginHeight = (this.actualStageHeight + EDITOR_CONFIG.MARGIN * 2) * BLOCKSIZE
+
+    this.marginBorder
+      .rect(0, 0, marginWidth, marginHeight)
+      .stroke({
+        width: 2,
+        color: 0xff0000, // 赤
+      })
+
+    this.marginBorder.zIndex = 1001 // ステージ境界線より前面
+    this.grid.addChild(this.marginBorder)
+
     this.grid.sortableChildren = true
   }
 

@@ -31,6 +31,14 @@ export const EDITOR_CONFIG = {
   MARGIN_GRID_COLOR: 0x222222,
   /** ステージ内のグリッド線の色 */
   STAGE_GRID_COLOR: 0x333333,
+  /** デフォルトステージ幅（タイル数） */
+  DEFAULT_WIDTH: 20,
+  /** デフォルトステージ高さ（タイル数） */
+  DEFAULT_HEIGHT: 15,
+  /** 最大ステージ幅（タイル数） */
+  MAX_WIDTH: 200,
+  /** 最大ステージ高さ（タイル数） */
+  MAX_HEIGHT: 200,
 } as const
 
 /**
