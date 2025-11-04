@@ -16,7 +16,6 @@ export class GridEditor extends EventEmitter {
   private tilesetSpritesheet?: Spritesheet
   private entitySpritesheet?: Spritesheet
   private isDragging = false
-  private container?: HTMLElement
   private stageBorder?: Graphics // ステージ境界線
   private actualStageWidth = 0 // 実際のステージ幅（空白除く）
   private actualStageHeight = 0 // 実際のステージ高さ（空白除く）
@@ -30,8 +29,8 @@ export class GridEditor extends EventEmitter {
     this.grid = new Container()
   }
 
-  async init(container?: HTMLElement) {
-    this.container = container
+  async init(_container?: HTMLElement) {
+    // containerは将来的な拡張用に残している
     this.app = new Application()
     await this.app.init({
       width: this.width * BLOCKSIZE,

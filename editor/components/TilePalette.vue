@@ -96,6 +96,10 @@ async function renderSpriteToCanvas(
   app.renderer.render(app.stage)
 
   const canvas = app.renderer.extract.canvas(container)
+  if (!canvas || !canvas.toDataURL) {
+    console.warn('Failed to extract canvas from container')
+    return ''
+  }
   const dataUrl = canvas.toDataURL()
 
   app.stage.removeChild(container)

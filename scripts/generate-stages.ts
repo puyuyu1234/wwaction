@@ -14,7 +14,7 @@ console.log('🔄 Generating stages.ts from JSON files and metadata...')
 
 // stages/*.json を読み込み
 const files = readdirSync(stagesDir)
-  .filter((f) => f.match(/^stage-\d{2}\.json$/))
+  .filter((f: string) => f.match(/^stage-\d{2}\.json$/))
   .sort()
 
 if (files.length === 0) {
@@ -24,7 +24,7 @@ if (files.length === 0) {
 
 // 各ステージのグリッドデータを読み込み
 const grids: string[][] = []
-files.forEach((file) => {
+files.forEach((file: string) => {
   const json = readFileSync(join(stagesDir, file), 'utf-8')
   const parsed = JSON.parse(json)
   grids.push(parsed)

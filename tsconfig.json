@@ -33,6 +33,6 @@
     /* Vitest */
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "editor/**/*.ts", "editor/**/*.vue", "scripts/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "editor/**/*.ts", "editor/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
