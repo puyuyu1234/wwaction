@@ -477,10 +477,20 @@ export class StageScene extends Scene {
     }
 
     if (this.audio.isReady()) {
-      // bgm名からMIDIアセットを取得
-      const bgmKey = this.stageData.bgm as keyof typeof AUDIO_ASSETS.midi
-      const midiPath = AUDIO_ASSETS.midi[bgmKey]
-      const trackSynthMap = AUDIO_ASSETS.midiTracks[bgmKey]
+      // まずOGGアセットを確認
+      const oggKey = this.stageData.bgm as keyof typeof AUDIO_ASSETS.ogg
+      const oggConfig = AUDIO_ASSETS.ogg[oggKey]
+
+      if (oggConfig) {
+        // OGG再生（ループポイント対応）
+        void this.audio.playMusic(oggConfig)
+        return
+      }
+
+      // MIDIアセットを確認
+      const midiKey = this.stageData.bgm as keyof typeof AUDIO_ASSETS.midi
+      const midiPath = AUDIO_ASSETS.midi[midiKey]
+      const trackSynthMap = AUDIO_ASSETS.midiTracks[midiKey]
 
       if (midiPath && trackSynthMap) {
         void this.audio.playMidi(midiPath, trackSynthMap, true) // 非同期だが待たない（失敗時はwarnのみ）

@@ -52,7 +52,7 @@ export const STAGEDATA: StageData[] = [
   {
     "name": "チューリップ農園",
     "engName": "Tulip Plantation",
-    "bgm": "test",
+    "bgm": "bgm1",
     "bg": [
       "y"
     ],
