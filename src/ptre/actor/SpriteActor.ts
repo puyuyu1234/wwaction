@@ -84,9 +84,9 @@ export class SpriteActor extends Sprite {
   }
 
   /**
-   * フレーム更新
+   * ゲームロジック更新（毎フレーム呼ばれる）
    */
-  update(): void {
+  tick(): void {
     if (this.isDestroyed) return
     // 特に処理なし（必要に応じてオーバーライド）
   }

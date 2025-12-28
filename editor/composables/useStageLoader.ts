@@ -6,9 +6,10 @@ export function useStageLoader() {
   const error = ref<string | null>(null)
 
   /**
-   * ステージデータを読み込む
+   * ステージデータを読み込む（レイヤー配列形式）
+   * @returns string[][][] - [layerIndex][y][x]
    */
-  async function loadStage(stageNumber: number): Promise<string[][]> {
+  async function loadStage(stageNumber: number): Promise<string[][][]> {
     isLoading.value = true
     error.value = null
 
@@ -20,8 +21,9 @@ export function useStageLoader() {
         throw new Error(`Stage ${numStr} not found`)
       }
 
-      const json = await response.json()
-      return json.map((row: string) => row.split(''))
+      const json: string[][] = await response.json()
+      // 各レイヤーの各行をsplitして文字配列に変換
+      return json.map((layer) => layer.map((row) => row.split('')))
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'Unknown error'
       error.value = errorMessage

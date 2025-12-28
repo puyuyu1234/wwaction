@@ -34,14 +34,15 @@ export class Scene extends EventDispatcher {
     })
 
     // destroy イベントを購読して削除予約
-    actor.behavior.on('destroy', ({ actor: destroyedActor }: { actor: Actor }) => {
-      this.remove(destroyedActor)
+    // 注: コールバック引数のactorはActorBehaviorなので、クロージャでactorをキャプチャ
+    actor.behavior.on('destroy', () => {
+      this.remove(actor)
     })
   }
 
   /**
    * アクターを削除
-   * 遅延削除: 次のupdate()実行時に実際の削除が行われる
+   * 遅延削除: 次のtick()実行時に実際の削除が行われる
    */
   remove(actor: Actor) {
     this.actorsToRemove.push(actor)
@@ -62,9 +63,9 @@ export class Scene extends EventDispatcher {
   }
 
   /**
-   * フレーム更新
+   * ゲームロジック更新（毎フレーム呼ばれる）
    */
-  update() {
+  tick() {
     // 破壊されたアクターを削除予約に追加
     this.actors.forEach((actor) => {
       if (actor.isDestroyed) {
@@ -88,7 +89,7 @@ export class Scene extends EventDispatcher {
 
     // アクター更新
     this.actors.forEach((actor) => {
-      actor.update()
+      actor.tick()
     })
   }
 

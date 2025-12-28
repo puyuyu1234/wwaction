@@ -13,51 +13,74 @@ import type { AudioSource } from '../types'
 export class AudioPlayer {
   private player: Tone.Player | null = null
   private currentSource: AudioSource | null = null
+  private loadingPath: string | null = null
 
   /**
    * 音声ファイルを再生
    * @param source 音声ソース設定
    */
   async play(source: AudioSource): Promise<void> {
-    // 既に同じファイルが再生中なら何もしない
-    if (this.currentSource?.path === source.path && this.player?.state === 'started') {
+    // 既に同じファイルが再生中またはロード中なら何もしない
+    if (this.currentSource?.path === source.path || this.loadingPath === source.path) {
       return
     }
 
     // 既存のプレイヤーを停止
     this.stop()
 
-    // 新しいPlayerを作成
-    this.player = new Tone.Player({
-      url: source.path,
-      loop: source.loop ?? true,
-      volume: source.volume ?? -6,
-      loopStart: source.loopStart ?? 0,
-      loopEnd: source.loopEnd ?? 0, // 0の場合は曲の終わりまで
-    }).toDestination()
+    // ロード中フラグを立てる
+    this.loadingPath = source.path
 
-    // ロード完了後に再生
-    await this.player.load(source.path)
+    try {
+      // 新しいPlayerを作成
+      this.player = new Tone.Player({
+        url: source.path,
+        loop: source.loop ?? true,
+        volume: source.volume ?? -6,
+        loopStart: source.loopStart ?? 0,
+        loopEnd: source.loopEnd ?? 0, // 0の場合は曲の終わりまで
+      }).toDestination()
 
-    // loopEndが0の場合はバッファの長さを使用
-    if (source.loopEnd === undefined || source.loopEnd === 0) {
-      this.player.loopEnd = this.player.buffer.duration
+      // ロード完了後に再生
+      await this.player.load(source.path)
+
+      // ロード中に別のファイルが指定された場合は再生しない
+      if (this.loadingPath !== source.path) {
+        this.player.dispose()
+        this.player = null
+        return
+      }
+
+      // loopEndが0の場合はバッファの長さを使用
+      if (source.loopEnd === undefined || source.loopEnd === 0) {
+        this.player.loopEnd = this.player.buffer.duration
+      }
+
+      this.player.start()
+      this.currentSource = source
+      this.loadingPath = null
+    } catch (e) {
+      console.warn('AudioPlayer.play error:', e)
+      this.player = null
+      this.currentSource = null
+      this.loadingPath = null
     }
-
-    this.player.start()
-
-    this.currentSource = source
   }
 
   /**
    * 再生を停止
    */
   stop(): void {
+    this.loadingPath = null
     if (this.player) {
-      if (this.player.state === 'started') {
-        this.player.stop()
+      try {
+        if (this.player.state === 'started') {
+          this.player.stop()
+        }
+        this.player.dispose()
+      } catch {
+        // Tone.js の内部状態エラーを無視
       }
-      this.player.dispose()
       this.player = null
     }
     this.currentSource = null

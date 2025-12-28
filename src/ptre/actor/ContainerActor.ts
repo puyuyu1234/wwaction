@@ -75,16 +75,16 @@ export class ContainerActor extends Container {
   }
 
   /**
-   * フレーム更新
-   * - 子Actorのupdateを順次実行
+   * ゲームロジック更新（毎フレーム呼ばれる）
+   * - 子Actorのtickを順次実行
    * - 破壊された子Actorを自動削除
    */
-  update(): void {
+  tick(): void {
     if (this.isDestroyed) return
 
     // 子Actorを更新
     for (const child of this.childActors) {
-      child.update()
+      child.tick()
     }
 
     // 破壊された子Actorを削除

@@ -64,7 +64,7 @@ export class Game {
       canvas: document.getElementById(this.canvasId) as HTMLCanvasElement,
       width: this.baseWidth,
       height: this.baseHeight,
-      backgroundColor: 0x000000,
+      backgroundColor: 0x4488cc,
       resolution: 1, // ピクセルアート用に解像度を1に固定
       antialias: false,
       autoDensity: false, // 解像度を1に固定する場合はfalseにする
@@ -158,7 +158,7 @@ export class Game {
     this.input.update()
 
     // シーン更新
-    this.currentScene.update()
+    this.currentScene.tick()
   }
 
   /**

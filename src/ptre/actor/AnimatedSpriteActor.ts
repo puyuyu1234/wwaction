@@ -174,10 +174,11 @@ export class AnimatedSpriteActor extends AnimatedSprite {
   }
 
   /**
-   * フレーム更新
+   * ゲームロジック更新（毎フレーム呼ばれる）
    * - 強制アニメーションのフレームカウンタを減らす
+   * 注意: update() ではなく tick() を使用（PixiJS AnimatedSprite.update() との衝突回避）
    */
-  update(): void {
+  tick(): void {
     if (this.isDestroyed) return
 
     // 強制アニメーションのフレームカウンタを減らす

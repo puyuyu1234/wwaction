@@ -22,11 +22,11 @@ if (files.length === 0) {
   process.exit(1)
 }
 
-// 各ステージのグリッドデータを読み込み
-const grids: string[][] = []
+// 各ステージのグリッドデータを読み込み（レイヤー配列形式）
+const grids: string[][][] = []
 files.forEach((file: string) => {
   const json = readFileSync(join(stagesDir, file), 'utf-8')
-  const parsed = JSON.parse(json)
+  const parsed = JSON.parse(json) as string[][]
   grids.push(parsed)
 })
 
@@ -74,7 +74,7 @@ if (metadata.length !== grids.length) {
 // 4. StageData[]配列を作成（メタデータ + グリッド統合）
 const stageData = metadata.map((meta, index) => ({
   ...meta,
-  stages: [grids[index]],
+  stages: grids[index], // grids[index]は既にstring[][]（レイヤー配列）
 }))
 
 // 5. JSON化

@@ -6,7 +6,10 @@ import type { ActorBehavior } from './ActorBehavior'
  * - Container (PixiJS DisplayObject) を継承
  * - ActorBehavior を持つ
  * - よく使うメソッドを委譲
- * - update() メソッドを実装する
+ * - tick() メソッドを実装する（ゲームロジック更新用）
+ *
+ * 注意: update() ではなく tick() を使用する
+ * PixiJS の AnimatedSprite.update() との衝突を避けるため
  *
  * この型を満たすクラスは Scene.add() で追加できる
  *
@@ -28,7 +31,7 @@ import type { ActorBehavior } from './ActorBehavior'
  *     super.destroy()
  *   }
  *
- *   update(): void { }
+ *   tick(): void { }
  * }
  *
  * const actor: Actor = new ImageActor(...)
@@ -40,5 +43,5 @@ export type Actor = Container & {
   hasTag(tag: string): boolean
   isDestroyed: boolean
   destroy(): void
-  update(): void
+  tick(): void
 }

@@ -21,6 +21,27 @@ const selectedTile = computed({
   }
 })
 
+// レイヤー関連のcomputed
+const currentLayer = computed(() => stageCanvasRef.value?.currentLayer ?? 0)
+const layerCount = computed(() => stageCanvasRef.value?.layerCount ?? 1)
+
+// レイヤー切り替え
+function handleLayerChange(layerIndex: number) {
+  stageCanvasRef.value?.setCurrentLayer(layerIndex)
+}
+
+// レイヤー追加
+function handleAddLayer() {
+  stageCanvasRef.value?.addLayer()
+}
+
+// レイヤー削除
+function handleRemoveLayer() {
+  if (layerCount.value > 1) {
+    stageCanvasRef.value?.removeLayer(currentLayer.value)
+  }
+}
+
 // ステージ選択時に自動読み込み（初回以外）
 watch(selectedStage, async (newStage) => {
   try {
@@ -50,6 +71,25 @@ const handleSave = async () => {
   <div class="editor">
     <div class="toolbar">
       <button @click="handleSave">Save</button>
+      <div class="layer-controls">
+        <span class="layer-label">Layer:</span>
+        <button
+          v-for="i in layerCount"
+          :key="i - 1"
+          :class="{ active: currentLayer === i - 1 }"
+          @click="handleLayerChange(i - 1)"
+        >
+          {{ i - 1 }}
+        </button>
+        <button @click="handleAddLayer" class="layer-add">+</button>
+        <button
+          @click="handleRemoveLayer"
+          class="layer-remove"
+          :disabled="layerCount <= 1"
+        >
+          -
+        </button>
+      </div>
     </div>
     <div class="main">
       <StageSidebar v-model="selectedStage" />
@@ -94,6 +134,41 @@ button,
 button:hover,
 .file-btn:hover {
   background: #555;
+}
+
+.layer-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 20px;
+}
+
+.layer-label {
+  color: #aaa;
+  margin-right: 4px;
+}
+
+.layer-controls button {
+  padding: 4px 10px;
+  min-width: 32px;
+}
+
+.layer-controls button.active {
+  background: #0a0;
+  color: white;
+}
+
+.layer-add {
+  background: #060 !important;
+}
+
+.layer-remove {
+  background: #600 !important;
+}
+
+.layer-remove:disabled {
+  background: #333 !important;
+  cursor: not-allowed;
 }
 
 .main {

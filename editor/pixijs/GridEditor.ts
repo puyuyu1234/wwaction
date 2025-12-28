@@ -1,7 +1,8 @@
 import { EventEmitter } from 'eventemitter3'
 import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
 
-import { BLOCKDATA, BLOCKSIZE, ENTITYDATA, EDITOR_CONFIG } from '../../src/game/config'
+import { BLOCKDATA, BLOCKSIZE, ENTITYDATA } from '../../src/game/config'
+import { EDITOR_CONFIG } from '../config'
 import { useAssets } from '../composables/useAssets'
 
 /**
@@ -10,7 +11,10 @@ import { useAssets } from '../composables/useAssets'
 export class GridEditor extends EventEmitter {
   public app!: Application
   private grid: Container
-  private tiles: string[][]
+  private tiles: string[][] // 現在のレイヤーのタイルデータ
+  private allLayers: string[][][] = [] // 全レイヤーデータ
+  private currentLayerIndex = 0 // 現在編集中のレイヤー
+  private layerContainers: Container[] = [] // 各レイヤーのコンテナ
   private sprites: (Sprite | Graphics)[][]
   private width: number
   private height: number
@@ -70,21 +74,22 @@ export class GridEditor extends EventEmitter {
 
     // ドラッグ開始
     this.grid.on('pointerdown', (event) => {
-      const x = Math.floor(event.globalX / BLOCKSIZE)
-      const y = Math.floor(event.globalY / BLOCKSIZE)
+      const canvasX = Math.floor(event.globalX / BLOCKSIZE)
+      const canvasY = Math.floor(event.globalY / BLOCKSIZE)
+      // マージンを引いてステージ座標に変換
+      const stageX = canvasX - EDITOR_CONFIG.MARGIN
+      const stageY = canvasY - EDITOR_CONFIG.MARGIN
 
       // 右クリック（button: 2）でスポイト
       if (event.button === 2) {
-        const tile = this.tiles[y]?.[x]
-        if (tile) {
-          this.emit('tilePick', tile)
-        }
+        const tile = this.tiles[stageY]?.[stageX] ?? ' '
+        this.emit('tilePick', tile)
         return
       }
 
-      // 左クリックでタイル配置
+      // 左クリックでタイル配置（Canvas座標のまま渡す）
       this.isDragging = true
-      this.emit('tileClick', x, y)
+      this.emit('tileClick', canvasX, canvasY)
     })
 
     // ドラッグ中
@@ -192,15 +197,21 @@ export class GridEditor extends EventEmitter {
     return sprite
   }
 
-  loadStage(data: string[][]) {
-    // 初期化チェック
+  /**
+   * 全レイヤーを読み込んで描画
+   */
+  loadAllLayers(layers: string[][][], currentLayer: number) {
     if (!this.app) {
-      console.error('[GridEditor.loadStage] Application未初期化 - init()を先に呼んでください')
+      console.error('[GridEditor.loadAllLayers] Application未初期化')
       return
     }
 
-    // 実際のステージサイズを計算（空白を除く最大範囲）
-    this.calculateActualStageSize(data)
+    this.allLayers = layers
+    this.currentLayerIndex = currentLayer
+    this.tiles = layers[currentLayer] || []
+
+    // 全レイヤーからステージサイズを計算
+    this.calculateActualStageSizeFromAllLayers(layers)
 
     // キャンバスサイズを動的に設定
     const canvasWidth = this.actualStageWidth + EDITOR_CONFIG.MARGIN * 2
@@ -210,31 +221,89 @@ export class GridEditor extends EventEmitter {
 
     // PixiJSアプリのサイズを更新
     this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
-
-    // hitAreaも更新
     this.grid.hitArea = this.app.screen
 
-    this.tiles = data
-    this.sprites = Array(this.height)
-      .fill(null)
-      .map(() => [])
+    // 既存のコンテンツをクリア
     this.grid.removeChildren()
+    this.layerContainers = []
+    this.sprites = Array(this.height).fill(null).map(() => [])
 
     // グリッド背景描画
     this.drawGridBackground()
 
+    // 全レイヤーを描画（下から順に）
+    for (let layerIndex = 0; layerIndex < layers.length; layerIndex++) {
+      const layerContainer = new Container()
+      layerContainer.zIndex = layerIndex
+      layerContainer.sortableChildren = true
+
+      // 現在のレイヤー以外は半透明
+      if (layerIndex !== currentLayer) {
+        layerContainer.alpha = 0.4
+      }
+
+      const layerData = layers[layerIndex] || []
+      this.renderLayerToContainer(layerData, layerContainer, layerIndex === currentLayer)
+
+      this.layerContainers.push(layerContainer)
+      this.grid.addChild(layerContainer)
+    }
+
     // ステージ境界線描画
     this.drawStageBorder()
+  }
 
-    // タイル配置（ステージデータのみ、マージンは空）
+  /**
+   * レイヤーをコンテナに描画
+   */
+  private renderLayerToContainer(data: string[][], container: Container, isCurrentLayer: boolean) {
     for (let y = 0; y < data.length; y++) {
       const row = data[y]
       if (!row) continue
       for (let x = 0; x < row.length; x++) {
         const tile = row[x] ?? ' '
-        this.setTile(x, y, tile)
+        const sprite = this.createTileSprite(tile, x, y)
+        container.addChild(sprite)
+
+        // 現在のレイヤーならsprites配列にも保持
+        if (isCurrentLayer) {
+          if (!this.sprites[y]) this.sprites[y] = []
+          this.sprites[y][x] = sprite
+        }
       }
     }
+  }
+
+  /**
+   * 全レイヤーからステージサイズを計算
+   */
+  private calculateActualStageSizeFromAllLayers(layers: string[][][]) {
+    let maxX = 0
+    let maxY = 0
+
+    for (const layer of layers) {
+      for (let y = 0; y < layer.length; y++) {
+        const row = layer[y]
+        if (!row) continue
+        for (let x = 0; x < row.length; x++) {
+          const tile = row[x]
+          if (tile && tile !== ' ') {
+            maxX = Math.max(maxX, x + 1)
+            maxY = Math.max(maxY, y + 1)
+          }
+        }
+      }
+    }
+
+    this.actualStageWidth = Math.max(maxX, 20)
+    this.actualStageHeight = Math.max(maxY, 15)
+  }
+
+  /**
+   * 後方互換用: 単一レイヤーを読み込み
+   */
+  loadStage(data: string[][]) {
+    this.loadAllLayers([data], 0)
   }
 
   /**
@@ -326,24 +395,10 @@ export class GridEditor extends EventEmitter {
 
     // PixiJSアプリのサイズを更新
     this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
+    this.grid.hitArea = this.app.screen
 
-    // 境界線を再描画
-    this.drawStageBorder()
-
-    // グリッド背景を再描画
-    this.grid.removeChildren()
-    this.drawGridBackground()
-    this.drawStageBorder()
-
-    // スプライトを再配置
-    for (let y = 0; y < this.tiles.length; y++) {
-      for (let x = 0; x < (this.tiles[y]?.length ?? 0); x++) {
-        const tile = this.tiles[y][x]
-        if (tile) {
-          this.setTile(x, y, tile)
-        }
-      }
-    }
+    // 全レイヤーを再描画（サイズ変更時は完全再描画）
+    this.loadAllLayers(this.allLayers, this.currentLayerIndex)
   }
 
   private drawGridBackground() {

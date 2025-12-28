@@ -24,15 +24,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@core/*": ["./src/engine/core/*"],
-      "@components/*": ["./src/engine/components/*"],
-      "@entity/*": ["./src/engine/entity/*"],
+      "@ptre/*": ["./src/ptre/*"],
       "@game/*": ["./src/game/*"]
     },
 
     /* Vitest */
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "editor/**/*.ts", "editor/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

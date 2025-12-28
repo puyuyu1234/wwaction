@@ -60,12 +60,16 @@ export class Camera {
     cameraX = Math.max(0, Math.min(cameraX, stageWidth - this.viewportWidth))
     cameraY = Math.max(0, Math.min(cameraY, stageHeight - this.viewportHeight))
 
+    // カメラ座標を整数に丸める（サブピクセルレンダリング防止）
+    cameraX = Math.floor(cameraX)
+    cameraY = Math.floor(cameraY)
+
     // カメラ座標を保存（視差スクロール背景用）
     this._x = cameraX
     this._y = cameraY
 
     // PixiJSではカメラ移動は Container.position をマイナス値で設定
-    this.container.x = -Math.floor(cameraX)
-    this.container.y = -Math.floor(cameraY)
+    this.container.x = -cameraX
+    this.container.y = -cameraY
   }
 }

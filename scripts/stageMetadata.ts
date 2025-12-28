@@ -5,7 +5,7 @@
  * stages/*.json と統合されて src/game/stages.ts が生成される
  */
 
-import { DekaNasake } from '@/engine/entity/DekaNasake'
+// import { DekaNasake } from '@/engine/entity/DekaNasake'
 
 /**
  * ステージのメタ情報
@@ -18,7 +18,23 @@ import { DekaNasake } from '@/engine/entity/DekaNasake'
 export const STAGE_METADATA = [
   // Stage 0
   {
-    bg: [' ', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 1
@@ -26,64 +42,240 @@ export const STAGE_METADATA = [
     name: 'チューリップ農園',
     engName: 'Tulip Plantation',
     bgm: 'bgm1',
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 2
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 3
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 4
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 5
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 6 (Boss)
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
-    param: {
-      boss: DekaNasake,
-    },
+    // param: {
+    //   boss: DekaNasake,
+    // },
   },
   // Stage 7
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 8
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 9
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 10
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
   },
   // Stage 11 (Boss)
   {
-    bg: ['y'],
+    bg: [
+      " ",
+      " ",
+      " ",
+      " ",
+      "H",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y",
+      "y"
+    ],
     fg: [''],
-    param: {
-      boss: DekaNasake,
-    },
+    // param: {
+    //   boss: DekaNasake,
+    // },
   },
   // Stage 12
   {

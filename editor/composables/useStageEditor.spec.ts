@@ -10,8 +10,11 @@ describe('useStageEditor', () => {
   })
 
   describe('初期状態', () => {
-    it('空のステージデータで初期化される', () => {
-      expect(editor.stageData.value).toEqual([])
+    it('空のレイヤー配列で初期化される', () => {
+      // 1レイヤー（空）で初期化
+      expect(editor.stageData.value).toEqual([[]])
+      expect(editor.layerCount.value).toBe(1)
+      expect(editor.currentLayer.value).toBe(0)
     })
 
     it('選択タイルは空白で初期化される', () => {
@@ -39,8 +42,9 @@ describe('useStageEditor', () => {
 
     it('全ての行が同じ幅に揃えられる', () => {
       editor.setTile(10, 5, 'a')
-      const firstRowLength = editor.stageData.value[0].length
-      editor.stageData.value.forEach((row) => {
+      const currentLayerData = editor.currentLayerData.value
+      const firstRowLength = currentLayerData[0].length
+      currentLayerData.forEach((row) => {
         expect(row.length).toBe(firstRowLength)
       })
     })
@@ -139,27 +143,74 @@ describe('useStageEditor', () => {
     it('タイルを空白で上書きしても配列サイズは維持される', () => {
       // タイルを配置して拡張
       editor.setTile(10, 8, 'a')
-      const heightAfterExpand = editor.stageData.value.length
-      const widthAfterExpand = editor.stageData.value[0].length
+      const currentLayerData = editor.currentLayerData.value
+      const heightAfterExpand = currentLayerData.length
+      const widthAfterExpand = currentLayerData[0].length
 
       // 空白で上書き
       editor.setTile(10, 8, ' ')
 
       // 配列サイズは変わらない（一度広げたら戻らない）
-      expect(editor.stageData.value.length).toBe(heightAfterExpand)
-      expect(editor.stageData.value[0].length).toBe(widthAfterExpand)
+      expect(editor.currentLayerData.value.length).toBe(heightAfterExpand)
+      expect(editor.currentLayerData.value[0].length).toBe(widthAfterExpand)
     })
   })
 
   describe('save/load互換性', () => {
-    it('stageDataは0始まりの配列として保存できる', () => {
+    it('stageDataは0始まりの3次元配列として保存できる', () => {
       editor.setTile(2, 1, 'a')
       editor.setTile(5, 3, 'b')
 
-      // stageData.valueは0始まりの配列
+      // stageData.value[layer][y][x] の形式
       const data = editor.stageData.value
-      expect(data[1][2]).toBe('a')
-      expect(data[3][5]).toBe('b')
+      expect(data[0][1][2]).toBe('a')
+      expect(data[0][3][5]).toBe('b')
+    })
+  })
+
+  describe('レイヤー操作', () => {
+    it('レイヤーを追加できる', () => {
+      expect(editor.layerCount.value).toBe(1)
+      editor.addLayer()
+      expect(editor.layerCount.value).toBe(2)
+    })
+
+    it('レイヤーを切り替えできる', () => {
+      editor.addLayer()
+      editor.setCurrentLayer(1)
+      expect(editor.currentLayer.value).toBe(1)
+    })
+
+    it('レイヤーを削除できる', () => {
+      editor.addLayer()
+      expect(editor.layerCount.value).toBe(2)
+      editor.removeLayer(1)
+      expect(editor.layerCount.value).toBe(1)
+    })
+
+    it('最後のレイヤーは削除できない', () => {
+      expect(editor.layerCount.value).toBe(1)
+      editor.removeLayer(0)
+      expect(editor.layerCount.value).toBe(1)
+    })
+
+    it('各レイヤーに個別にタイルを配置できる', () => {
+      editor.addLayer()
+
+      // レイヤー0にタイル配置
+      editor.setCurrentLayer(0)
+      editor.setTile(0, 0, 'a')
+
+      // レイヤー1にタイル配置
+      editor.setCurrentLayer(1)
+      editor.setTile(0, 0, 'b')
+
+      // それぞれのレイヤーで確認
+      editor.setCurrentLayer(0)
+      expect(editor.getTile(0, 0)).toBe('a')
+
+      editor.setCurrentLayer(1)
+      expect(editor.getTile(0, 0)).toBe('b')
     })
   })
 })
