@@ -107,6 +107,13 @@ export const SFX_KEYS = {
 } as const
 
 /**
+ * 1小節の長さを計算（秒）
+ * @param bpm テンポ（BPM）
+ * @param beatsPerBar 1小節の拍数（デフォルト: 4）
+ */
+const getBarLength = (bpm: number, beatsPerBar = 4) => beatsPerBar * (60 / bpm)
+
+/**
  * 音源アセットパス定義
  */
 export const AUDIO_ASSETS = {
@@ -117,6 +124,15 @@ export const AUDIO_ASSETS = {
     goal: '/assets/sound/sfx/wind.mp3', // goal.mp3がないのでwind.mp3を使用
   },
   music: (stage: number) => `/assets/sound/music/stage${stage}.mp3`,
+  /** OGG BGM設定（ループポイント対応） */
+  ogg: {
+    bgm1: {
+      path: '/assets/sound/music/bgm1.ogg',
+      loop: true,
+      loopStart: 0, // 1小節目の頭
+      loopEnd: getBarLength(156) * 17, // 17小節で1小節目に戻る
+    },
+  },
   midi: {
     test: '/assets/sound/music/test.mid',
   },

@@ -12,6 +12,10 @@ export interface MusicConfig {
   loop?: boolean
   /** 音量（dB、-Infinityから0まで） */
   volume?: number
+  /** ループ開始位置（秒） */
+  loopStart?: number
+  /** ループ終了位置（秒） */
+  loopEnd?: number
 }
 
 /**

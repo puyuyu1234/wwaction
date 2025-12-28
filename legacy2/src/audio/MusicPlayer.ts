@@ -31,6 +31,8 @@ export class MusicPlayer {
     const path = typeof config === 'string' ? config : config.path
     const loop = typeof config === 'string' ? true : (config.loop ?? true)
     const volume = typeof config === 'string' ? -6 : (config.volume ?? -6)
+    const loopStart = typeof config === 'string' ? 0 : (config.loopStart ?? 0)
+    const loopEnd = typeof config === 'string' ? 0 : (config.loopEnd ?? 0)
 
     // 既に同じBGMが再生中なら何もしない
     if (this.currentPath === path && this.player?.state === 'started') {
@@ -45,10 +47,18 @@ export class MusicPlayer {
       url: path,
       loop,
       volume,
+      loopStart,
+      loopEnd: loopEnd || undefined, // 0の場合は指定しない（曲の終わりまで）
     }).toDestination()
 
     // ロード完了後に再生
     await this.player.load(path)
+
+    // loopEndが0の場合はバッファの長さを使用
+    if (loopEnd === 0) {
+      this.player.loopEnd = this.player.buffer.duration
+    }
+
     this.player.start()
     this.currentPath = path
 
