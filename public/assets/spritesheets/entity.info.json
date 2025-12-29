@@ -1,0 +1,75 @@
+{
+  "note": "Animation speed reference (not used by PixiJS)",
+  "animations": {
+    "nasake": {
+      "freq": 12,
+      "animationSpeed": 0.08333333333333333,
+      "fps": 5
+    },
+    "W": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "W-pushed": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "A": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "A-pushed": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "S": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "S-pushed": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "D": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "D-pushed": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "+": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "gurasan": {
+      "freq": 12,
+      "animationSpeed": 0.08333333333333333,
+      "fps": 5
+    },
+    "sunGlass": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "potion": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "nuefu": {
+      "freq": 12,
+      "animationSpeed": 0.08333333333333333,
+      "fps": 5
+    }
+  }
+}

@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Noto Sans JP', 'MS Gothic', 'ＭＳ ゴシック', monospace;
+  background-color: #000;
+  color: #fff;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+/* ピクセルアートのためのアンチエイリアシング無効化 */
+canvas {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+
+  /* Canvas内のテキストもスムージング無効化を試みる */
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none !important;
+  -moz-osx-font-smoothing: unset !important;
+  font-smooth: never !important;
+}
+
+/* 全体のフォントスムージング無効化 */
+* {
+  -webkit-font-smoothing: none !important;
+  -moz-osx-font-smoothing: unset !important;
+  font-smooth: never !important;
+  text-rendering: optimizeSpeed;
+}
