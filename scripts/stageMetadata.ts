@@ -291,6 +291,8 @@ export const STAGE_METADATA = [
   },
   // Stage 12 (森ステージ開始)
   {
+    name: 'ぷゆゆの不思議な森',
+    engName: 'Puyuyu Forest',
     theme: 'forest',
     bgm: 'bgm2',
     bg: [''],

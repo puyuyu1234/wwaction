@@ -672,6 +672,8 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "name": "ぷゆゆの不思議な森",
+    "engName": "Puyuyu Forest",
     "theme": "forest",
     "bgm": "bgm2",
     "bg": [
@@ -689,10 +691,10 @@ export const STAGEDATA: StageData[] = [
         "UUVVVVVVURRVVVVUUUUUVVRUUUUUVVVVNOVVVVRVVVUUUUUUVV",
         "UVVVVVVVVNVV@!VVRRRVVVVVRRRVVVV@NOV@!VNVVVVRRRRVVV",
         "VV@!VV@!VNV@  !VNO@!VVVV@O!VVV@ NO   !N@  !VNO!VV@",
-        "@   !@  !N@    !NO  !@!@ O !V@  NO    N    !NO !@ ",
+        "@   !@  !N@    !NO  !@!@ O !V@6 NO    N    !NO !@ ",
         "         N      NO       O      NO    N     NO    ",
         "         N      NO       O      NO    N     NO    ",
-        "         N      NO       O      NO    N     NO    ",
+        "         N      NO       O1     NO    N     NO    ",
         " 0   ST  N   W  NO  ST  WO XYYZ NO  STN   W NO ST ",
         "bbbbbbbbbbbbbbbbbbbbbbbbbbbc  abbbbbbbbbbbbbbbbbbb",
         "lllllllllllllllllllllllllllm  klllllllllllllllllll",

@@ -1,15 +1,6 @@
 {
-  "note": "Animation speed reference (not used by PixiJS)",
   "animations": {
-    "wind": {
-      "freq": 3,
-      "animationSpeed": 0.3333333333333333,
-      "fps": 20
-    },
-    "vanish": {
-      "freq": 3,
-      "animationSpeed": 0.3333333333333333,
-      "fps": 20
-    }
+    "wind": { "fps": 20 },
+    "vanish": { "fps": 20, "loop": false }
   }
 }

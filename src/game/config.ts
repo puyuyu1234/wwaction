@@ -128,6 +128,7 @@ export const ENTITYDATA = {
   '3': { entityClass: 'Potion' },
   '4': { entityClass: 'GurasanNotFall' },
   '5': { entityClass: 'Nuefu' },
+  '6': { entityClass: 'Shimi' },
 } as const
 
 /**

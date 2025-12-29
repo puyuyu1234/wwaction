@@ -1,14 +1,6 @@
 {
   "animations": {
-    "space": {
-      "freq": 0,
-      "animationSpeed": 0,
-      "fps": 0
-    },
-    "space-pushed": {
-      "freq": 0,
-      "animationSpeed": 0,
-      "fps": 0
-    }
+    "space": { "fps": 0 },
+    "space-pushed": { "fps": 0 }
   }
 }
