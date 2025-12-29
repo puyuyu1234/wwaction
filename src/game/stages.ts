@@ -662,9 +662,9 @@ export const STAGEDATA: StageData[] = [
         "               qllll",
         "               qllll",
         "               qllll",
-        "               qllll",
-        " 0    np edede qllll",
-        "bbbbbbbbbbbbbbbillll",
+        "                    ",
+        " 0    np edede      ",
+        "bbbbbbbbbbbbbbbbbbbb",
         "llllllllllllllllllll",
         "llllllllllllllllllll",
         "llllllllllllllllllll"
@@ -673,6 +673,7 @@ export const STAGEDATA: StageData[] = [
   },
   {
     "theme": "forest",
+    "bgm": "bgm2",
     "bg": [
       ""
     ],
@@ -692,10 +693,10 @@ export const STAGEDATA: StageData[] = [
         "         NO     NO       O      NO    N     NO    ",
         "         NO     NO       O      NO    N     NO    ",
         "         NO     NO       O      NO    N     NO    ",
-        " 0   ST  NO  W  NO  ST  WO      NO  STN   W NO ST ",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "llllllllllllllllllllllllllllllllllllllllllllllllll",
-        "llllllllllllllllllllllllllllllllllllllllllllllllll"
+        " 0   ST  NO  W  NO  ST  WO XYYZ NO  STN   W NO ST ",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbc  abbbbbbbbbbbbbbbbbbb",
+        "lllllllllllllllllllllllllllm  klllllllllllllllllll",
+        "lllllllllllllllllllllllllllm  klllllllllllllllllll"
       ],
       [
         "                                                  ",
@@ -708,8 +709,8 @@ export const STAGEDATA: StageData[] = [
         "                                                  ",
         "                                                  ",
         "                                                  ",
-        "    d d             d   dd   d     d  d  d   d    ",
-        "oooononooooooo  o ponpoonnooono  ponoono n ponoo  ",
+        "    d d             d   dd         d  d  d   d    ",
+        "oooononooooooo  o ponpoonnoo  o  ponoono n ponoo  ",
         "                                                  ",
         "                                                  ",
         "                                                  "

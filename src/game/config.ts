@@ -85,9 +85,9 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
   U: { frame: [47], type: CollisionType.NONE },
   V: { frame: [48], type: CollisionType.NONE },
   W: { frame: [49], type: CollisionType.NONE },
-  X: { frame: [50], type: CollisionType.NONE },
-  Y: { frame: [51], type: CollisionType.NONE },
-  Z: { frame: [52], type: CollisionType.NONE },
+  X: { frame: [50], type: CollisionType.SOLID },
+  Y: { frame: [51], type: CollisionType.SOLID },
+  Z: { frame: [52], type: CollisionType.SOLID },
 }
 
 /**

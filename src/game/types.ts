@@ -46,6 +46,7 @@ export type StageTheme = 'plain' | 'forest'
 export interface StageData {
   name?: string
   engName?: string
+  /** BGMファイル名（拡張子なし） */
   bgm?: string
   theme?: StageTheme
   bg: string[]

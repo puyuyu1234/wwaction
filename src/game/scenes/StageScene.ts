@@ -1,3 +1,4 @@
+import { BGM_CONFIG } from '@game/bgmConfig'
 import { Camera } from '@ptre/core/Camera'
 import { Input } from '@ptre/core/Input'
 import { Scene } from '@ptre/scene/Scene'
@@ -281,10 +282,11 @@ export class StageScene extends Scene {
     // BGM再生（設定がある場合のみ）
     if (this.stageData.bgm) {
       const audio = AudioService.getInstance()
+      const config = BGM_CONFIG[this.stageData.bgm] ?? { loop: true }
       audio.play({
         type: 'audio',
         path: `${import.meta.env.BASE_URL}assets/sound/music/${this.stageData.bgm}.ogg`,
-        loop: true,
+        ...config,
       })
     }
   }

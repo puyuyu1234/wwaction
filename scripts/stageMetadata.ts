@@ -292,6 +292,7 @@ export const STAGE_METADATA = [
   // Stage 12 (森ステージ開始)
   {
     theme: 'forest',
+    bgm: 'bgm2',
     bg: [''],
     fg: ['    NO  NO               NO      NO            '],
   },
