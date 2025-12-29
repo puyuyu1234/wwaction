@@ -10,6 +10,7 @@ import type { StageData } from './types'
 
 export const STAGEDATA: StageData[] = [
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -71,6 +72,7 @@ export const STAGEDATA: StageData[] = [
     "name": "チューリップ農園",
     "engName": "Tulip Plantation",
     "bgm": "bgm1",
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -129,6 +131,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -187,6 +190,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -245,6 +249,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -303,6 +308,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -361,6 +367,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -402,6 +409,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -460,6 +468,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -518,6 +527,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -578,6 +588,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -619,6 +630,7 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "plain",
     "bg": [
       " ",
       " ",
@@ -660,30 +672,47 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "theme": "forest",
     "bg": [
-      " "
+      ""
     ],
     "fg": [
-      ""
+      "    NO  NO               NO      NO            "
     ],
     "stages": [
       [
-        "                                        ",
-        "                                        ",
-        "                                        ",
-        "                                        ",
-        "HIHIH                                   ",
-        "yyyyy                                   ",
-        "yyyyy                                   ",
-        "yyyyy                             gbbbbb",
-        "yyyyy                             qlllll",
-        "yyyyy               gbbbbh        ABJlll",
-        "yyyyy gh          gbillllr        zzqlll",
-        "yyyyybirHHHHHHHHgbillllllrHHHHHHHHHHqlll",
-        "yyyyyllsbbbbbbbbillllllllrIIIIIIIIIIqlll",
-        "yyyyyllllllllllllllllllllrIIIIIIIIIIqlll",
-        "yyyyyllllllllllllllllllllrIIIIIIIIIIqlll",
-        "                                        "
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUURRRRUUUUURUUUUUUUUU",
+        "UUUUUUUUURRUUUUUUUUUUURUUUUUUUUUNOUUUURUUUUUUUUUUU",
+        "UUUUUUUUUNOUQPUURRRUUUUURRRUUUUQNORQPUNURRURRRRUUU",
+        "URQPUUQPUNOQ  PUNOQPUUUUQOPUUUQ NO   PNQ  PUNOPUUQ",
+        "Q   PQ  PNO    PNO  PQPQ O PRQ  NO    N    PNO PQ ",
+        "         NO     NO       O      NO    N     NO    ",
+        "         NO     NO       O      NO    N     NO    ",
+        "         NO     NO       O      NO    N     NO    ",
+        " 0   ST  NO  W  NO  ST  WO      NO  STN   W NO ST ",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "llllllllllllllllllllllllllllllllllllllllllllllllll",
+        "llllllllllllllllllllllllllllllllllllllllllllllllll"
+      ],
+      [
+        "                                                  ",
+        "                                                  ",
+        "                                                  ",
+        "   QPQP     QP               QP    QP            Q",
+        "  Q    PR  Q  P     QP      Q        P Q P      Q ",
+        "RQ             P   Q   P   Q              P    Q  ",
+        "                                                  ",
+        "                                                  ",
+        "                                                  ",
+        "                                                  ",
+        "    d d             d   dd   d     d  d  d   d    ",
+        "oooononooooooo  o ponpoonnooono  ponoono n ponoo  ",
+        "                                                  ",
+        "                                                  ",
+        "                                                  "
       ]
     ]
   }

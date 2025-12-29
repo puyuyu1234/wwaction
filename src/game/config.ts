@@ -28,6 +28,8 @@ export const Z_INDEX = {
   TILEMAP: 0,
   TUTORIAL_UI: 10,
   ENTITY: 100,
+  FOREGROUND: 500,
+  FOG: 600,
   UI: 1000,
 } as const
 

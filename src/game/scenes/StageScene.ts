@@ -12,7 +12,9 @@ import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
 import { Wind } from '@game/entity/Wind'
 import { CloudBackground } from '@game/ui/CloudBackground'
+import { FogEffect } from '@game/ui/FogEffect'
 import { HPBar } from '@game/ui/HPBar'
+import { LeafEffect } from '@game/ui/LeafEffect'
 import { ParallaxBackground } from '@game/ui/ParallaxBackground'
 import { SceneTransition } from '@game/ui/SceneTransition'
 import { StageName } from '@game/ui/StageName'
@@ -72,14 +74,21 @@ export class StageScene extends Scene {
   private retryTimer = 0
   private isPlayerDead = false
 
-  // 背景
+  // 背景・前景
   private parallaxBackground?: ParallaxBackground
+  private parallaxForeground?: ParallaxBackground
 
   // チュートリアルUI（ステージ0のみ）
   private tutorialUI?: TutorialUI
 
   // 雲の背景演出
   private cloudBackground: CloudBackground
+
+  // 霧エフェクト（森テーマ用）
+  private fogEffect?: FogEffect
+
+  // 葉っぱエフェクト（森テーマ用）
+  private leafEffect?: LeafEffect
 
   constructor(
     session: GameSession,
@@ -111,10 +120,37 @@ export class StageScene extends Scene {
     // sortableChildren を有効化（zIndex順で描画）
     this.container.sortableChildren = true
 
-    // 雲の背景演出（画面固定）
+    // テーマに応じた背景処理
+    const isForest = this.stageData.theme === 'forest'
+
+    if (isForest) {
+      // 森テーマ: グラデーション背景（上が明るく、下が暗い）
+      const forestBg = new Graphics()
+      const steps = 32 // グラデーションの段階数
+      const stepHeight = Math.ceil(viewportHeight / steps)
+
+      for (let i = 0; i < steps; i++) {
+        // 上（明るい緑 #3a654a）から下（暗い緑 #0a2310）へ
+        const t = i / (steps - 1)
+        const r = Math.floor(0x3a + (0x0a - 0x3a) * t)
+        const g = Math.floor(0x65 + (0x23 - 0x65) * t)
+        const b = Math.floor(0x4a + (0x10 - 0x4a) * t)
+        const color = (r << 16) | (g << 8) | b
+
+        forestBg.rect(0, i * stepHeight, viewportWidth, stepHeight + 1)
+        forestBg.fill(color)
+      }
+
+      forestBg.zIndex = Z_INDEX.BACKGROUND
+      this.container.addChild(forestBg)
+    }
+
+    // 雲の背景演出（草原テーマのみ）
     this.cloudBackground = new CloudBackground(viewportWidth, viewportHeight, 90)
     this.cloudBackground.container.zIndex = Z_INDEX.BACKGROUND + 5 // 背景より手前
-    this.container.addChild(this.cloudBackground.container)
+    if (!isForest) {
+      this.container.addChild(this.cloudBackground.container)
+    }
 
     // カメラコンテナ（スクロール用）
     this.cameraContainer = new Container()
@@ -138,6 +174,14 @@ export class StageScene extends Scene {
       this.cameraContainer.addChild(this.parallaxBackground.container)
     }
 
+    // 葉っぱエフェクト（森テーマのみ、視差1.0）
+    if (isForest) {
+      const tileCount = this.stage[0].length
+      this.leafEffect = new LeafEffect(this.stageWidth, this.stageHeight, tileCount, 1.0, 1.0, 1.0)
+      this.leafEffect.container.zIndex = Z_INDEX.BACKGROUND + 1
+      this.cameraContainer.addChild(this.leafEffect.container)
+    }
+
     // タイルマップ描画（全レイヤー）
     this.tilemapContainer = new Container()
     this.tilemapContainer.sortableChildren = true
@@ -155,6 +199,27 @@ export class StageScene extends Scene {
 
     // ステージデータからエンティティを生成
     this.spawnEntitiesFromStage()
+
+    // 前景描画（fgフィールドがある場合のみ）
+    if (this.stageData.fg && this.stageData.fg.length > 0) {
+      this.parallaxForeground = new ParallaxBackground(
+        this.stageData.fg,
+        this.stageWidth,
+        this.stageHeight,
+        -0.5, // X軸視差レート（1.5 = カメラより速く動く）
+        1.0  // Y軸視差レート（1.0 = カメラと同じ速度）
+      )
+      this.parallaxForeground.container.zIndex = Z_INDEX.FOREGROUND
+      this.cameraContainer.addChild(this.parallaxForeground.container)
+    }
+
+    // 霧エフェクト（森テーマのみ、ステージ全域に配置）
+    if (isForest) {
+      const tileCount = this.stage[0].length
+      this.fogEffect = new FogEffect(this.stageWidth, this.stageHeight, tileCount) // 1マスあたり0.8個
+      this.fogEffect.container.zIndex = Z_INDEX.FOG
+      this.cameraContainer.addChild(this.fogEffect.container)
+    }
 
     // HPBar（player.healthはIHPProviderを実装）
     this.hpBar = new HPBar(this.player.health, 10, 220)
@@ -517,8 +582,24 @@ export class StageScene extends Scene {
       this.parallaxBackground.updateScroll(this.camera.x, this.camera.y)
     }
 
+    // 葉っぱエフェクト更新（森テーマのみ）
+    if (this.leafEffect) {
+      this.leafEffect.tick()
+      this.leafEffect.updateScroll(this.camera.x, this.camera.y)
+    }
+
+    // 前景スクロール（視差効果）
+    if (this.parallaxForeground) {
+      this.parallaxForeground.updateScroll(this.camera.x, this.camera.y)
+    }
+
     // 雲の背景演出更新
     this.cloudBackground.tick()
+
+    // 霧エフェクト更新（森テーマのみ）
+    if (this.fogEffect) {
+      this.fogEffect.tick()
+    }
 
     // カメラシェイク演出
     this.updateCameraShake()
