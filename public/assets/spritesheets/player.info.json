@@ -7,7 +7,7 @@
     "wind": { "fps": 20 },
     "windWalk": { "fps": 20 },
     "windWalk2": { "fps": 20 },
-    "sit": { "fps": 20 },
+    "sit": { "fps": 20, "loop": false },
     "standUp": { "fps": 0 },
     "damage": { "fps": 10 }
   }
