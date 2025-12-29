@@ -93,9 +93,17 @@ export class HPBar {
     this.greenBarGraphics = new Graphics()
     this.container.addChild(this.greenBarGraphics)
 
-    // 初期値
-    this.redBarWidth = this.BAR_WIDTH
-    this.greenBarWidth = this.BAR_WIDTH
+    // 初期値 - 現在のHPに合わせて初期化
+    const initialBarWidth = this.calculateBarWidth(hpProvider.hp, hpProvider.maxHp)
+    this.redBarWidth = initialBarWidth
+    this.greenBarWidth = initialBarWidth
+  }
+
+  /**
+   * HPからバー幅を計算
+   */
+  private calculateBarWidth(hp: number, maxHp: number): number {
+    return hp < maxHp ? Math.floor((this.BAR_WIDTH * hp) / maxHp) : this.BAR_WIDTH
   }
 
   /**
@@ -141,11 +149,8 @@ export class HPBar {
    * ゲージバーの更新
    */
   private updateBars() {
-    const hp = this.hpProvider.hp
-    const maxHp = this.hpProvider.maxHp
-
     // 現在HPに対応するバーの幅を計算
-    const currentBarSize = hp < maxHp ? Math.floor((this.BAR_WIDTH * hp) / maxHp) : this.BAR_WIDTH
+    const currentBarSize = this.calculateBarWidth(this.hpProvider.hp, this.hpProvider.maxHp)
 
     // 緑バーの更新
     if (currentBarSize <= this.greenBarWidth) {

@@ -1,4 +1,4 @@
-import { Assets, Spritesheet, Texture, SCALE_MODES } from 'pixi.js'
+import { Assets, Spritesheet, Texture } from 'pixi.js'
 import type { Renderer } from 'pixi.js'
 
 /**
@@ -62,7 +62,7 @@ export class AssetLoader {
     // ピクセルアート用にテクスチャのスケールモードをNEARESTに設定（スプライトブリーディング対策）
     Object.values(spritesheet.textures).forEach((texture) => {
       if (texture.source) {
-        texture.source.scaleMode = SCALE_MODES.NEAREST
+        texture.source.scaleMode = 'nearest'
       }
     })
 
@@ -155,7 +155,7 @@ export class AssetLoader {
 
     // ピクセルアート用にスケールモードをNEARESTに設定
     if (texture.source) {
-      texture.source.scaleMode = SCALE_MODES.NEAREST
+      texture.source.scaleMode = 'nearest'
     }
 
     this.textures.set(key, texture)

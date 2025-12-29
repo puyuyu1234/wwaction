@@ -31,6 +31,9 @@ export class Player extends Entity {
   // 死亡フラグ
   public isDead = false
 
+  // ゴール到達フラグ（多重発火防止）
+  private hasReachedGoal = false
+
   // Components
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
@@ -81,8 +84,13 @@ export class Player extends Entity {
       item.behavior.destroy()
     })
 
-    // ゴールとの衝突: nextStageイベント発火
+    // ゴールとの衝突: nextStageイベント発火（一度だけ）
     this.collisionReaction.on('goal', () => {
+      if (this.hasReachedGoal) return
+      this.hasReachedGoal = true
+      // プレイヤーを停止
+      this.vx = 0
+      this.vy = 0
       this.behavior.dispatch('nextStage')
     })
   }
@@ -96,8 +104,8 @@ export class Player extends Entity {
       return
     }
 
-    // 死亡時は更新しない
-    if (this.isDead) return
+    // 死亡時またはゴール到達時は更新しない
+    if (this.isDead || this.hasReachedGoal) return
 
     // 状態管理の更新
     this.stateManager.update()
@@ -167,12 +175,13 @@ export class Player extends Entity {
     switch (state) {
       case PlayerState.STAND:
       case PlayerState.WALK:
-        if (this.coyoteTime > 0) {
+        this.handleMove()
+        this.handleJump()
+        // 空中かつジャンプしていない場合、コヨーテタイム超過で落下状態に
+        if (this.coyoteTime >= this.COYOTE_TIME_MAX) {
           this.stateManager.changeState(PlayerState.JUMP)
           break
         }
-        this.handleMove()
-        this.handleJump()
         this.handleCrouch()
         this.handleWind()
         break
