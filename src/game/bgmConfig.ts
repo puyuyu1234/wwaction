@@ -14,7 +14,7 @@ const getBarLength = (bpm: number) => (60 / bpm) * 4
 export const BGM_CONFIG: Record<string, BgmEntry> = {
   bgm1: {
     loop: true,
-    loopStart: getBarLength(156) * 1,                       // 1小節目の頭
+    loopStart: getBarLength(156) * 0,                       // 1小節目の頭
     loopEnd: getBarLength(156) * 17,    // 17小節で1小節目に戻る (~26.15秒)
   },
   bgm2: {

@@ -88,6 +88,27 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
   X: { frame: [50], type: CollisionType.SOLID },
   Y: { frame: [51], type: CollisionType.SOLID },
   Z: { frame: [52], type: CollisionType.SOLID },
+  // 記号（frame 53以降）
+  '!': { frame: [53], type: CollisionType.NONE },
+  '@': { frame: [54], type: CollisionType.NONE },
+  '#': { frame: [55], type: CollisionType.NONE },
+  $: { frame: [56], type: CollisionType.NONE },
+  '%': { frame: [57], type: CollisionType.NONE },
+  '^': { frame: [58], type: CollisionType.NONE },
+  '&': { frame: [59], type: CollisionType.NONE },
+  '(': { frame: [60], type: CollisionType.NONE },
+  ')': { frame: [61], type: CollisionType.NONE },
+  '-': { frame: [62], type: CollisionType.NONE },
+  _: { frame: [63], type: CollisionType.NONE },
+  '+': { frame: [64], type: CollisionType.NONE },
+  '=': { frame: [65], type: CollisionType.NONE },
+  '[': { frame: [66], type: CollisionType.NONE },
+  ']': { frame: [67], type: CollisionType.NONE },
+  '|': { frame: [68], type: CollisionType.NONE },
+  ':': { frame: [69], type: CollisionType.NONE },
+  ';': { frame: [70], type: CollisionType.NONE },
+  '?': { frame: [71], type: CollisionType.NONE },
+  '~': { frame: [72], type: CollisionType.NONE },
 }
 
 /**
