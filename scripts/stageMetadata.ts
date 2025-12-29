@@ -18,6 +18,7 @@
 export const STAGE_METADATA = [
   // Stage 0
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -42,6 +43,7 @@ export const STAGE_METADATA = [
     name: 'チューリップ農園',
     engName: 'Tulip Plantation',
     bgm: 'bgm1',
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -63,6 +65,7 @@ export const STAGE_METADATA = [
   },
   // Stage 2
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -84,6 +87,7 @@ export const STAGE_METADATA = [
   },
   // Stage 3
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -105,6 +109,7 @@ export const STAGE_METADATA = [
   },
   // Stage 4
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -126,6 +131,7 @@ export const STAGE_METADATA = [
   },
   // Stage 5
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -147,6 +153,7 @@ export const STAGE_METADATA = [
   },
   // Stage 6 (Boss)
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -171,6 +178,7 @@ export const STAGE_METADATA = [
   },
   // Stage 7
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -192,6 +200,7 @@ export const STAGE_METADATA = [
   },
   // Stage 8
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -213,6 +222,7 @@ export const STAGE_METADATA = [
   },
   // Stage 9
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -234,6 +244,7 @@ export const STAGE_METADATA = [
   },
   // Stage 10
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -255,6 +266,7 @@ export const STAGE_METADATA = [
   },
   // Stage 11 (Boss)
   {
+    theme: 'plain',
     bg: [
       " ",
       " ",
@@ -277,9 +289,10 @@ export const STAGE_METADATA = [
     //   boss: DekaNasake,
     // },
   },
-  // Stage 12
+  // Stage 12 (森ステージ開始)
   {
-    bg: [' '],
-    fg: [''],
+    theme: 'forest',
+    bg: [''],
+    fg: ['    NO  NO               NO      NO            '],
   },
 ]

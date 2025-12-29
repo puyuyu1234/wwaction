@@ -6,8 +6,8 @@ import { writeFileSync } from 'fs'
 import { join } from 'path'
 import { execSync } from 'child_process'
 
-export default defineConfig({
-  base: '/wwaction/',  // GitHub Pagesのリポジトリ名に合わせる
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/wwaction/' : '/',  // 本番のみGitHub Pages用パス
   plugins: [
     vue(),
     {
@@ -59,4 +59,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

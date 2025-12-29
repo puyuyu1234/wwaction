@@ -1,10 +1,14 @@
 {
-  "space": {
-    "animationSpeed": 0,
-    "loop": false
-  },
-  "space-pushed": {
-    "animationSpeed": 0,
-    "loop": false
+  "animations": {
+    "space": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    },
+    "space-pushed": {
+      "freq": 0,
+      "animationSpeed": 0,
+      "fps": 0
+    }
   }
 }

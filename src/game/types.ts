@@ -39,11 +39,15 @@ export enum PlayerState {
   DAMAGE_PIT = 'damagePit',
 }
 
+/** ステージテーマ */
+export type StageTheme = 'plain' | 'forest'
+
 /** ステージデータ */
 export interface StageData {
   name?: string
   engName?: string
   bgm?: string
+  theme?: StageTheme
   bg: string[]
   fg: string[]
   stages: string[][]
