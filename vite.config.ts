@@ -7,6 +7,7 @@ import { join } from 'path'
 import { execSync } from 'child_process'
 
 export default defineConfig({
+  base: '/wwaction/',  // GitHub Pagesのリポジトリ名に合わせる
   plugins: [
     vue(),
     {
