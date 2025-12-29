@@ -662,9 +662,9 @@ export const STAGEDATA: StageData[] = [
         "               qllll",
         "               qllll",
         "               qllll",
-        "               qllll",
-        " 0    np edede qllll",
-        "bbbbbbbbbbbbbbbillll",
+        "                    ",
+        " 0    np edede      ",
+        "bbbbbbbbbbbbbbbbbbbb",
         "llllllllllllllllllll",
         "llllllllllllllllllll",
         "llllllllllllllllllll"
@@ -672,7 +672,10 @@ export const STAGEDATA: StageData[] = [
     ]
   },
   {
+    "name": "ぷゆゆの不思議な森",
+    "engName": "Puyuyu Forest",
     "theme": "forest",
+    "bgm": "bgm2",
     "bg": [
       ""
     ],
@@ -684,18 +687,18 @@ export const STAGEDATA: StageData[] = [
         "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
         "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
         "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
-        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUURRRRUUUUURUUUUUUUUU",
-        "UUUUUUUUURRUUUUUUUUUUURUUUUUUUUUNOUUUURUUUUUUUUUUU",
-        "UUUUUUUUUNOUQPUURRRUUUUURRRUUUUQNORQPUNURRURRRRUUU",
-        "URQPUUQPUNOQ  PUNOQPUUUUQOPUUUQ NO   PNQ  PUNOPUUQ",
-        "Q   PQ  PNO    PNO  PQPQ O PRQ  NO    N    PNO PQ ",
-        "         NO     NO       O      NO    N     NO    ",
-        "         NO     NO       O      NO    N     NO    ",
-        "         NO     NO       O      NO    N     NO    ",
-        " 0   ST  NO  W  NO  ST  WO      NO  STN   W NO ST ",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "llllllllllllllllllllllllllllllllllllllllllllllllll",
-        "llllllllllllllllllllllllllllllllllllllllllllllllll"
+        "UUUVVVVUUUUUVVUUUUUUUUUUUUUUUVVRRRRVVUUURUUUUUUUUV",
+        "UUVVVVVVURRVVVVUUUUUVVRUUUUUVVVVNOVVVVRVVVUUUUUUVV",
+        "UVVVVVVVVNVV@!VVRRRVVVVVRRRVVVV@NOV@!VNVVVVRRRRVVV",
+        "VV@!VV@!VNV@  !VNO@!VVVV@O!VVV@ NO   !N@  !VNO!VV@",
+        "@   !@  !N@    !NO  !@!@ O !V@6 NO    N    !NO !@ ",
+        "         N      NO       O      NO    N     NO    ",
+        "         N      NO       O      NO    N     NO    ",
+        "         N      NO       O1     NO    N     NO    ",
+        " 0   ST  N   W  NO  ST  WO XYYZ NO  STN   W NO ST ",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbc  abbbbbbbbbbbbbbbbbbb",
+        "lllllllllllllllllllllllllllm  klllllllllllllllllll",
+        "lllllllllllllllllllllllllllm  klllllllllllllllllll"
       ],
       [
         "                                                  ",
@@ -708,8 +711,8 @@ export const STAGEDATA: StageData[] = [
         "                                                  ",
         "                                                  ",
         "                                                  ",
-        "    d d             d   dd   d     d  d  d   d    ",
-        "oooononooooooo  o ponpoonnooono  ponoono n ponoo  ",
+        "    d d             d   dd         d  d  d   d    ",
+        "oooononooooooo  o ponpoonno    o ponoono n ponoo  ",
         "                                                  ",
         "                                                  ",
         "                                                  "

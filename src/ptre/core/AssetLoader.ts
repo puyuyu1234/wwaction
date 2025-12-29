@@ -5,10 +5,9 @@ import type { Renderer } from 'pixi.js'
  * アニメーション速度情報（参考用）
  * スプライトシートJSONとは別に、.info.json から読み込む
  */
-interface AnimationSpeedInfo {
-  freq: number
-  animationSpeed: number
+interface AnimationInfo {
   fps: number
+  loop?: boolean
 }
 
 /**
@@ -20,7 +19,7 @@ interface AnimationSpeedInfo {
 export class AssetLoader {
   private static instance: AssetLoader
   private spritesheets = new Map<string, Spritesheet>()
-  private animationSpeeds = new Map<string, Map<string, AnimationSpeedInfo>>()
+  private animationInfos = new Map<string, Map<string, AnimationInfo>>()
   private textures = new Map<string, Texture>()
   private renderer?: Renderer
 
@@ -72,15 +71,14 @@ export class AssetLoader {
       const infoResponse = await fetch(`${import.meta.env.BASE_URL}assets/${infoPath}`)
       const infoData = await infoResponse.json()
 
-      const speedMap = new Map<string, AnimationSpeedInfo>()
-      Object.entries(infoData.animations as Record<string, AnimationSpeedInfo>).forEach(([name, info]) => {
-        speedMap.set(name, {
-          freq: info.freq,
-          animationSpeed: info.animationSpeed,
+      const infoMap = new Map<string, AnimationInfo>()
+      Object.entries(infoData.animations as Record<string, AnimationInfo>).forEach(([name, info]) => {
+        infoMap.set(name, {
           fps: info.fps,
+          loop: info.loop,
         })
       })
-      this.animationSpeeds.set(key, speedMap)
+      this.animationInfos.set(key, infoMap)
     } catch (error) {
       console.warn(`Could not load animation speed info for ${key}:`, error)
     }
@@ -106,26 +104,27 @@ export class AssetLoader {
   /**
    * アニメーション速度情報を取得
    * AnimatedSprite の animationSpeed に設定するために使用
+   * fps から計算: animationSpeed = fps / 60
    */
   getAnimationSpeed(sheetKey: string, animationName: string): number {
-    const speedMap = this.animationSpeeds.get(sheetKey)
-    if (!speedMap) return 0.1666 // デフォルト: 約10fps
+    const infoMap = this.animationInfos.get(sheetKey)
+    if (!infoMap) return 10 / 60 // デフォルト: 10fps
 
-    const info = speedMap.get(animationName)
-    return info?.animationSpeed ?? 0.1666
+    const info = infoMap.get(animationName)
+    const fps = info?.fps ?? 10
+    return fps / 60
   }
 
   /**
    * アニメーションがループするかを取得
-   * legacy の AnimationDefinition.loop に相当
-   * 注: PixiJS標準JSONにはloop情報がないため、
-   * 命名規則から判断
+   * .info.json の loop プロパティから読み込み（デフォルト: true）
    */
-  getAnimationLoop(_sheetKey: string, animationName: string): boolean {
-    // 暫定: 'stand', 'walk', 'damage' などはループ、'wind', 'sit' などは非ループ
-    // TODO: JSON に loop 情報を追加するか、.info.json から読み込む
-    const loopAnimations = ['stand', 'walk', 'jumpUp', 'jumpDown', 'damage', 'nasake', 'gurasan', 'nuefu', 'wind', 'purupuru']
-    return loopAnimations.includes(animationName)
+  getAnimationLoop(sheetKey: string, animationName: string): boolean {
+    const infoMap = this.animationInfos.get(sheetKey)
+    if (!infoMap) return true // デフォルト: ループする
+
+    const info = infoMap.get(animationName)
+    return info?.loop ?? true // デフォルト: ループする
   }
 
   /**

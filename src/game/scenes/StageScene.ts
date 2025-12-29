@@ -1,3 +1,4 @@
+import { BGM_CONFIG } from '@game/bgmConfig'
 import { Camera } from '@ptre/core/Camera'
 import { Input } from '@ptre/core/Input'
 import { Scene } from '@ptre/scene/Scene'
@@ -8,6 +9,7 @@ import { Gurasan } from '@game/entity/Gurasan'
 import { GurasanNotFall } from '@game/entity/GurasanNotFall'
 import { Nasake } from '@game/entity/Nasake'
 import { Nuefu } from '@game/entity/Nuefu'
+import { Shimi } from '@game/entity/Shimi'
 import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
 import { Wind } from '@game/entity/Wind'
@@ -281,10 +283,11 @@ export class StageScene extends Scene {
     // BGM再生（設定がある場合のみ）
     if (this.stageData.bgm) {
       const audio = AudioService.getInstance()
+      const config = BGM_CONFIG[this.stageData.bgm] ?? { loop: true }
       audio.play({
         type: 'audio',
         path: `${import.meta.env.BASE_URL}assets/sound/music/${this.stageData.bgm}.ogg`,
-        loop: true,
+        ...config,
       })
     }
   }
@@ -442,6 +445,7 @@ export class StageScene extends Scene {
       GurasanNotFall: (x, y) => new GurasanNotFall(x + 8, y + 8, this.stage),
       Potion: (x, y) => new Potion(x + 8, y + 8, this.stage),
       Nuefu: (x, y) => new Nuefu(x + 8, y + 8, this.stage),
+      Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stage),
     }
 
     for (let y = 0; y < this.stage.length; y++) {
