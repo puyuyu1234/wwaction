@@ -20,7 +20,7 @@ export function useAssets() {
       return
     }
 
-    await Assets.init({ basePath: '/assets/' })
+    await Assets.init({ basePath: `${import.meta.env.BASE_URL}assets/` })
     isInitialized = true
   }
 

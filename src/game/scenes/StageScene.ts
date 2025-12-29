@@ -218,7 +218,7 @@ export class StageScene extends Scene {
       const audio = AudioService.getInstance()
       audio.play({
         type: 'audio',
-        path: `/assets/sound/music/${this.stageData.bgm}.ogg`,
+        path: `${import.meta.env.BASE_URL}assets/sound/music/${this.stageData.bgm}.ogg`,
         loop: true,
       })
     }

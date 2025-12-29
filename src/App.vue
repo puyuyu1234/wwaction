@@ -15,11 +15,12 @@ const initAudioOnce = async () => {
     await audio.init()
 
     // 効果音をロード
+    const base = import.meta.env.BASE_URL
     await audio.loadSounds({
-      jump: '/assets/sound/sfx/jump.mp3',
-      heal: '/assets/sound/sfx/heal.mp3',
-      wind: '/assets/sound/sfx/wind.mp3',
-      damage: '/assets/sound/sfx/damage.mp3',
+      jump: `${base}assets/sound/sfx/jump.mp3`,
+      heal: `${base}assets/sound/sfx/heal.mp3`,
+      wind: `${base}assets/sound/sfx/wind.mp3`,
+      damage: `${base}assets/sound/sfx/damage.mp3`,
     })
 
     console.log('AudioService initialized!')
@@ -71,7 +72,7 @@ onMounted(async () => {
 <template>
   <div class="game-container">
     <canvas id="game" ref="canvasRef"></canvas>
-    <a href="/editor/" class="editor-link">Editor</a>
+    <a href="editor/" class="editor-link">Editor</a>
   </div>
 </template>
 

@@ -38,7 +38,7 @@ export class AssetLoader {
    */
   async init() {
     await Assets.init({
-      basePath: '/assets/',
+      basePath: `${import.meta.env.BASE_URL}assets/`,
     })
   }
 
@@ -69,7 +69,7 @@ export class AssetLoader {
     // アニメーション速度情報も読み込み（.info.json）
     try {
       const infoPath = jsonPath.replace('.json', '.info.json')
-      const infoResponse = await fetch(`assets/${infoPath}`)
+      const infoResponse = await fetch(`${import.meta.env.BASE_URL}assets/${infoPath}`)
       const infoData = await infoResponse.json()
 
       const speedMap = new Map<string, AnimationSpeedInfo>()
