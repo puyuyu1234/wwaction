@@ -72,4 +72,23 @@ export class Wind extends Entity {
     // 速度適用
     this.physics.applyVelocity()
   }
+
+  /**
+   * 風を新しい位置にリセット（プール再利用時に使用）
+   */
+  reset(x: number, y: number, vx: number, playerScaleX: number): void {
+    this.x = x
+    this.y = y
+    this.vy = 0
+    this.setWallBehavior('stop')
+    this.vx = playerScaleX > 0 ? 2 : -2
+
+    // 6フレーム分移動（発射演出）
+    for (let i = 0; i < 6; i++) {
+      this.tick()
+    }
+
+    this.vx = vx
+    this.setWallBehavior('bounce')
+  }
 }

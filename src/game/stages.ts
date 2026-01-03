@@ -691,10 +691,10 @@ export const STAGEDATA: StageData[] = [
         "UUVVVVVVURRVVVVUUUUUVVRUUUUUVVVVNOVVVVRVVVUUUUUUVV",
         "UVVVVVVVVNVV@!VVRRRVVVVVRRRVVVV@NOV@!VNVVVVRRRRVVV",
         "VV@!VV@!VNV@  !VNO@!VVVV@O!VVV@ NO   !N@  !VNO!VV@",
-        "@   !@  !N@    !NO  !@!@ O !V@6 NO    N    !NO !@ ",
+        "@   !@  !N@    !NO  !@!@ O !V@  NO    N    !NO !@ ",
         "         N      NO       O      NO    N     NO    ",
         "         N      NO       O      NO    N     NO    ",
-        "         N      NO       O1     NO    N     NO    ",
+        "         N      NO       O1   6 NO    N     NO    ",
         " 0   ST  N   W  NO  ST  WO XYYZ NO  STN   W NO ST ",
         "bbbbbbbbbbbbbbbbbbbbbbbbbbbc  abbbbbbbbbbbbbbbbbbb",
         "lllllllllllllllllllllllllllm  klllllllllllllllllll",
@@ -716,6 +716,51 @@ export const STAGEDATA: StageData[] = [
         "                                                  ",
         "                                                  ",
         "                                                  "
+      ]
+    ]
+  },
+  {
+    "theme": "forest",
+    "bg": [
+      ""
+    ],
+    "fg": [
+      "    NO  NO               NO      NO            "
+    ],
+    "stages": [
+      [
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "UUUUUUUUUUUUUUUUUUUUUUQPUUUUUU",
+        "UUUUUUUUVVUUVVUUUUUUUQ  PUUUUU",
+        "UUVVUUU!VVVVVV@UUUUUQ    PRRRR",
+        "UVVV@RQ !VVVV@ PRRRQ       NO ",
+        "VVV@3N    !V@    NO   xxx  NO ",
+        "VV@abbc          NO  gbbbh NO ",
+        "!@ klNm  abbbc   NO  ABBBC NO ",
+        "   klNm  klllm   NO        NO ",
+        "   klNm  klllm gbNO        NO ",
+        " 0 klNm  klbbbbilrO        NO ",
+        "bbbbbbbh kqllllllrO  gbbbbbbbh",
+        "lllllllr kqllllllrO  ABBBBBBBC",
+        "lllllllr kqllllllrO           "
+      ],
+      [
+        "                              ",
+        "                              ",
+        "                              ",
+        "        QP  QP                ",
+        "  QP   Q  PQ  P               ",
+        " Q  P                         ",
+        "Q   o o                       ",
+        "     N    ooo                 ",
+        "                              ",
+        "            d                 ",
+        "           ono   h            ",
+        "ooooooo   g                   ",
+        "                              ",
+        "                              ",
+        "                              "
       ]
     ]
   }

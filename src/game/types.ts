@@ -48,7 +48,7 @@ export interface StageData {
   engName?: string
   /** BGMファイル名（拡張子なし） */
   bgm?: string
-  theme?: StageTheme
+  theme: StageTheme
   bg: string[]
   fg: string[]
   stages: string[][]

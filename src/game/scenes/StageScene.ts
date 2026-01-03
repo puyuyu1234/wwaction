@@ -12,14 +12,11 @@ import { Nuefu } from '@game/entity/Nuefu'
 import { Shimi } from '@game/entity/Shimi'
 import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
-import { Wind } from '@game/entity/Wind'
-import { CloudBackground } from '@game/ui/CloudBackground'
-import { FogEffect } from '@game/ui/FogEffect'
+import { WindPool } from '@game/entity/WindPool'
 import { HPBar } from '@game/ui/HPBar'
-import { LeafEffect } from '@game/ui/LeafEffect'
-import { ParallaxBackground } from '@game/ui/ParallaxBackground'
 import { SceneTransition } from '@game/ui/SceneTransition'
 import { StageName } from '@game/ui/StageName'
+import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { GameSession } from '@game/GameSession'
 import { STAGEDATA } from '@game/stages'
 import {
@@ -53,9 +50,7 @@ export class StageScene extends Scene {
   private stageHeight: number
 
   // 風プール管理
-  private windPool: Wind[] = []
-  private windPoolIndex = 0
-  private vanishingWinds: Array<{ wind: Wind; timer: number }> = []
+  private windPool: WindPool
 
   private session: GameSession
   private viewportWidth: number
@@ -77,20 +72,10 @@ export class StageScene extends Scene {
   private isPlayerDead = false
 
   // 背景・前景
-  private parallaxBackground?: ParallaxBackground
-  private parallaxForeground?: ParallaxBackground
+  private themeRenderer: ThemeRenderer
 
   // チュートリアルUI（ステージ0のみ）
   private tutorialUI?: TutorialUI
-
-  // 雲の背景演出
-  private cloudBackground: CloudBackground
-
-  // 霧エフェクト（森テーマ用）
-  private fogEffect?: FogEffect
-
-  // 葉っぱエフェクト（森テーマ用）
-  private leafEffect?: LeafEffect
 
   constructor(
     session: GameSession,
@@ -122,37 +107,18 @@ export class StageScene extends Scene {
     // sortableChildren を有効化（zIndex順で描画）
     this.container.sortableChildren = true
 
-    // テーマに応じた背景処理
-    const isForest = this.stageData.theme === 'forest'
-
-    if (isForest) {
-      // 森テーマ: グラデーション背景（上が明るく、下が暗い）
-      const forestBg = new Graphics()
-      const steps = 32 // グラデーションの段階数
-      const stepHeight = Math.ceil(viewportHeight / steps)
-
-      for (let i = 0; i < steps; i++) {
-        // 上（明るい緑 #3a654a）から下（暗い緑 #0a2310）へ
-        const t = i / (steps - 1)
-        const r = Math.floor(0x3a + (0x0a - 0x3a) * t)
-        const g = Math.floor(0x65 + (0x23 - 0x65) * t)
-        const b = Math.floor(0x4a + (0x10 - 0x4a) * t)
-        const color = (r << 16) | (g << 8) | b
-
-        forestBg.rect(0, i * stepHeight, viewportWidth, stepHeight + 1)
-        forestBg.fill(color)
-      }
-
-      forestBg.zIndex = Z_INDEX.BACKGROUND
-      this.container.addChild(forestBg)
-    }
-
-    // 雲の背景演出（草原テーマのみ）
-    this.cloudBackground = new CloudBackground(viewportWidth, viewportHeight, 90)
-    this.cloudBackground.container.zIndex = Z_INDEX.BACKGROUND + 5 // 背景より手前
-    if (!isForest) {
-      this.container.addChild(this.cloudBackground.container)
-    }
+    // テーマに応じた背景・前景を描画
+    this.themeRenderer = new ThemeRenderer({
+      theme: this.stageData.theme,
+      viewportWidth,
+      viewportHeight,
+      stageWidth: this.stageWidth,
+      stageHeight: this.stageHeight,
+      tileCount: this.stage[0].length,
+      bgPattern: this.stageData.bg,
+      fgPattern: this.stageData.fg,
+    })
+    this.container.addChild(this.themeRenderer.backgroundContainer)
 
     // カメラコンテナ（スクロール用）
     this.cameraContainer = new Container()
@@ -163,26 +129,8 @@ export class StageScene extends Scene {
     // カメラ制御
     this.camera = new Camera(this.cameraContainer, viewportWidth, viewportHeight)
 
-    // 背景描画（bgフィールドがある場合のみ）
-    if (this.stageData.bg && this.stageData.bg.length > 0) {
-      this.parallaxBackground = new ParallaxBackground(
-        this.stageData.bg,
-        this.stageWidth,
-        this.stageHeight,
-        0.5, // X軸視差レート（0.5 = カメラの半分の速度）
-        1.0  // Y軸視差レート（1.0 = カメラと同じ速度）
-      )
-      this.parallaxBackground.container.zIndex = Z_INDEX.BACKGROUND
-      this.cameraContainer.addChild(this.parallaxBackground.container)
-    }
-
-    // 葉っぱエフェクト（森テーマのみ、視差1.0）
-    if (isForest) {
-      const tileCount = this.stage[0].length
-      this.leafEffect = new LeafEffect(this.stageWidth, this.stageHeight, tileCount, 1.0, 1.0, 1.0)
-      this.leafEffect.container.zIndex = Z_INDEX.BACKGROUND + 1
-      this.cameraContainer.addChild(this.leafEffect.container)
-    }
+    // スクロール背景をカメラコンテナに追加
+    this.cameraContainer.addChild(this.themeRenderer.scrollContainer)
 
     // タイルマップ描画（全レイヤー）
     this.tilemapContainer = new Container()
@@ -202,26 +150,9 @@ export class StageScene extends Scene {
     // ステージデータからエンティティを生成
     this.spawnEntitiesFromStage()
 
-    // 前景描画（fgフィールドがある場合のみ）
-    if (this.stageData.fg && this.stageData.fg.length > 0) {
-      this.parallaxForeground = new ParallaxBackground(
-        this.stageData.fg,
-        this.stageWidth,
-        this.stageHeight,
-        -0.5, // X軸視差レート（1.5 = カメラより速く動く）
-        1.0  // Y軸視差レート（1.0 = カメラと同じ速度）
-      )
-      this.parallaxForeground.container.zIndex = Z_INDEX.FOREGROUND
-      this.cameraContainer.addChild(this.parallaxForeground.container)
-    }
-
-    // 霧エフェクト（森テーマのみ、ステージ全域に配置）
-    if (isForest) {
-      const tileCount = this.stage[0].length
-      this.fogEffect = new FogEffect(this.stageWidth, this.stageHeight, tileCount) // 1マスあたり0.8個
-      this.fogEffect.container.zIndex = Z_INDEX.FOG
-      this.cameraContainer.addChild(this.fogEffect.container)
-    }
+    // 前景をカメラコンテナに追加（エンティティより手前）
+    this.themeRenderer.foregroundContainer.zIndex = Z_INDEX.FOREGROUND
+    this.cameraContainer.addChild(this.themeRenderer.foregroundContainer)
 
     // HPBar（player.healthはIHPProviderを実装）
     this.hpBar = new HPBar(this.player.health, 10, 220)
@@ -231,9 +162,12 @@ export class StageScene extends Scene {
     // プレイヤーイベントのリッスン
     this.setupPlayerEvents()
 
-    // 風プールを初期化（2個）
-    this.windPool = [new Wind(-100, -100, 0, this.stage), new Wind(-100, -100, 0, this.stage)]
-    this.windPool.forEach((wind) => this.addEntity(wind))
+    // 風プールを初期化
+    this.windPool = new WindPool({
+      stage: this.stage,
+      onAddEntity: (entity) => this.addEntity(entity),
+    })
+    this.windPool.getWindEntities().forEach((wind) => this.addEntity(wind))
 
     // ゴールエンティティを追加（ステージ右端）
     const goal = new Goal(this.stageWidth - 1, 0, 3, this.stageHeight)
@@ -331,7 +265,7 @@ export class StageScene extends Scene {
   private setupPlayerEvents() {
     // 風生成イベント
     this.player.behavior.on('createWind', (data: { x: number; y: number; vx: number }) => {
-      this.createWind(data.x, data.y, data.vx)
+      this.windPool.createWind(data.x, data.y, data.vx, this.player.scale.x)
     })
 
     // ゴール到達イベント
@@ -489,34 +423,6 @@ export class StageScene extends Scene {
   }
 
   /**
-   * 風エンティティを生成（プール方式）
-   */
-  private createWind(x: number, y: number, vx: number) {
-    this.windPoolIndex = (this.windPoolIndex + 1) % this.windPool.length
-    const wind = this.windPool[this.windPoolIndex]
-
-    // 古い風の位置に消滅エフェクトを生成
-    const vanishingWind = new Wind(wind.x, wind.y, 0, this.stage)
-    vanishingWind.vx = wind.vx
-    vanishingWind.vy = wind.vy
-    vanishingWind.playAnimation('vanish')
-    this.addEntity(vanishingWind)
-    this.vanishingWinds.push({ wind: vanishingWind, timer: 0 })
-
-    // 風を再配置
-    wind.x = x
-    wind.y = y
-    wind.vy = 0
-    wind.setWallBehavior('stop')
-    wind.vx = this.player.scale.x > 0 ? 2 : -2
-    for (let i = 0; i < 6; i++) {
-      wind.tick()
-    }
-    wind.vx = vx
-    wind.setWallBehavior('bounce')
-  }
-
-  /**
    * エンティティをシーンから削除
    */
   private removeEntity(entity: Entity) {
@@ -581,29 +487,9 @@ export class StageScene extends Scene {
       this.stageHeight
     )
 
-    // 背景スクロール（視差効果）
-    if (this.parallaxBackground) {
-      this.parallaxBackground.updateScroll(this.camera.x, this.camera.y)
-    }
-
-    // 葉っぱエフェクト更新（森テーマのみ）
-    if (this.leafEffect) {
-      this.leafEffect.tick()
-      this.leafEffect.updateScroll(this.camera.x, this.camera.y)
-    }
-
-    // 前景スクロール（視差効果）
-    if (this.parallaxForeground) {
-      this.parallaxForeground.updateScroll(this.camera.x, this.camera.y)
-    }
-
-    // 雲の背景演出更新
-    this.cloudBackground.tick()
-
-    // 霧エフェクト更新（森テーマのみ）
-    if (this.fogEffect) {
-      this.fogEffect.tick()
-    }
+    // 背景・前景更新
+    this.themeRenderer.tick()
+    this.themeRenderer.updateScroll(this.camera.x, this.camera.y)
 
     // カメラシェイク演出
     this.updateCameraShake()
@@ -625,28 +511,13 @@ export class StageScene extends Scene {
     // HP表示更新
     this.hpBar.tick()
 
-    // 消滅エフェクト更新
-    this.updateVanishingWinds()
+    // 風プール更新（消滅エフェクト管理）
+    this.windPool.tick()
 
     // デバッグ情報更新
     if (DEBUG && this.debugText) {
       this.updateDebugInfo()
     }
-  }
-
-  /**
-   * 消滅エフェクトの更新と削除
-   */
-  private updateVanishingWinds() {
-    this.vanishingWinds = this.vanishingWinds.filter((entry) => {
-      entry.timer++
-      if (entry.timer >= 12) {
-        entry.wind.behavior.destroy()
-        entry.wind.destroy()
-        return false
-      }
-      return true
-    })
   }
 
   /**
@@ -736,8 +607,8 @@ export class StageScene extends Scene {
   }
 
   end() {
-    this.cloudBackground.destroy()
-    this.parallaxBackground?.destroy()
+    this.themeRenderer.destroy()
+    this.windPool.destroy()
     this.tilemapContainer.destroy({ children: true })
     super.end()
   }
