@@ -341,6 +341,114 @@
         "w": 32,
         "h": 16
       }
+    },
+    "fun_1": {
+      "frame": {
+        "x": 64,
+        "y": 32,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "fun_2": {
+      "frame": {
+        "x": 80,
+        "y": 32,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "fun_3": {
+      "frame": {
+        "x": 96,
+        "y": 32,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "fun_4": {
+      "frame": {
+        "x": 112,
+        "y": 32,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "funkoro_1": {
+      "frame": {
+        "x": 128,
+        "y": 32,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "funkoro_2": {
+      "frame": {
+        "x": 144,
+        "y": 32,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
     }
   },
   "animations": {
@@ -392,6 +500,16 @@
     "shimi": [
       "shimi_1",
       "shimi_2"
+    ],
+    "fun": [
+      "fun_1",
+      "fun_2",
+      "fun_3",
+      "fun_4"
+    ],
+    "funkoro": [
+      "funkoro_1",
+      "funkoro_2"
     ]
   },
   "meta": {
