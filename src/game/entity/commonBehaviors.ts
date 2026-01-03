@@ -1,6 +1,6 @@
 import type { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { AudioService } from '@ptre/audio/AudioService'
 import { SFX_KEYS, SCREEN } from '@game/config'
+import { AudioService } from '@ptre/audio/AudioService'
 
 import type { Entity } from './Entity'
 

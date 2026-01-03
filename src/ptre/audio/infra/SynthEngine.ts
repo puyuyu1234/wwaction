@@ -5,6 +5,7 @@
  */
 
 import * as Tone from 'tone'
+
 import type { TrackConfig } from '../types'
 
 /**

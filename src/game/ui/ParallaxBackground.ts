@@ -1,5 +1,5 @@
-import { AssetLoader } from '@ptre/core/AssetLoader'
 import { BLOCKDATA, BLOCKSIZE } from '@game/config'
+import { AssetLoader } from '@ptre/core/AssetLoader'
 import { TilingSprite, Texture, RenderTexture, Container, Sprite } from 'pixi.js'
 
 /**

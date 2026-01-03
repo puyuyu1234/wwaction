@@ -1,7 +1,9 @@
 import type { Input } from '../core/Input'
-import { UI_TYPE_DATA } from '@/game/config'
 
 import { AnimatedSpriteActor } from './AnimatedSpriteActor'
+
+import { UI_TYPE_DATA } from '@/game/config'
+
 
 /**
  * UI用スプライト（キー操作ガイドなど）

@@ -1,15 +1,17 @@
-import { Input } from '@ptre/core/Input'
-import { Rectangle } from '@ptre/core/Rectangle'
-import { StateManager } from '@ptre/components/StateManager'
-import { AudioService } from '@ptre/audio/AudioService'
-import { Entity } from './Entity'
+import { FallDeathComponent } from '@game/components/FallDeathComponent'
+import { HealthComponent } from '@game/components/HealthComponent'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { HealthComponent } from '@game/components/HealthComponent'
-import { FallDeathComponent } from '@game/components/FallDeathComponent'
-import { CommonBehaviors } from './commonBehaviors'
 import { BLOCKSIZE, SFX_KEYS } from '@game/config'
 import { PlayerState, StageLayers } from '@game/types'
+import { AudioService } from '@ptre/audio/AudioService'
+import { StateManager } from '@ptre/components/StateManager'
+import { Input } from '@ptre/core/Input'
+import { Rectangle } from '@ptre/core/Rectangle'
+
+import { CommonBehaviors } from './commonBehaviors'
+import { Entity } from './Entity'
+
 
 /**
  * プレイヤーエンティティ

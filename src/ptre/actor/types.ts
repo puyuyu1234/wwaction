@@ -1,4 +1,5 @@
 import type { Container } from 'pixi.js'
+
 import type { ActorBehavior } from './ActorBehavior'
 
 /**

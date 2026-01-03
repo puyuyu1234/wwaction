@@ -1,5 +1,6 @@
-import { Container, Graphics } from 'pixi.js'
 import { Z_INDEX } from '@game/config'
+import { Container, Graphics } from 'pixi.js'
+
 import { CloudBackground } from './CloudBackground'
 import { FogEffect } from './FogEffect'
 import { LeafEffect } from './LeafEffect'

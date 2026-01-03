@@ -1,6 +1,6 @@
 import { FONT } from '@game/config'
-import { Text, TextStyle } from 'pixi.js'
 import { EventDispatcher } from '@ptre/core/EventDispatcher'
+import { Text, TextStyle } from 'pixi.js'
 
 /**
  * テキスト描画アクター（UI用）

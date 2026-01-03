@@ -1,5 +1,5 @@
-import { Graphics } from 'pixi.js'
 import { EventDispatcher } from '@ptre/core/EventDispatcher'
+import { Graphics } from 'pixi.js'
 
 /**
  * 矩形描画アクター

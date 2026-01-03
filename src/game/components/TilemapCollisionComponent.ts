@@ -1,6 +1,6 @@
-import { Rectangle } from '@ptre/core/Rectangle'
 import { BLOCKSIZE, BLOCKDATA } from '@game/config'
 import { CollisionType, StageLayers } from '@game/types'
+import { Rectangle } from '@ptre/core/Rectangle'
 
 interface ICollisionEntity {
   x: number

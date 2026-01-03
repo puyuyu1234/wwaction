@@ -1,6 +1,6 @@
+import { CollisionReactionComponent } from '@game/components/CollisionReactionComponent'
 import { AnimatedSpriteActor } from '@ptre/actor/AnimatedSpriteActor'
 import { Rectangle } from '@ptre/core/Rectangle'
-import { CollisionReactionComponent } from '@game/components/CollisionReactionComponent'
 
 /**
  * ゲームエンティティ基底クラス

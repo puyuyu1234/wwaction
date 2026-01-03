@@ -57,6 +57,20 @@ export class Input {
   }
 
   /**
+   * 外部からキー押下状態を設定（仮想コントローラー用）
+   */
+  setKeyPressed(key: string): void {
+    this.isKeyPressedMap.set(key, true)
+  }
+
+  /**
+   * 外部からキー解放状態を設定（仮想コントローラー用）
+   */
+  setKeyReleased(key: string): void {
+    this.isKeyPressedMap.set(key, false)
+  }
+
+  /**
    * デバッグ用: 現在押されているキーの一覧を取得
    */
   getPressedKeys(): string[] {

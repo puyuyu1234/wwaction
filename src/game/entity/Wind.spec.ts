@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
 import { StageLayers } from '@game/types'
+import { describe, it, expect, vi } from 'vitest'
+
 import { Wind } from './Wind'
 
 // AssetLoaderをモック

@@ -1,7 +1,7 @@
 import { StageLayers } from '@game/types'
 
-import { Wind } from './Wind'
 import { Entity } from './Entity'
+import { Wind } from './Wind'
 
 interface WindPoolConfig {
   poolSize?: number
