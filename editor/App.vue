@@ -81,11 +81,11 @@ const handleSave = async () => {
         >
           {{ i - 1 }}
         </button>
-        <button @click="handleAddLayer" class="layer-add">+</button>
+        <button class="layer-add" @click="handleAddLayer">+</button>
         <button
-          @click="handleRemoveLayer"
           class="layer-remove"
           :disabled="layerCount <= 1"
+          @click="handleRemoveLayer"
         >
           -
         </button>

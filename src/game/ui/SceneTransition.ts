@@ -1,8 +1,8 @@
+import { easeInSine, easeOutSine } from '@ptre/utils/easing'
 import { Container } from 'pixi.js'
 
 import { RectActor } from './RectActor'
 
-import { easeInSine, easeOutSine } from '@ptre/utils/easing'
 
 /**
  * シーン遷移演出

@@ -1,15 +1,17 @@
-import { Input } from '@ptre/core/Input'
-import { Rectangle } from '@ptre/core/Rectangle'
-import { StateManager } from '@ptre/components/StateManager'
-import { AudioService } from '@ptre/audio/AudioService'
-import { Entity } from './Entity'
+import { FallDeathComponent } from '@game/components/FallDeathComponent'
+import { HealthComponent } from '@game/components/HealthComponent'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { HealthComponent } from '@game/components/HealthComponent'
-import { FallDeathComponent } from '@game/components/FallDeathComponent'
-import { CommonBehaviors } from './commonBehaviors'
 import { BLOCKSIZE, SFX_KEYS } from '@game/config'
-import { PlayerState } from '@game/types'
+import { PlayerState, StageLayers } from '@game/types'
+import { AudioService } from '@ptre/audio/AudioService'
+import { StateManager } from '@ptre/components/StateManager'
+import { Input } from '@ptre/core/Input'
+import { Rectangle } from '@ptre/core/Rectangle'
+
+import { CommonBehaviors } from './commonBehaviors'
+import { Entity } from './Entity'
+
 
 /**
  * プレイヤーエンティティ
@@ -44,7 +46,7 @@ export class Player extends Entity {
     x: number,
     y: number,
     input: Input,
-    stage: string[][],
+    stage: StageLayers,
     maxHp: number = 5,
     initialHp?: number
   ) {
@@ -55,7 +57,7 @@ export class Player extends Entity {
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, stage)
     this.health = new HealthComponent(initialHp ?? maxHp, maxHp)
-    this.fallDeath = new FallDeathComponent(stage.length * BLOCKSIZE)
+    this.fallDeath = new FallDeathComponent(stage[0].length * BLOCKSIZE)
 
     // 衝突反応を登録
     this.setupCollisionReactions()

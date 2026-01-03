@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { GameFactory } from '@ptre/core/GameFactory'
 import { SCREEN } from '@game/config'
 import { GameSession } from '@game/GameSession'
 import { StageScene } from '@game/scenes/StageScene'
 import { AudioService } from '@ptre/audio/AudioService'
+import { GameFactory } from '@ptre/core/GameFactory'
+import type { Input } from '@ptre/core/Input'
+import { onMounted, ref, shallowRef } from 'vue'
+
+import VirtualController from './components/VirtualController.vue'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const inputRef = shallowRef<Input | null>(null)
+const showController = ref(false)
+
+const toggleController = () => {
+  showController.value = !showController.value
+}
 
 // 最初のユーザーインタラクションで音声を初期化
 const initAudioOnce = async () => {
@@ -38,9 +47,11 @@ onMounted(async () => {
   // ユーザーインタラクション検知（一度だけ）
   window.addEventListener('keydown', handleUserInteraction, { once: true })
   window.addEventListener('click', handleUserInteraction, { once: true })
+  window.addEventListener('touchstart', handleUserInteraction, { once: true })
 
   // ゲーム初期化
   const { game, assetLoader } = await GameFactory.createGame('game', SCREEN.WIDTH, SCREEN.HEIGHT)
+  inputRef.value = game.getInput()
 
   // アセット読み込み
   await assetLoader.loadSpritesheet('tileset', 'spritesheets/tileset.json')
@@ -72,7 +83,13 @@ onMounted(async () => {
 <template>
   <div class="game-container">
     <canvas id="game" ref="canvasRef"></canvas>
-    <a href="editor/" class="editor-link">Editor</a>
+    <div class="top-links">
+      <button class="controller-toggle" @click="toggleController">
+        {{ showController ? 'Pad OFF' : 'Pad ON' }}
+      </button>
+      <a href="editor/" class="editor-link">Editor</a>
+    </div>
+    <VirtualController v-if="showController && inputRef" :input="inputRef" />
   </div>
 </template>
 
@@ -116,10 +133,29 @@ body {
   outline: 2px solid rgba(255, 255, 255, 0.6);
 }
 
-.editor-link {
+.top-links {
   position: fixed;
   top: 8px;
   right: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.controller-toggle {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.controller-toggle:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.editor-link {
   padding: 4px 12px;
   background: rgba(255, 255, 255, 0.2);
   color: #fff;

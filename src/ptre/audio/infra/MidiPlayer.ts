@@ -6,8 +6,10 @@
 
 import { Midi } from '@tonejs/midi'
 import * as Tone from 'tone'
+
 import { PRESETS } from '../presets'
 import type { MidiSource } from '../types'
+
 import { SynthEngine } from './SynthEngine'
 
 /**

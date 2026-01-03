@@ -42,13 +42,16 @@ export enum PlayerState {
 /** ステージテーマ */
 export type StageTheme = 'plain' | 'forest'
 
+/** ステージレイヤー（衝突判定用） */
+export type StageLayers = string[][][]  // [layer][row][col]
+
 /** ステージデータ */
 export interface StageData {
   name?: string
   engName?: string
   /** BGMファイル名（拡張子なし） */
   bgm?: string
-  theme?: StageTheme
+  theme: StageTheme
   bg: string[]
   fg: string[]
   stages: string[][]

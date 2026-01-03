@@ -1,8 +1,9 @@
 import { Application } from 'pixi.js'
 
+import { Scene } from '../scene/Scene'
+
 import { Input } from './Input'
 
-import { Scene } from '../scene/Scene'
 
 /**
  * ゲームメインループクラス

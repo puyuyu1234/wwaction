@@ -1,5 +1,6 @@
-import { AssetLoader } from '../core/AssetLoader'
 import { AnimatedSprite, Texture } from 'pixi.js'
+
+import { AssetLoader } from '../core/AssetLoader'
 
 import { ActorBehavior } from './ActorBehavior'
 

@@ -1,4 +1,5 @@
 import { EventDispatcher } from '../core/EventDispatcher'
+
 import type { Actor } from './types'
 
 /**

@@ -1,5 +1,5 @@
-import { Game } from './Game'
 import { AssetLoader } from './AssetLoader'
+import { Game } from './Game'
 
 /**
  * ゲーム初期化ヘルパー

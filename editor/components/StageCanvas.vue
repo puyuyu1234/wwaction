@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 
-import { EDITOR_CONFIG } from '../config'
 import { useStageEditor } from '../composables/useStageEditor'
 import { useStageLoader } from '../composables/useStageLoader'
+import { EDITOR_CONFIG } from '../config'
 import { GridEditor } from '../pixijs/GridEditor'
 
 const {

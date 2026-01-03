@@ -1,9 +1,9 @@
+import { easeOutExpo, easeLinear } from '@ptre/utils/easing'
 import { Container } from 'pixi.js'
 
 import { RectActor } from './RectActor'
 import { TextActor } from './TextActor'
 
-import { easeOutExpo, easeLinear } from '@ptre/utils/easing'
 
 /**
  * ステージ名表示演出

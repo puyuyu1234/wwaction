@@ -7,6 +7,7 @@
  */
 
 import * as Tone from 'tone'
+
 import { AudioPlayer } from './infra/AudioPlayer'
 import { MidiPlayer } from './infra/MidiPlayer'
 import type { MusicSource, SoundEffectConfig } from './types'
