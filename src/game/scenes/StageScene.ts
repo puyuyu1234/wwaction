@@ -8,6 +8,8 @@ import {
   Z_INDEX,
 } from '@game/config'
 import { Entity } from '@game/entity/Entity'
+import { Fun } from '@game/entity/Fun'
+import { Funkorogashi } from '@game/entity/Funkorogashi'
 import { Goal } from '@game/entity/Goal'
 import { Gurasan } from '@game/entity/Gurasan'
 import { GurasanNotFall } from '@game/entity/GurasanNotFall'
@@ -385,6 +387,13 @@ export class StageScene extends Scene {
       Potion: (x, y) => new Potion(x + 8, y + 8, this.stage),
       Nuefu: (x, y) => new Nuefu(x + 8, y + 8, this.stage),
       Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stage),
+      Funkorogashi: (x, y) => {
+        const funko = new Funkorogashi(x + 8, y + 8, this.stage, () => this.player.x)
+        funko.behavior.on('spawnFun', (fun: Fun) => {
+          this.addEntity(fun)
+        })
+        return funko
+      },
     }
 
     // 全レイヤーをスキャンしてエンティティを生成
@@ -583,11 +592,11 @@ export class StageScene extends Scene {
     this.stageGraphics.clear()
 
     this.entities.forEach((entity) => {
-      // z-index設定
-      entity.zIndex = Z_INDEX.ENTITY
-
-      // cameraContainerに追加
+      // cameraContainerに追加（初回のみzIndex設定）
       if (!entity.parent || entity.parent !== this.cameraContainer) {
+        if (entity.zIndex === 0) {
+          entity.zIndex = Z_INDEX.ENTITY
+        }
         this.cameraContainer.addChild(entity)
       }
 

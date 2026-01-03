@@ -129,6 +129,7 @@ export const ENTITYDATA = {
   '4': { entityClass: 'GurasanNotFall' },
   '5': { entityClass: 'Nuefu' },
   '6': { entityClass: 'Shimi' },
+  '7': { entityClass: 'Funkorogashi' },
 } as const
 
 /**

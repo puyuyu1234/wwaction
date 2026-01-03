@@ -129,7 +129,7 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
 
 .action-buttons {
   position: relative;
-  width: 50vw;
+  width: 40vw;
   height: 50vw;
   max-width: 240px;
   max-height: 240px;
