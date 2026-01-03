@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { StageLayers } from '@game/types'
 import { Wind } from './Wind'
 
 // AssetLoaderをモック
@@ -13,14 +14,16 @@ vi.mock('@ptre/core/AssetLoader', () => ({
 }))
 
 describe('Wind', () => {
-  // 簡単なステージデータ（空のステージ）
-  const emptyStage: string[][] = [
-    '                    '.split(''),
-    '                    '.split(''),
-    '                    '.split(''),
-    '                    '.split(''),
-    '                    '.split(''),
-    'gggggggggggggggggggg'.split(''), // 地面
+  // 簡単なステージデータ（空のステージ）- 1レイヤー
+  const emptyStage: StageLayers = [
+    [
+      '                    '.split(''),
+      '                    '.split(''),
+      '                    '.split(''),
+      '                    '.split(''),
+      '                    '.split(''),
+      'gggggggggggggggggggg'.split(''), // 地面
+    ],
   ]
 
   describe('初期化', () => {

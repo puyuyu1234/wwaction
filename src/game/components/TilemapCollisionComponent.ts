@@ -1,6 +1,6 @@
 import { Rectangle } from '@ptre/core/Rectangle'
 import { BLOCKSIZE, BLOCKDATA } from '@game/config'
-import { CollisionType } from '@game/types'
+import { CollisionType, StageLayers } from '@game/types'
 
 interface ICollisionEntity {
   x: number
@@ -12,11 +12,12 @@ interface ICollisionEntity {
 
 /**
  * タイルマップ衝突判定Component
+ * 複数レイヤーに対応: いずれかのレイヤーで衝突があれば衝突とみなす
  */
 export class TilemapCollisionComponent {
   constructor(
     private entity: ICollisionEntity,
-    private stage: string[][]
+    private layers: StageLayers
   ) {}
 
   private get currentHitbox(): Rectangle {
@@ -34,18 +35,24 @@ export class TilemapCollisionComponent {
 
     if (y < 0) return false
 
-    if (!this.stage[by]?.[bx]) {
-      if (x < 0 || x >= this.stage[0].length * BLOCKSIZE) {
-        return types.includes(CollisionType.SOLID)
+    // 全レイヤーをチェック
+    for (const layer of this.layers) {
+      const blockKey = layer[by]?.[bx]
+      if (!blockKey || blockKey === ' ') continue
+
+      const blockData = BLOCKDATA[blockKey]
+      if (blockData && types.includes(blockData.type)) {
+        return true
       }
-      return false
     }
 
-    const blockKey = this.stage[by][bx]
-    const blockData = BLOCKDATA[blockKey]
-    if (!blockData) return false
+    // 画面外判定
+    const stageWidth = (this.layers[0]?.[0]?.length ?? 0) * BLOCKSIZE
+    if (x < 0 || x >= stageWidth) {
+      return types.includes(CollisionType.SOLID)
+    }
 
-    return types.includes(blockData.type)
+    return false
   }
 
   checkLeftWall(): boolean {
@@ -191,36 +198,39 @@ export class TilemapCollisionComponent {
   }
 
   /**
-   * 指定座標のダメージブロックをチェック
+   * 指定座標のダメージブロックをチェック（全レイヤー対応）
    */
   private checkDamageBlockAt(x: number, y: number): { damage: number; isPit: boolean } | null {
     const bx = Math.floor(x / BLOCKSIZE)
     const by = Math.floor(y / BLOCKSIZE)
 
-    if (!this.stage[by]?.[bx]) return null
+    // 全レイヤーをチェック
+    for (const layer of this.layers) {
+      const blockKey = layer[by]?.[bx]
+      if (!blockKey || blockKey === ' ') continue
 
-    const blockKey = this.stage[by][bx]
-    const blockData = BLOCKDATA[blockKey]
+      const blockData = BLOCKDATA[blockKey]
 
-    if (!blockData || blockData.type !== CollisionType.DAMAGE || !blockData.param?.damage) {
-      return null
-    }
+      if (!blockData || blockData.type !== CollisionType.DAMAGE || !blockData.param?.damage) {
+        continue
+      }
 
-    // ダメージブロックのhitboxを計算（ブロック座標基準）
-    const damageHitbox = blockData.param.hitbox
-      ? new Rectangle(
-          bx * BLOCKSIZE + blockData.param.hitbox.x,
-          by * BLOCKSIZE + blockData.param.hitbox.y,
-          blockData.param.hitbox.width,
-          blockData.param.hitbox.height
-        )
-      : new Rectangle(bx * BLOCKSIZE, by * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+      // ダメージブロックのhitboxを計算（ブロック座標基準）
+      const damageHitbox = blockData.param.hitbox
+        ? new Rectangle(
+            bx * BLOCKSIZE + blockData.param.hitbox.x,
+            by * BLOCKSIZE + blockData.param.hitbox.y,
+            blockData.param.hitbox.width,
+            blockData.param.hitbox.height
+          )
+        : new Rectangle(bx * BLOCKSIZE, by * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
 
-    // エンティティのヒットボックスと衝突判定
-    if (this.currentHitbox.hitTest(damageHitbox)) {
-      return {
-        damage: blockData.param.damage,
-        isPit: false,
+      // エンティティのヒットボックスと衝突判定
+      if (this.currentHitbox.hitTest(damageHitbox)) {
+        return {
+          damage: blockData.param.damage,
+          isPit: false,
+        }
       }
     }
 

@@ -1,5 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
+import { StageLayers } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { CommonBehaviors } from './commonBehaviors'
@@ -17,7 +18,7 @@ export class Potion extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(centerX: number, centerY: number, stage: string[][]) {
+  constructor(centerX: number, centerY: number, stage: StageLayers) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
     // スプライトサイズ: 16x16
     // hitboxも中心基準: (-4,-4,8,12)

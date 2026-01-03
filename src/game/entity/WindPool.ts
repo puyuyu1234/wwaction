@@ -1,9 +1,11 @@
+import { StageLayers } from '@game/types'
+
 import { Wind } from './Wind'
 import { Entity } from './Entity'
 
 interface WindPoolConfig {
   poolSize?: number
-  stage: string[][]
+  stage: StageLayers
   onAddEntity: (entity: Entity) => void
 }
 
@@ -16,7 +18,7 @@ export class WindPool {
   private pool: Wind[] = []
   private poolIndex = 0
   private vanishingWinds: Array<{ wind: Wind; timer: number }> = []
-  private stage: string[][]
+  private stage: StageLayers
   private onAddEntity: (entity: Entity) => void
 
   constructor(config: WindPoolConfig) {

@@ -19,6 +19,7 @@ import { StageName } from '@game/ui/StageName'
 import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { GameSession } from '@game/GameSession'
 import { STAGEDATA } from '@game/stages'
+import { StageLayers } from '@game/types'
 import {
   BLOCKSIZE,
   BLOCKDATA,
@@ -36,7 +37,7 @@ import { AudioService } from '@ptre/audio/AudioService'
  * プレイヤーとステージを管理
  */
 export class StageScene extends Scene {
-  private stage: string[][]
+  private stage: StageLayers
   private player!: Player
   private entities: Entity[] = []
   private stageGraphics: Graphics
@@ -98,11 +99,15 @@ export class StageScene extends Scene {
     }
 
     // stages[0]（レイヤー0）を衝突判定用に使用
-    this.stage = this.stageData.stages[0].map((row) => row.split(''))
+    // 全レイヤーをパースして衝突判定用に使用
+    this.stage = this.stageData.stages.map((layer) =>
+      layer.map((row) => row.split(''))
+    )
 
-    // ステージサイズを計算
-    this.stageWidth = this.stage[0].length * BLOCKSIZE
-    this.stageHeight = this.stage.length * BLOCKSIZE
+    // ステージサイズを計算（最初のレイヤーを基準）
+    const firstLayer = this.stage[0]
+    this.stageWidth = firstLayer[0].length * BLOCKSIZE
+    this.stageHeight = firstLayer.length * BLOCKSIZE
 
     // sortableChildren を有効化（zIndex順で描画）
     this.container.sortableChildren = true
@@ -370,7 +375,7 @@ export class StageScene extends Scene {
   }
 
   /**
-   * ステージデータからエンティティを生成
+   * ステージデータからエンティティを生成（全レイヤーをスキャン）
    */
   private spawnEntitiesFromStage() {
     const entityFactory: Record<string, (x: number, y: number) => Entity> = {
@@ -382,19 +387,22 @@ export class StageScene extends Scene {
       Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stage),
     }
 
-    for (let y = 0; y < this.stage.length; y++) {
-      for (let x = 0; x < this.stage[y].length; x++) {
-        const char = this.stage[y][x]
+    // 全レイヤーをスキャンしてエンティティを生成
+    for (const layer of this.stage) {
+      for (let y = 0; y < layer.length; y++) {
+        for (let x = 0; x < layer[y].length; x++) {
+          const char = layer[y][x]
 
-        if (char in ENTITYDATA) {
-          const entityKey = char as keyof typeof ENTITYDATA
-          const entityData = ENTITYDATA[entityKey]
-          const entityName = entityData.entityClass
+          if (char in ENTITYDATA) {
+            const entityKey = char as keyof typeof ENTITYDATA
+            const entityData = ENTITYDATA[entityKey]
+            const entityName = entityData.entityClass
 
-          const factory = entityFactory[entityName]
-          if (factory) {
-            const entity = factory(x * BLOCKSIZE, y * BLOCKSIZE)
-            this.addEntity(entity)
+            const factory = entityFactory[entityName]
+            if (factory) {
+              const entity = factory(x * BLOCKSIZE, y * BLOCKSIZE)
+              this.addEntity(entity)
+            }
           }
         }
       }

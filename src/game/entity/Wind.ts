@@ -1,5 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
+import { StageLayers } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { Entity } from './Entity'
@@ -15,7 +16,7 @@ export class Wind extends Entity {
   private tilemap: TilemapCollisionComponent
   private wallBehavior: 'stop' | 'bounce' = 'bounce'
 
-  constructor(centerX: number, centerY: number, vx: number, stage: string[][]) {
+  constructor(centerX: number, centerY: number, vx: number, stage: StageLayers) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
     // スプライトサイズ: 16x16
     // hitboxも中心基準: (-5,-8,10,16)

@@ -9,7 +9,7 @@ import { HealthComponent } from '@game/components/HealthComponent'
 import { FallDeathComponent } from '@game/components/FallDeathComponent'
 import { CommonBehaviors } from './commonBehaviors'
 import { BLOCKSIZE, SFX_KEYS } from '@game/config'
-import { PlayerState } from '@game/types'
+import { PlayerState, StageLayers } from '@game/types'
 
 /**
  * プレイヤーエンティティ
@@ -44,7 +44,7 @@ export class Player extends Entity {
     x: number,
     y: number,
     input: Input,
-    stage: string[][],
+    stage: StageLayers,
     maxHp: number = 5,
     initialHp?: number
   ) {
@@ -55,7 +55,7 @@ export class Player extends Entity {
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, stage)
     this.health = new HealthComponent(initialHp ?? maxHp, maxHp)
-    this.fallDeath = new FallDeathComponent(stage.length * BLOCKSIZE)
+    this.fallDeath = new FallDeathComponent(stage[0].length * BLOCKSIZE)
 
     // 衝突反応を登録
     this.setupCollisionReactions()

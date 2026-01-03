@@ -1,5 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
+import { StageLayers } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { CommonBehaviors } from './commonBehaviors'
@@ -16,7 +17,7 @@ export class Shimi extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(centerX: number, centerY: number, stage: string[][]) {
+  constructor(centerX: number, centerY: number, stage: StageLayers) {
     // スプライトサイズ: 32x16
     // hitbox: 左上(8,5)から16x11 → 中心基準: (-8, -3, 16, 11)
     const hitbox = new Rectangle(-8, -3, 16, 11)
