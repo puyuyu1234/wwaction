@@ -12,6 +12,7 @@ import VirtualController from './components/VirtualController.vue'
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const inputRef = shallowRef<Input | null>(null)
 const showController = ref(false)
+const isDev = import.meta.env.DEV
 
 const toggleController = () => {
   showController.value = !showController.value
@@ -87,7 +88,7 @@ onMounted(async () => {
       <button class="controller-toggle" @click="toggleController">
         {{ showController ? 'Pad OFF' : 'Pad ON' }}
       </button>
-      <a href="editor/" class="editor-link">Editor</a>
+      <a v-if="isDev" href="editor/" class="editor-link">Editor</a>
     </div>
     <VirtualController v-if="showController && inputRef" :input="inputRef" />
   </div>

@@ -72,24 +72,24 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
 
 .dpad {
   position: relative;
-  width: 30vw;
-  height: 30vw;
-  max-width: 140px;
-  max-height: 140px;
+  width: 55vw;
+  height: 55vw;
+  max-width: 260px;
+  max-height: 260px;
   pointer-events: auto;
 }
 
 .dpad-btn {
   position: absolute;
-  width: 12vw;
-  height: 12vw;
-  max-width: 56px;
-  max-height: 56px;
+  width: 22vw;
+  height: 22vw;
+  max-width: 100px;
+  max-height: 100px;
   border: none;
   border-radius: 15%;
   background: rgba(255, 255, 255, 0.3);
   color: #fff;
-  font-size: 5vw;
+  font-size: 8vw;
   font-weight: bold;
   display: flex;
   justify-content: center;
@@ -101,7 +101,7 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
 
 @media (min-width: 500px) {
   .dpad-btn {
-    font-size: 24px;
+    font-size: 36px;
   }
 }
 
@@ -129,24 +129,24 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
 
 .action-buttons {
   position: relative;
-  width: 28vw;
-  height: 28vw;
-  max-width: 130px;
-  max-height: 130px;
+  width: 50vw;
+  height: 50vw;
+  max-width: 240px;
+  max-height: 240px;
   pointer-events: auto;
 }
 
 .action-btn {
   position: absolute;
-  width: 14vw;
-  height: 14vw;
-  max-width: 64px;
-  max-height: 64px;
+  width: 26vw;
+  height: 26vw;
+  max-width: 120px;
+  max-height: 120px;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
   color: #fff;
-  font-size: 3vw;
+  font-size: 5vw;
   font-weight: bold;
   display: flex;
   justify-content: center;
@@ -158,7 +158,7 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
 
 @media (min-width: 500px) {
   .action-btn {
-    font-size: 14px;
+    font-size: 24px;
   }
 }
 
