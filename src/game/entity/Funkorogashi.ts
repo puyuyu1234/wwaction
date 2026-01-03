@@ -106,8 +106,9 @@ export class Funkorogashi extends Entity {
    * ひっくり返り状態を開始（風を当てられた時）
    */
   private startFlipped() {
-    // 既にひっくり返っている場合はタイマーリセットのみ
+    // 既にひっくり返っている場合はジャンプ + タイマーリセット
     if (this.state === 'flipped') {
+      CommonBehaviors.windJump(this)
       this.timer = 0
       return
     }
