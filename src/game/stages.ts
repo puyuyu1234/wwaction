@@ -774,21 +774,21 @@ export const STAGEDATA: StageData[] = [
     ],
     "stages": [
       [
-        "UUUUUUUUUUUUU       ",
-        "UUUUUUUUUUUUU       ",
-        "UUUUUUUUUUUUU       ",
-        "UUUVVVVUUUUUV       ",
-        "UUVVVVVVURRVV       ",
-        "UVVVVVVVVNVV@       ",
-        "VV@!VV@!VNV@        ",
-        "@   !@  !N@         ",
-        "         N          ",
-        "         N          ",
-        "         N          ",
-        " 0   ST  N        7 ",
-        "bb  bbbbbbbbbbbbbbbb",
-        "ll  llllllllllllllll",
-        "ll  llllllllllllllll"
+        "VVVVVVVVVVVVVVVVVVVV",
+        "VVVVVVVVVVVVVVVVVVVV",
+        "VVVVVVVVVVVVVVVVVVVV",
+        "V@!VVVV@!VVVVVVVVVVV",
+        "@  !VV@  !VVVVVV@!VV",
+        "    !@ 7  !@!VV@  !V",
+        "      gbh    !@    !",
+        "      ABC           ",
+        "                    ",
+        "                    ",
+        "                    ",
+        " 0oooooXYZoooooooooo",
+        "bbbbbbbh gbbbbbbbbbb",
+        "lllllllr qllllllllll",
+        "lllllllr qllllllllll"
       ]
     ]
   }
