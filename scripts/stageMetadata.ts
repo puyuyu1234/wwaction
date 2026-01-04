@@ -316,4 +316,10 @@ export const STAGE_METADATA = [
     bg: [''],
     fg: ['                         NO                    '],
   },
+  // Stage 16
+  {
+    theme: 'forest',
+    bg: [''],
+    fg: ['                         NO                    '],
+  },
 ]
