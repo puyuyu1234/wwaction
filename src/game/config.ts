@@ -115,7 +115,7 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
  * 難易度ごとのHP
  * [EASY, NORMAL, HARD, LUNATIC]
  */
-export const HPDATA = [7, 5, 3, 1]
+export const HPDATA = [9, 5, 3, 1]
 
 /**
  * エンティティスポーンマップ

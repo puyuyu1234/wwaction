@@ -16,12 +16,12 @@ const actionButtons = [
   { key: 'KeyW', label: 'Jump', position: 'jump' },
 ] as const
 
-const handleTouchStart = (key: string, e: TouchEvent) => {
+const handleStart = (key: string, e: Event) => {
   e.preventDefault()
   props.input.setKeyPressed(key)
 }
 
-const handleTouchEnd = (key: string, e: TouchEvent) => {
+const handleEnd = (key: string, e: Event) => {
   e.preventDefault()
   props.input.setKeyReleased(key)
 }
@@ -34,9 +34,10 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
         v-for="btn in dpadButtons"
         :key="btn.key"
         :class="['dpad-btn', `dpad-${btn.position}`]"
-        @touchstart="handleTouchStart(btn.key, $event)"
-        @touchend="handleTouchEnd(btn.key, $event)"
-        @touchcancel="handleTouchEnd(btn.key, $event)"
+        @pointerdown="handleStart(btn.key, $event)"
+        @pointerup="handleEnd(btn.key, $event)"
+        @pointercancel="handleEnd(btn.key, $event)"
+        @pointerleave="handleEnd(btn.key, $event)"
       >
         {{ btn.label }}
       </button>
@@ -46,9 +47,10 @@ const handleTouchEnd = (key: string, e: TouchEvent) => {
         v-for="btn in actionButtons"
         :key="btn.key"
         :class="['action-btn', `action-${btn.position}`]"
-        @touchstart="handleTouchStart(btn.key, $event)"
-        @touchend="handleTouchEnd(btn.key, $event)"
-        @touchcancel="handleTouchEnd(btn.key, $event)"
+        @pointerdown="handleStart(btn.key, $event)"
+        @pointerup="handleEnd(btn.key, $event)"
+        @pointercancel="handleEnd(btn.key, $event)"
+        @pointerleave="handleEnd(btn.key, $event)"
       >
         {{ btn.label }}
       </button>
