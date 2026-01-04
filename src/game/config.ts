@@ -130,6 +130,7 @@ export const ENTITYDATA = {
   '5': { entityClass: 'Nuefu' },
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
+  '8': { entityClass: 'Semi' },
 } as const
 
 /**
@@ -141,6 +142,7 @@ export const SFX_KEYS = {
   HEAL: 'heal',
   GOAL: 'goal',
   WIND: 'wind',
+  SEMI: 'semi',
 } as const
 
 /**

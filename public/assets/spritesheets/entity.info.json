@@ -50,6 +50,12 @@
     },
     "funkoro": {
       "fps": 0
+    },
+    "semi": {
+      "fps": 0
+    },
+    "onpu": {
+      "fps": 0
     }
   }
 }

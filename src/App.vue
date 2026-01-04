@@ -31,6 +31,7 @@ const initAudioOnce = async () => {
       heal: `${base}assets/sound/sfx/heal.mp3`,
       wind: `${base}assets/sound/sfx/wind.mp3`,
       damage: `${base}assets/sound/sfx/damage.mp3`,
+      semi: `${base}assets/sound/sfx/semi.ogg`,
     })
 
     console.log('AudioService initialized!')
@@ -63,7 +64,7 @@ onMounted(async () => {
   await assetLoader.loadImage('ui', 'img/ui.png')
 
   // ゲームセッション作成（難易度: NORMAL=1, 開始ステージ: 0）
-  const session = new GameSession(1, 13)
+  const session = new GameSession(1, 15)
 
   // シーン作成
   const scene = new StageScene(

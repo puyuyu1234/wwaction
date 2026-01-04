@@ -808,5 +808,50 @@ export const STAGEDATA: StageData[] = [
         "                                                                    "
       ]
     ]
+  },
+  {
+    "theme": "forest",
+    "bg": [
+      ""
+    ],
+    "fg": [
+      "                         NO                    "
+    ],
+    "stages": [
+      [
+        "VVVVVVVVVVVVVVVVVVVVVVVV                                             ",
+        "VVVVVVVVVVVVVVVVVVVVVVVV                                             ",
+        "VVVVVVVVVVVVVVVVVVVVVVVV        VV           VV                      ",
+        "V@!VVVV@!VV@!VVV@!VVVVVVV  V@! VVV          !VVNOVV@                 ",
+        "@  !VV@  !@  NO@  !VNVVVV@!@ NOVV@     V@    !VNOV@      !V       O  ",
+        "    !@       NO    !N@!V@    NO!@     O@      !NO@        !       O  ",
+        "             NO     N        NO       O        NO                 O  ",
+        "             NO     N        NO       O        NO                 O  ",
+        "             NO     N        NO       O        NO                 O  ",
+        "             NO     N    gh  NO       O   W    NO      d      ghd O  ",
+        "             NO d   N  abbbc NO       O  gbbh  NO      n      qrn O  ",
+        " 0oooo     ooNOonoooNooklllm NO       O gillsbhNO     abhj    qsbbbbb",
+        "bbbbbbh STgbbbbbbbbbbbbbbbbbbbbbh    6O qlllllsbbbbh  klsbc   qllllll",
+        "llllllsbbbilllllllllllllllllllllr gbbbbbillllllllllr  klllm   qllllll",
+        "llllllllllllllllllllllllllllllllr qllllllllllllllllr  klllm   qllllll"
+      ],
+      [
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "QPUUUUUUQPUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "  PUUQPQ  PUUUUUUQPUUUUUUUUUUUUUQPUUUUUUUUUUUQPRRUUUUUUUUUUUUUUUUUUUQ",
+        "   PQ      PRRRRQ  PRQPQPUUQPRRQ  PQPUUUUUUUQ   8PQPUUUUUUUUQPUUQPRQ ",
+        "              8          PQ          PRQPUUQ        PQPUUQPQ  PQ  8  ",
+        "                    8                    PQ            PQ            ",
+        "                              8                                      ",
+        "                                      8                              ",
+        "                                                                     ",
+        "                                                                     ",
+        "                                                                 ooo ",
+        "                       xxxxxoooo               oooo                  ",
+        "       ppp                         ooooo                             ",
+        "                                                                     ",
+        "                                                                     "
+      ]
+    ]
   }
 ]

@@ -18,6 +18,8 @@ import { Nuefu } from '@game/entity/Nuefu'
 import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
 import { Shimi } from '@game/entity/Shimi'
+import { Semi } from '@game/entity/Semi'
+import { Onpu } from '@game/entity/Onpu'
 import { WindPool } from '@game/entity/WindPool'
 import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { GameSession } from '@game/GameSession'
@@ -393,6 +395,13 @@ export class StageScene extends Scene {
           this.addEntity(fun)
         })
         return funko
+      },
+      Semi: (x, y) => {
+        const semi = new Semi(x + 8, y + 8, () => this.player.x)
+        semi.behavior.on('spawnOnpu', (onpu: Onpu) => {
+          this.addEntity(onpu)
+        })
+        return semi
       },
     }
 
