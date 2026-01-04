@@ -115,7 +115,7 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
  * 難易度ごとのHP
  * [EASY, NORMAL, HARD, LUNATIC]
  */
-export const HPDATA = [7, 5, 3, 1]
+export const HPDATA = [9, 5, 3, 1]
 
 /**
  * エンティティスポーンマップ
@@ -130,6 +130,7 @@ export const ENTITYDATA = {
   '5': { entityClass: 'Nuefu' },
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
+  '8': { entityClass: 'Semi' },
 } as const
 
 /**
@@ -141,6 +142,7 @@ export const SFX_KEYS = {
   HEAL: 'heal',
   GOAL: 'goal',
   WIND: 'wind',
+  SEMI: 'semi',
 } as const
 
 /**

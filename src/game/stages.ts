@@ -770,25 +770,87 @@ export const STAGEDATA: StageData[] = [
       ""
     ],
     "fg": [
-      "        NO               NO                    "
+      "                         NO                    "
     ],
     "stages": [
       [
-        "VVVVVVVVVVVVVVVVVVVV",
-        "VVVVVVVVVVVVVVVVVVVV",
-        "VVVVVVVVVVVVVVVVVVVV",
-        "V@!VVVV@!VVVVVVVVVVV",
-        "@  !VV@  !VVVVVV@!VV",
-        "    !@ 7  !@!VV@  !V",
-        "      gbh    !@    !",
-        "      ABC           ",
-        "                    ",
-        "                    ",
-        "                    ",
-        " 0oooooXYZoooooooooo",
-        "bbbbbbbh gbbbbbbbbbb",
-        "lllllllr qllllllllll",
-        "lllllllr qllllllllll"
+        "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV@    !VVVVVV@ !VVVV",
+        "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV@      !VV@!@   !@!V",
+        "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV@!@        !@    3    !",
+        "V@!VVVV@!VVVVVVVVVVVVVVVV@!VVVVVV@!VV@!VVVVV@                abc    ",
+        "@  !VV@  !VVVVVV@!VVVVVV@  !VVVV@  !@  !NOV@xx               kbm    ",
+        "    !@    !@!VV@  !VVVV@    !VV@        NO@FghG              ABC    ",
+        "             !@    !VV@            6    NO FACG                     ",
+        "                               ST  x    NO  zz                      ",
+        "                         gbbbbbbbbbh    NO                          ",
+        "                         qlllllllllr    NO                   ooooooo",
+        "                7        qlllllllllr    NO        7         gbbbbbbb",
+        " 0ooooooooo   XYYZooooo  ABBBBJllllr    NOooogbbbbbbhooo    qlllllll",
+        "bbbbbbbbbbbh ghd gbbbbbh      qllllr   gbbbbbbbbbbbbbbbbh   qlllllll",
+        "lllllllllllr qrn qlllllr  j  3qllllr   qllllllllllllllllr   qlllllll",
+        "lllllllllllr qrhdqlllllr gbbbbillllr   qllllllllllllllllr   qlllllll"
+      ],
+      [
+        "UUUUUUUQ  PUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUQ                      ",
+        "URUUUUQ    PUUUUUUUUUUUUUUUUUQPQPUUUQPUUUUUUQ                       ",
+        "Q PUUQ      PQPUUUUUUUQPUUUUQ    PRQ  PUUUUQ                        ",
+        "   PQ          PUUUUUQ  PRRQ           PRRQ                   7     ",
+        "                PRRRQ     O                                  g h    ",
+        "                  N       O                                         ",
+        "                  N       O                                         ",
+        "                  N       Ooooooooo                                 ",
+        "                  N                                                 ",
+        "                  N                                                 ",
+        "                  N                           oooooo                ",
+        "                  N                     oo                          ",
+        "                                                                    ",
+        "                                                                    ",
+        "                                                                    "
+      ]
+    ]
+  },
+  {
+    "theme": "forest",
+    "bg": [
+      ""
+    ],
+    "fg": [
+      "                         NO                    "
+    ],
+    "stages": [
+      [
+        "VVVVVVVVVVVVVVVVVVVVVVVV                                             ",
+        "VVVVVVVVVVVVVVVVVVVVVVVV                                             ",
+        "VVVVVVVVVVVVVVVVVVVVVVVV        VV           VV                      ",
+        "V@!VVVV@!VV@!VVV@!VVVVVVV  V@! VVV          !VVNOVV@                 ",
+        "@  !VV@  !@  NO@  !VNVVVV@!@ NOVV@     V@    !VNOV@      !V       O  ",
+        "    !@       NO    !N@!V@    NO!@     O@      !NO@        !       O  ",
+        "             NO     N        NO       O        NO                 O  ",
+        "             NO     N        NO       O        NO                 O  ",
+        "             NO     N        NO       O        NO                 O  ",
+        "             NO     N    gh  NO       O   W    NO      d      ghd O  ",
+        "             NO d   N  abbbc NO       O  gbbh  NO      n      qrn O  ",
+        " 0oooo     ooNOonoooNooklllm NO       O gillsbhNO     abhj    qsbbbbb",
+        "bbbbbbh STgbbbbbbbbbbbbbbbbbbbbbh    6O qlllllsbbbbh  klsbc   qllllll",
+        "llllllsbbbilllllllllllllllllllllr gbbbbbillllllllllr  klllm   qllllll",
+        "llllllllllllllllllllllllllllllllr qllllllllllllllllr  klllm   qllllll"
+      ],
+      [
+        "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "QPUUUUUUQPUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
+        "  PUUQPQ  PUUUUUUQPUUUUUUUUUUUUUQPUUUUUUUUUUUQPRRUUUUUUUUUUUUUUUUUUUQ",
+        "   PQ      PRRRRQ  PRQPQPUUQPRRQ  PQPUUUUUUUQ   8PQPUUUUUUUUQPUUQPRQ ",
+        "              8          PQ          PRQPUUQ        PQPUUQPQ  PQ  8  ",
+        "                    8                    PQ            PQ            ",
+        "                              8                                      ",
+        "                                      8                              ",
+        "                                                                     ",
+        "                                                                     ",
+        "                                                                 ooo ",
+        "                       xxxxxoooo               oooo                  ",
+        "       ppp                         ooooo                             ",
+        "                                                                     ",
+        "                                                                     "
       ]
     ]
   }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { SCREEN } from '@game/config'
-import { GameSession } from '@game/GameSession'
-import { StageScene } from '@game/scenes/StageScene'
+import { TitleScene } from '@game/scenes/TitleScene'
 import { AudioService } from '@ptre/audio/AudioService'
 import { GameFactory } from '@ptre/core/GameFactory'
 import type { Input } from '@ptre/core/Input'
@@ -31,6 +30,7 @@ const initAudioOnce = async () => {
       heal: `${base}assets/sound/sfx/heal.mp3`,
       wind: `${base}assets/sound/sfx/wind.mp3`,
       damage: `${base}assets/sound/sfx/damage.mp3`,
+      semi: `${base}assets/sound/sfx/semi.ogg`,
     })
 
     console.log('AudioService initialized!')
@@ -62,17 +62,8 @@ onMounted(async () => {
   await assetLoader.loadSpritesheet('space', 'spritesheets/space.json')
   await assetLoader.loadImage('ui', 'img/ui.png')
 
-  // ゲームセッション作成（難易度: NORMAL=1, 開始ステージ: 0）
-  const session = new GameSession(1, 0)
-
-  // シーン作成
-  const scene = new StageScene(
-    session,
-    game.getInput(),
-    SCREEN.WIDTH,
-    SCREEN.HEIGHT,
-    false // isRetry
-  )
+  // タイトルシーンから開始
+  const scene = new TitleScene(game.getInput())
 
   game.changeScene(scene)
   game.start()

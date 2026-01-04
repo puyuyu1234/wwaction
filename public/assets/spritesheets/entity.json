@@ -306,6 +306,60 @@
         "h": 16
       }
     },
+    "semi_1": {
+      "frame": {
+        "x": 112,
+        "y": 16,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "semi_2": {
+      "frame": {
+        "x": 128,
+        "y": 16,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
+    "onpu": {
+      "frame": {
+        "x": 144,
+        "y": 16,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      }
+    },
     "shimi_1": {
       "frame": {
         "x": 0,
@@ -510,6 +564,13 @@
     "funkoro": [
       "funkoro_1",
       "funkoro_2"
+    ],
+    "semi": [
+      "semi_1",
+      "semi_2"
+    ],
+    "onpu": [
+      "onpu"
     ]
   },
   "meta": {

@@ -18,6 +18,8 @@ import { Nuefu } from '@game/entity/Nuefu'
 import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
 import { Shimi } from '@game/entity/Shimi'
+import { Semi } from '@game/entity/Semi'
+import { Onpu } from '@game/entity/Onpu'
 import { WindPool } from '@game/entity/WindPool'
 import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { GameSession } from '@game/GameSession'
@@ -394,6 +396,13 @@ export class StageScene extends Scene {
         })
         return funko
       },
+      Semi: (x, y) => {
+        const semi = new Semi(x + 8, y + 8, () => this.player.x)
+        semi.behavior.on('spawnOnpu', (onpu: Onpu) => {
+          this.addEntity(onpu)
+        })
+        return semi
+      },
     }
 
     // 全レイヤーをスキャンしてエンティティを生成
@@ -449,6 +458,22 @@ export class StageScene extends Scene {
     }
     this.remove(entity)
     entity.behavior.clearAllEvents()
+  }
+
+  /**
+   * ステージ下に落ちたエンティティを削除（プレイヤー・風以外）
+   */
+  private removeEntitiesBelowStage() {
+    const margin = BLOCKSIZE * 2 // 余裕を持たせる
+    const threshold = this.stageHeight + margin
+
+    for (const entity of [...this.entities]) {
+      if (entity === this.player) continue
+      if (entity.hasTag('wind')) continue // 風はプール管理なので除外
+      if (entity.y > threshold) {
+        entity.behavior.destroy()
+      }
+    }
   }
 
   /**
@@ -530,6 +555,9 @@ export class StageScene extends Scene {
 
     // 風プール更新（消滅エフェクト管理）
     this.windPool.tick()
+
+    // ステージ下に落ちたエンティティを削除（プレイヤー以外）
+    this.removeEntitiesBelowStage()
 
     // デバッグ情報更新
     if (DEBUG && this.debugText) {
