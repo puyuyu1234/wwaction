@@ -308,6 +308,6 @@ export const STAGE_METADATA = [
   {
     theme: 'forest',
     bg: [''],
-    fg: ['        NO               NO                    '],
+    fg: ['                         NO                    '],
   },
 ]

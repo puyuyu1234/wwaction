@@ -63,7 +63,7 @@ onMounted(async () => {
   await assetLoader.loadImage('ui', 'img/ui.png')
 
   // ゲームセッション作成（難易度: NORMAL=1, 開始ステージ: 0）
-  const session = new GameSession(1, 0)
+  const session = new GameSession(1, 14)
 
   // シーン作成
   const scene = new StageScene(

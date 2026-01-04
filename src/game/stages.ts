@@ -770,25 +770,42 @@ export const STAGEDATA: StageData[] = [
       ""
     ],
     "fg": [
-      "        NO               NO                    "
+      "                         NO                    "
     ],
     "stages": [
       [
-        "VVVVVVVVVVVVVVVVVVVV",
-        "VVVVVVVVVVVVVVVVVVVV",
-        "VVVVVVVVVVVVVVVVVVVV",
-        "V@!VVVV@!VVVVVVVVVVV",
-        "@  !VV@  !VVVVVV@!VV",
-        "    !@ 7  !@!VV@  !V",
-        "      gbh    !@    !",
-        "      ABC           ",
-        "                    ",
-        "                    ",
-        "                    ",
-        " 0oooooXYZoooooooooo",
-        "bbbbbbbh gbbbbbbbbbb",
-        "lllllllr qllllllllll",
-        "lllllllr qllllllllll"
+        "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+        "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+        "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+        "V@!VVVV@!VVVVVVVVVVVVVVVV@!VVV",
+        "@  !VV@  !VVVVVV@!VVVVVV@  !VV",
+        "    !@    !@!VV@  !VVVV@    !V",
+        "             !@    !VV@       ",
+        "                              ",
+        "                         gbbbb",
+        "                         qllll",
+        "                7        qllll",
+        " 0ooooooooo   XYYZooooo  ABBJl",
+        "bbbbbbbbbbbh ghd gbbbbbh    ql",
+        "lllllllllllr qrn qlllllr  j3ql",
+        "lllllllllllr qrhdqlllllr gbbil"
+      ],
+      [
+        "UUUUUUUQ  PUUUUUUUUUUUUUUUUUUU",
+        "URUUUUQ    PUUUUUUUUUUUUUUUUUQ",
+        "Q PUUQ      PQPUUUUUUUQPUUUUQ ",
+        "   PQ          PUUUUUQ  PRRQ  ",
+        "                PRRRQ     O   ",
+        "                  N       O   ",
+        "                  N       O   ",
+        "                  N       O   ",
+        "                  N           ",
+        "                  N           ",
+        "                  N           ",
+        "                  N           ",
+        "                              ",
+        "                              ",
+        "                              "
       ]
     ]
   }

@@ -20,7 +20,8 @@ export class Fun extends Entity {
 
   constructor(centerX: number, centerY: number, stage: StageLayers) {
     const hitbox = new Rectangle(-5, -5, 10, 10)
-    super('entity', centerX, centerY, 16, 16, hitbox, ['enemy'])
+    // 成長中はダメージ判定なし（発射時にenemyタグを追加）
+    super('entity', centerX, centerY, 16, 16, hitbox, [])
 
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, stage)
@@ -57,6 +58,7 @@ export class Fun extends Entity {
    */
   fire(direction: number) {
     this._phase = 'flying'
+    this.tags.add('enemy') // 発射したらダメージ判定有効化
     this.vx = direction * 1
   }
 
