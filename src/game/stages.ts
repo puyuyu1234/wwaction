@@ -853,5 +853,33 @@ export const STAGEDATA: StageData[] = [
         "                                                                     "
       ]
     ]
+  },
+  {
+    "theme": "forest",
+    "bg": [
+      ""
+    ],
+    "fg": [
+      "                         NO                    "
+    ],
+    "stages": [
+      [
+        "llllllllllllllllllll",
+        "BBBBBBBBBBBBBBBBBBJl",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        "                  ql",
+        " 0                ql",
+        "bbbbbbbbbbbbbbbbbbbb",
+        "llllllllllllllllllll",
+        "llllllllllllllllllll"
+      ]
+    ]
   }
 ]

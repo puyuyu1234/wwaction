@@ -3,10 +3,10 @@ import { Rectangle } from '@ptre/core/Rectangle'
 import { Entity } from './Entity'
 
 /** 生存時間（フレーム）：5秒 */
-const LIFETIME = 300
+const LIFETIME = 180
 
-/** フェードアウト開始時間（フレーム）：4秒 */
-const FADE_START = 240
+/** フェードアウト開始時間（フレーム）：2秒 */
+const FADE_START = 120
 
 /** 座標の揺れ幅（px） */
 const SHAKE_AMPLITUDE = 1
