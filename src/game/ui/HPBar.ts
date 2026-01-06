@@ -209,9 +209,7 @@ export class HPBar {
    * @param _damage ダメージ量（現在は未使用だがインターフェース互換のため保持）
    */
   onDamage(_damage: number) {
-    const currentBarSize = Math.floor(
-      (this.BAR_WIDTH * this.hpProvider.hp) / this.hpProvider.maxHp
-    )
+    const currentBarSize = Math.floor((this.BAR_WIDTH * this.hpProvider.hp) / this.hpProvider.maxHp)
     this.damageWaitTime = 10
     this.redBarDecreaseRate = (this.redBarWidth - currentBarSize) / 15
   }

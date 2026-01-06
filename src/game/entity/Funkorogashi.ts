@@ -33,12 +33,7 @@ export class Funkorogashi extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(
-    centerX: number,
-    centerY: number,
-    stage: StageLayers,
-    getPlayerX: () => number
-  ) {
+  constructor(centerX: number, centerY: number, stage: StageLayers, getPlayerX: () => number) {
     const hitbox = new Rectangle(-6, -6, 12, 12)
     super('entity', centerX, centerY, 16, 16, hitbox, [])
 

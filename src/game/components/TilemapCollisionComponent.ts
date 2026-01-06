@@ -138,9 +138,12 @@ export class TilemapCollisionComponent {
     if (currentBlockY === nextBlockY) return false
 
     for (let x = hitbox.left; x < hitbox.right; x += BLOCKSIZE) {
-      if (this.isBlockType(x, nextBottom, [CollisionType.SOLID, CollisionType.PLATFORM])) return true
+      if (this.isBlockType(x, nextBottom, [CollisionType.SOLID, CollisionType.PLATFORM]))
+        return true
     }
-    if (this.isBlockType(hitbox.right - 1, nextBottom, [CollisionType.SOLID, CollisionType.PLATFORM])) {
+    if (
+      this.isBlockType(hitbox.right - 1, nextBottom, [CollisionType.SOLID, CollisionType.PLATFORM])
+    ) {
       return true
     }
     return false

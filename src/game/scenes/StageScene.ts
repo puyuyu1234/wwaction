@@ -1,12 +1,5 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
-import {
-  BLOCKSIZE,
-  BLOCKDATA,
-  DEBUG,
-  FONT,
-  ENTITYDATA,
-  Z_INDEX,
-} from '@game/config'
+import { BLOCKSIZE, BLOCKDATA, DEBUG, FONT, ENTITYDATA, Z_INDEX } from '@game/config'
 import { Entity } from '@game/entity/Entity'
 import { Fun } from '@game/entity/Fun'
 import { Funkorogashi } from '@game/entity/Funkorogashi'
@@ -104,9 +97,7 @@ export class StageScene extends Scene {
 
     // stages[0]（レイヤー0）を衝突判定用に使用
     // 全レイヤーをパースして衝突判定用に使用
-    this.stage = this.stageData.stages.map((layer) =>
-      layer.map((row) => row.split(''))
-    )
+    this.stage = this.stageData.stages.map((layer) => layer.map((row) => row.split('')))
 
     // ステージサイズを計算（最初のレイヤーを基準）
     const firstLayer = this.stage[0]

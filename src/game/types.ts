@@ -43,7 +43,7 @@ export enum PlayerState {
 export type StageTheme = 'plain' | 'forest'
 
 /** ステージレイヤー（衝突判定用） */
-export type StageLayers = string[][][]  // [layer][row][col]
+export type StageLayers = string[][][] // [layer][row][col]
 
 /** ステージデータ */
 export interface StageData {

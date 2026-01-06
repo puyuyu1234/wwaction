@@ -224,13 +224,7 @@ export class TitleScene extends Scene {
 
   private startGame() {
     const session = new GameSession(this.difficulty, this.startStage)
-    const scene = new StageScene(
-      session,
-      this.input,
-      SCREEN.WIDTH,
-      SCREEN.HEIGHT,
-      false
-    )
+    const scene = new StageScene(session, this.input, SCREEN.WIDTH, SCREEN.HEIGHT, false)
     this.changeScene(scene)
   }
 

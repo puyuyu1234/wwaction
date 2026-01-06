@@ -66,8 +66,8 @@ export class LeafEffect {
     const x = Math.random() * this.stageWidth
     const y = Math.random() * this.stageHeight
     const speedX = 0.1 + Math.random() * 0.15 // 左への移動 0.1-0.25
-    const speedY = 0.3 + Math.random() * 0.3  // 落下速度 0.3-0.6
-    const alpha = 0.4 + Math.random() * 0.3   // 0.4-0.7
+    const speedY = 0.3 + Math.random() * 0.3 // 落下速度 0.3-0.6
+    const alpha = 0.4 + Math.random() * 0.3 // 0.4-0.7
 
     const graphics = new Graphics()
     this.drawLeaf(graphics, baseSize, alpha)

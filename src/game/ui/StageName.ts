@@ -4,7 +4,6 @@ import { Container } from 'pixi.js'
 import { RectActor } from './RectActor'
 import { TextActor } from './TextActor'
 
-
 /**
  * ステージ名表示演出
  * 黒い矩形が左右から中央に向かって移動し、ステージ名テキストが文字ごとに遅延して表示される

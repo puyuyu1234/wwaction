@@ -12,7 +12,6 @@ import { Rectangle } from '@ptre/core/Rectangle'
 import { CommonBehaviors } from './commonBehaviors'
 import { Entity } from './Entity'
 
-
 /**
  * プレイヤーエンティティ
  * - WASD で移動・ジャンプ

@@ -216,7 +216,10 @@ export class MidiPlayer {
    * @param trackIndex トラック番号
    * @param waveform 波形タイプ
    */
-  setTrackWaveform(trackIndex: number, waveform: 'sine' | 'triangle' | 'square' | 'sawtooth'): void {
+  setTrackWaveform(
+    trackIndex: number,
+    waveform: 'sine' | 'triangle' | 'square' | 'sawtooth'
+  ): void {
     const synth = this.synths[trackIndex]
     if (synth) {
       SynthEngine.setWaveform(synth, waveform)

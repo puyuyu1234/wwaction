@@ -4,7 +4,6 @@ import { AnimatedSpriteActor } from './AnimatedSpriteActor'
 
 import { UI_TYPE_DATA } from '@/game/config'
 
-
 /**
  * UI用スプライト（キー操作ガイドなど）
  *

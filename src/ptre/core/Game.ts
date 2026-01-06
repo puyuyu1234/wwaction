@@ -4,7 +4,6 @@ import { Scene } from '../scene/Scene'
 
 import { Input } from './Input'
 
-
 /**
  * ゲームメインループクラス
  * PixiJS Application と Fixed timestep 方式でゲームを駆動
@@ -47,11 +46,7 @@ export class Game {
    * @param baseHeight - ゲーム画面の基本高さ
    * @returns 初期化済みの Game インスタンス
    */
-  static async create(
-    canvasId: string,
-    baseWidth: number,
-    baseHeight: number
-  ): Promise<Game> {
+  static async create(canvasId: string, baseWidth: number, baseHeight: number): Promise<Game> {
     const game = new Game(canvasId, baseWidth, baseHeight)
     await game.init()
     return game

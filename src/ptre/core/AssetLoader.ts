@@ -72,12 +72,14 @@ export class AssetLoader {
       const infoData = await infoResponse.json()
 
       const infoMap = new Map<string, AnimationInfo>()
-      Object.entries(infoData.animations as Record<string, AnimationInfo>).forEach(([name, info]) => {
-        infoMap.set(name, {
-          fps: info.fps,
-          loop: info.loop,
-        })
-      })
+      Object.entries(infoData.animations as Record<string, AnimationInfo>).forEach(
+        ([name, info]) => {
+          infoMap.set(name, {
+            fps: info.fps,
+            loop: info.loop,
+          })
+        }
+      )
       this.animationInfos.set(key, infoMap)
     } catch (error) {
       console.warn(`Could not load animation speed info for ${key}:`, error)

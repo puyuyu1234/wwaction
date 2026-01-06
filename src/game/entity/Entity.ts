@@ -77,5 +77,4 @@ export class Entity extends AnimatedSpriteActor {
       this.hitbox.height
     )
   }
-
 }

@@ -129,10 +129,7 @@ export const CommonBehaviors = {
    * @param entity 方向転換するエンティティ
    * @param tilemap タイルマップ衝突判定Component
    */
-  stopVerticalWallsWithCliffDetection: (
-    entity: Entity,
-    tilemap: TilemapCollisionComponent
-  ) => {
+  stopVerticalWallsWithCliffDetection: (entity: Entity, tilemap: TilemapCollisionComponent) => {
     // 天井: 停止
     if (tilemap.checkUpWall() && entity.vy < 0) {
       tilemap.stopAtUpWall()
