@@ -247,7 +247,10 @@ export class AudioService {
    * @param trackIndex トラック番号
    * @param waveform 波形タイプ
    */
-  setMidiTrackWaveform(trackIndex: number, waveform: 'sine' | 'square' | 'sawtooth' | 'triangle'): void {
+  setMidiTrackWaveform(
+    trackIndex: number,
+    waveform: 'sine' | 'square' | 'sawtooth' | 'triangle'
+  ): void {
     if (this.currentMusicType === 'midi') {
       this.midiPlayer.setTrackWaveform(trackIndex, waveform)
     }

@@ -124,12 +124,7 @@ export class Semi extends Entity {
    */
   private fireOnpu() {
     for (const dir of DIRECTIONS) {
-      const onpu = new Onpu(
-        this.x,
-        this.y,
-        dir.vx * BULLET_SPEED,
-        dir.vy * BULLET_SPEED
-      )
+      const onpu = new Onpu(this.x, this.y, dir.vx * BULLET_SPEED, dir.vy * BULLET_SPEED)
       this.behavior.dispatch('spawnOnpu', onpu)
     }
   }

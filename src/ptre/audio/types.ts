@@ -38,10 +38,7 @@ export type SynthType = 'synth' | 'membrane' | 'noise'
  * トラック設定（内部実装用）
  * Discriminated Union型で各synthTypeに応じた設定を定義
  */
-export type TrackConfig =
-  | SynthTrackConfig
-  | MembraneTrackConfig
-  | NoiseTrackConfig
+export type TrackConfig = SynthTrackConfig | MembraneTrackConfig | NoiseTrackConfig
 
 /**
  * 通常のシンセサイザー設定
@@ -89,9 +86,7 @@ export interface NoiseTrackConfig {
 /**
  * 音楽ソース（MIDI or Audio）
  */
-export type MusicSource =
-  | MidiSource
-  | AudioSource
+export type MusicSource = MidiSource | AudioSource
 
 /**
  * MIDIソース

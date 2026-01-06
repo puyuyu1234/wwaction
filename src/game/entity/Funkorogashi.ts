@@ -1,6 +1,6 @@
-import { Z_INDEX } from '@game/config'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
+import { Z_INDEX } from '@game/config'
 import { StageLayers } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
@@ -33,12 +33,7 @@ export class Funkorogashi extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(
-    centerX: number,
-    centerY: number,
-    stage: StageLayers,
-    getPlayerX: () => number
-  ) {
+  constructor(centerX: number, centerY: number, stage: StageLayers, getPlayerX: () => number) {
     const hitbox = new Rectangle(-6, -6, 12, 12)
     super('entity', centerX, centerY, 16, 16, hitbox, [])
 
@@ -160,7 +155,7 @@ export class Funkorogashi extends Entity {
     }
 
     // 成長中のフンの位置を更新（常にフンコロガシの前方に追従）
-    if (this.fun && this.fun.phase === 'growing') {
+    if (this.fun?.phase === 'growing') {
       this.fun.updatePosition(this.getFrontX(), this.y)
     }
 

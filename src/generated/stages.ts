@@ -4,7 +4,7 @@
  * stages/*.json + scripts/stageMetadata.ts を統合
  */
 
-import type { StageData } from './types'
+import type { StageData } from '@game/types'
 
 
 

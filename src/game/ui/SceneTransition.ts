@@ -3,7 +3,6 @@ import { Container } from 'pixi.js'
 
 import { RectActor } from './RectActor'
 
-
 /**
  * シーン遷移演出
  * 斜めに傾いた黒矩形が左右から開閉するアニメーション

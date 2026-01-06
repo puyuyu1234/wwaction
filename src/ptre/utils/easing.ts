@@ -20,12 +20,7 @@ const lerp = (start: number, end: number, t: number): number => {
 /**
  * 線形イージング (変化なし)
  */
-export const easeLinear = (
-  start: number,
-  end: number,
-  time: number,
-  duration: number
-): number => {
+export const easeLinear = (start: number, end: number, time: number, duration: number): number => {
   const x = clamp(time, 0, duration) / duration
   const t = x
   return lerp(start, end, t)
@@ -34,12 +29,7 @@ export const easeLinear = (
 /**
  * Exponential Out イージング (急速に減速)
  */
-export const easeOutExpo = (
-  start: number,
-  end: number,
-  time: number,
-  duration: number
-): number => {
+export const easeOutExpo = (start: number, end: number, time: number, duration: number): number => {
   const x = clamp(time, 0, duration) / duration
   const t = x === 1 ? 1 : 1 - Math.pow(2, -10 * x)
   return lerp(start, end, t)
@@ -48,12 +38,7 @@ export const easeOutExpo = (
 /**
  * Sine Out イージング (滑らかに減速)
  */
-export const easeOutSine = (
-  start: number,
-  end: number,
-  time: number,
-  duration: number
-): number => {
+export const easeOutSine = (start: number, end: number, time: number, duration: number): number => {
   const x = clamp(time, 0, duration) / duration
   const t = Math.sin((x * Math.PI) / 2)
   return lerp(start, end, t)
@@ -62,12 +47,7 @@ export const easeOutSine = (
 /**
  * Sine In イージング (滑らかに加速)
  */
-export const easeInSine = (
-  start: number,
-  end: number,
-  time: number,
-  duration: number
-): number => {
+export const easeInSine = (start: number, end: number, time: number, duration: number): number => {
   const x = clamp(time, 0, duration) / duration
   const t = 1 - Math.cos((x * Math.PI) / 2)
   return lerp(start, end, t)

@@ -9,12 +9,9 @@ import { GridEditor } from '../pixijs/GridEditor'
 const {
   stageData,
   currentLayer,
-  currentLayerData,
   layerCount,
   selectedTile,
   setTile,
-  pickTile,
-  stageSize,
   addLayer,
   removeLayer,
   setCurrentLayer,

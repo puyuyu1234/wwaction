@@ -69,8 +69,8 @@ export function useStageEditor() {
    */
   function expandStageData(targetX: number, targetY: number) {
     // 全レイヤーの最大幅と高さを計算
-    let maxWidth = EDITOR_CONFIG.DEFAULT_WIDTH
-    let maxHeight = 0
+    let maxWidth: number = EDITOR_CONFIG.DEFAULT_WIDTH
+    let maxHeight: number = 0
     for (const layer of stageData.value) {
       maxHeight = Math.max(maxHeight, layer.length)
       for (const row of layer) {

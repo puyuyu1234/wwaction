@@ -37,7 +37,7 @@ export function useStageLoader() {
   /**
    * ステージデータを保存する
    */
-  async function saveStage(stageNumber: number, data: string[][]): Promise<void> {
+  async function saveStage(stageNumber: number, data: string[][][]): Promise<void> {
     isLoading.value = true
     error.value = null
 

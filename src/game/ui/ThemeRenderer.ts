@@ -85,13 +85,7 @@ export class ThemeRenderer {
 
     // 視差背景
     if (bgPattern && bgPattern.length > 0) {
-      this.parallaxBackground = new ParallaxBackground(
-        bgPattern,
-        stageWidth,
-        stageHeight,
-        0.5,
-        1.0
-      )
+      this.parallaxBackground = new ParallaxBackground(bgPattern, stageWidth, stageHeight, 0.5, 1.0)
       this.parallaxBackground.container.zIndex = Z_INDEX.BACKGROUND
       this.scrollContainer.addChild(this.parallaxBackground.container)
     }

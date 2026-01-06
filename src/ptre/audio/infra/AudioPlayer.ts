@@ -57,7 +57,7 @@ export class AudioPlayer {
         this.player.loopEnd = this.player.buffer.duration
       }
 
-      this.player.start(undefined, 0)  // 常に0秒から開始（イントロ再生のため）
+      this.player.start(undefined, 0) // 常に0秒から開始（イントロ再生のため）
       this.currentSource = source
       this.loadingPath = null
     } catch (e) {

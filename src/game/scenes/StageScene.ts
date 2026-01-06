@@ -1,12 +1,5 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
-import {
-  BLOCKSIZE,
-  BLOCKDATA,
-  DEBUG,
-  FONT,
-  ENTITYDATA,
-  Z_INDEX,
-} from '@game/config'
+import { BLOCKSIZE, BLOCKDATA, DEBUG, FONT, ENTITYDATA, Z_INDEX } from '@game/config'
 import { Entity } from '@game/entity/Entity'
 import { Fun } from '@game/entity/Fun'
 import { Funkorogashi } from '@game/entity/Funkorogashi'
@@ -15,19 +8,18 @@ import { Gurasan } from '@game/entity/Gurasan'
 import { GurasanNotFall } from '@game/entity/GurasanNotFall'
 import { Nasake } from '@game/entity/Nasake'
 import { Nuefu } from '@game/entity/Nuefu'
+import { Onpu } from '@game/entity/Onpu'
 import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
-import { Shimi } from '@game/entity/Shimi'
 import { Semi } from '@game/entity/Semi'
-import { Onpu } from '@game/entity/Onpu'
+import { Shimi } from '@game/entity/Shimi'
 import { WindPool } from '@game/entity/WindPool'
-import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { GameSession } from '@game/GameSession'
-import { STAGEDATA } from '@game/stages'
 import { StageLayers } from '@game/types'
 import { HPBar } from '@game/ui/HPBar'
 import { SceneTransition } from '@game/ui/SceneTransition'
 import { StageName } from '@game/ui/StageName'
+import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { TutorialUI } from '@ptre/actor/TutorialUI'
 import { AudioService } from '@ptre/audio/AudioService'
 import { AssetLoader } from '@ptre/core/AssetLoader'
@@ -35,6 +27,8 @@ import { Camera } from '@ptre/core/Camera'
 import { Input } from '@ptre/core/Input'
 import { Scene } from '@ptre/scene/Scene'
 import { Graphics, Container, Text, Sprite } from 'pixi.js'
+
+import { STAGEDATA } from '@/generated/stages'
 
 /**
  * ステージシーン
@@ -104,9 +98,7 @@ export class StageScene extends Scene {
 
     // stages[0]（レイヤー0）を衝突判定用に使用
     // 全レイヤーをパースして衝突判定用に使用
-    this.stage = this.stageData.stages.map((layer) =>
-      layer.map((row) => row.split(''))
-    )
+    this.stage = this.stageData.stages.map((layer) => layer.map((row) => row.split('')))
 
     // ステージサイズを計算（最初のレイヤーを基準）
     const firstLayer = this.stage[0]
@@ -227,7 +219,7 @@ export class StageScene extends Scene {
     if (this.stageData.bgm) {
       const audio = AudioService.getInstance()
       const config = BGM_CONFIG[this.stageData.bgm] ?? { loop: true }
-      audio.play({
+      void audio.play({
         type: 'audio',
         path: `${import.meta.env.BASE_URL}assets/sound/music/${this.stageData.bgm}.ogg`,
         ...config,

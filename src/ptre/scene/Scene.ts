@@ -108,7 +108,7 @@ export class Scene extends EventDispatcher {
     this.actors.forEach((actor) => {
       actor.behavior.clearAllEvents()
     })
-    
+
     // サブクラスでオーバーライド
   }
 
