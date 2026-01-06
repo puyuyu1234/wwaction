@@ -1,6 +1,6 @@
-import { Z_INDEX } from '@game/config'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
+import { Z_INDEX } from '@game/config'
 import { StageLayers } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
@@ -160,7 +160,7 @@ export class Funkorogashi extends Entity {
     }
 
     // 成長中のフンの位置を更新（常にフンコロガシの前方に追従）
-    if (this.fun && this.fun.phase === 'growing') {
+    if (this.fun?.phase === 'growing') {
       this.fun.updatePosition(this.getFrontX(), this.y)
     }
 

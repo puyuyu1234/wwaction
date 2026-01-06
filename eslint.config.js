@@ -15,6 +15,7 @@ export default [
       'dist/**',
       'legacy/**',
       'legacy2/**',
+      'scripts/**',
       '*.config.js',
       '*.config.ts',
     ],

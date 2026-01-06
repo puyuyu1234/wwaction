@@ -211,7 +211,7 @@ export class TilemapCollisionComponent {
 
       const blockData = BLOCKDATA[blockKey]
 
-      if (!blockData || blockData.type !== CollisionType.DAMAGE || !blockData.param?.damage) {
+      if (blockData?.type !== CollisionType.DAMAGE || !blockData.param?.damage) {
         continue
       }
 

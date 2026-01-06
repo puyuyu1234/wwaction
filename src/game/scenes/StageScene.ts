@@ -15,19 +15,19 @@ import { Gurasan } from '@game/entity/Gurasan'
 import { GurasanNotFall } from '@game/entity/GurasanNotFall'
 import { Nasake } from '@game/entity/Nasake'
 import { Nuefu } from '@game/entity/Nuefu'
+import { Onpu } from '@game/entity/Onpu'
 import { Player } from '@game/entity/Player'
 import { Potion } from '@game/entity/Potion'
-import { Shimi } from '@game/entity/Shimi'
 import { Semi } from '@game/entity/Semi'
-import { Onpu } from '@game/entity/Onpu'
+import { Shimi } from '@game/entity/Shimi'
 import { WindPool } from '@game/entity/WindPool'
-import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { GameSession } from '@game/GameSession'
 import { STAGEDATA } from '@game/stages'
 import { StageLayers } from '@game/types'
 import { HPBar } from '@game/ui/HPBar'
 import { SceneTransition } from '@game/ui/SceneTransition'
 import { StageName } from '@game/ui/StageName'
+import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { TutorialUI } from '@ptre/actor/TutorialUI'
 import { AudioService } from '@ptre/audio/AudioService'
 import { AssetLoader } from '@ptre/core/AssetLoader'
@@ -227,7 +227,7 @@ export class StageScene extends Scene {
     if (this.stageData.bgm) {
       const audio = AudioService.getInstance()
       const config = BGM_CONFIG[this.stageData.bgm] ?? { loop: true }
-      audio.play({
+      void audio.play({
         type: 'audio',
         path: `${import.meta.env.BASE_URL}assets/sound/music/${this.stageData.bgm}.ogg`,
         ...config,

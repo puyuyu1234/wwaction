@@ -2,8 +2,8 @@ import { EventEmitter } from 'eventemitter3'
 import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
 
 import { BLOCKDATA, BLOCKSIZE, ENTITYDATA } from '../../src/game/config'
-import { EDITOR_CONFIG } from '../config'
 import { useAssets } from '../composables/useAssets'
+import { EDITOR_CONFIG } from '../config'
 
 /**
  * ステージエディタのグリッド描画とインタラクション
@@ -19,7 +19,6 @@ export class GridEditor extends EventEmitter {
   private width: number
   private height: number
   private tilesetSpritesheet?: Spritesheet
-  private entitySpritesheet?: Spritesheet
   private isDragging = false
   private stageBorder?: Graphics // ステージ境界線（黄色）
   private marginBorder?: Graphics // マージン境界線（赤）
@@ -56,10 +55,9 @@ export class GridEditor extends EventEmitter {
   private async loadAssets() {
     // useAssets composable を使用してアセット読込
     const { loadAllSpritesheets } = useAssets()
-    const { tileset, entity } = await loadAllSpritesheets()
+    const { tileset } = await loadAllSpritesheets()
 
     this.tilesetSpritesheet = tileset
-    this.entitySpritesheet = entity
   }
 
   private setupInteraction() {
@@ -304,31 +302,6 @@ export class GridEditor extends EventEmitter {
    */
   loadStage(data: string[][]) {
     this.loadAllLayers([data], 0)
-  }
-
-  /**
-   * 実際のステージサイズを計算（空白を除く）
-   */
-  private calculateActualStageSize(data: string[][]) {
-    let maxX = 0
-    let maxY = 0
-
-    for (let y = 0; y < data.length; y++) {
-      const row = data[y]
-      if (!row) continue
-
-      for (let x = 0; x < row.length; x++) {
-        const tile = row[x]
-        if (tile && tile !== ' ') {
-          maxX = Math.max(maxX, x + 1)
-          maxY = Math.max(maxY, y + 1)
-        }
-      }
-    }
-
-    // 最低サイズを保証（20x15）
-    this.actualStageWidth = Math.max(maxX, 20)
-    this.actualStageHeight = Math.max(maxY, 15)
   }
 
   /**
