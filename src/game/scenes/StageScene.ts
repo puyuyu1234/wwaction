@@ -15,7 +15,6 @@ import { Semi } from '@game/entity/Semi'
 import { Shimi } from '@game/entity/Shimi'
 import { WindPool } from '@game/entity/WindPool'
 import { GameSession } from '@game/GameSession'
-import { STAGEDATA } from '@game/stages'
 import { StageLayers } from '@game/types'
 import { HPBar } from '@game/ui/HPBar'
 import { SceneTransition } from '@game/ui/SceneTransition'
@@ -28,6 +27,8 @@ import { Camera } from '@ptre/core/Camera'
 import { Input } from '@ptre/core/Input'
 import { Scene } from '@ptre/scene/Scene'
 import { Graphics, Container, Text, Sprite } from 'pixi.js'
+
+import { STAGEDATA } from '@/generated/stages'
 
 /**
  * ステージシーン

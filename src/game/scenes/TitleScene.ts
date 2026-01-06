@@ -1,11 +1,12 @@
 import { FONT, HPDATA, SCREEN } from '@game/config'
 import { GameSession } from '@game/GameSession'
-import { STAGEDATA } from '@game/stages'
 import { Input } from '@ptre/core/Input'
 import { Scene } from '@ptre/scene/Scene'
 import { Text, Graphics } from 'pixi.js'
 
 import { StageScene } from './StageScene'
+
+import { STAGEDATA } from '@/generated/stages'
 
 /** 難易度名 */
 const DIFFICULTY_NAMES = ['EASY', 'NORMAL', 'HARD', 'LUNATIC']

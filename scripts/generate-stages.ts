@@ -8,7 +8,7 @@ import { join } from 'path'
 
 const stagesDir = join(process.cwd(), 'stages')
 const metadataFile = join(process.cwd(), 'scripts/stageMetadata.ts')
-const outputFile = join(process.cwd(), 'src/game/stages.ts')
+const outputFile = join(process.cwd(), 'src/generated/stages.ts')
 
 console.log('🔄 Generating stages.ts from JSON files and metadata...')
 
@@ -90,7 +90,7 @@ const output = `/**
  * stages/*.json + scripts/stageMetadata.ts を統合
  */
 
-import type { StageData } from './types'
+import type { StageData } from '@game/types'
 
 ${imports.join('\n')}
 

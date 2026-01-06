@@ -16,6 +16,7 @@ export default [
       'legacy/**',
       'legacy2/**',
       'scripts/**',
+      'src/generated/**',
       '*.config.js',
       '*.config.ts',
     ],
