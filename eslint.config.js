@@ -14,6 +14,7 @@ export default [
       'node_modules/**',
       'dist/**',
       'legacy/**',
+      'legacy2/**',
       '*.config.js',
       '*.config.ts',
     ],
