@@ -23,8 +23,13 @@ export class Player extends Entity {
   private audio = AudioService.getInstance()
   private coyoteTime = 0
   private readonly COYOTE_TIME_MAX = 6
-  private readonly MOVE_SPEED = 1.5
   private readonly JUMP_POWER = -3
+
+  // 慣性関連の定数
+  private readonly MOVE_MAX_SPEED = 1.5 // 通常移動の最大速度
+  private readonly WIND_MAX_SPEED = 2.0 // 風に乗った時の最大速度
+  private readonly ACCELERATION = 0.15 // 加速度
+  private readonly GROUND_FRICTION = 0.2 // 地上の摩擦（空中は摩擦なし）
 
   // 状態管理
   private stateManager = new StateManager<PlayerState>(PlayerState.STAND)
@@ -69,9 +74,11 @@ export class Player extends Entity {
    * 各種エンティティとの衝突時の反応を設定
    */
   private setupCollisionReactions() {
-    // 風との衝突: WindJump（SE は CommonBehaviors 内で再生）
-    this.collisionReaction.on('wind', () => {
+    // 風との衝突: WindJump + 風のvxを受け継ぐ
+    this.collisionReaction.on('wind', (wind) => {
       CommonBehaviors.windJump(this)
+      // 風のx方向の慣性を受け継ぐ
+      this.vx = wind.vx
     })
 
     // 敵との衝突: 1ダメージ
@@ -229,26 +236,53 @@ export class Player extends Entity {
   }
 
   /**
-   * 移動処理
+   * 移動処理（慣性ベース）
    */
   private handleMove() {
+    const isGrounded = this.coyoteTime < this.COYOTE_TIME_MAX
+
     if (this.input.isKeyDown('KeyA')) {
-      this.vx = -this.MOVE_SPEED
       this.scale.x = -1
+      // 通常移動の最大速度より遅い場合のみ加速（風で加速した分は維持）
+      if (this.vx > -this.MOVE_MAX_SPEED) {
+        this.vx = Math.max(this.vx - this.ACCELERATION, -this.MOVE_MAX_SPEED)
+      }
       if (this.stateManager.getState() === PlayerState.STAND) {
         this.stateManager.changeState(PlayerState.WALK)
       }
     } else if (this.input.isKeyDown('KeyD')) {
-      this.vx = this.MOVE_SPEED
       this.scale.x = 1
+      // 通常移動の最大速度より遅い場合のみ加速（風で加速した分は維持）
+      if (this.vx < this.MOVE_MAX_SPEED) {
+        this.vx = Math.min(this.vx + this.ACCELERATION, this.MOVE_MAX_SPEED)
+      }
       if (this.stateManager.getState() === PlayerState.STAND) {
         this.stateManager.changeState(PlayerState.WALK)
       }
     } else {
-      this.vx = 0
-      if (this.stateManager.getState() === PlayerState.WALK) {
+      // 入力なし: 地上なら摩擦、空中は摩擦なし
+      if (isGrounded) {
+        this.applyFriction()
+      }
+      if (this.stateManager.getState() === PlayerState.WALK && Math.abs(this.vx) < 0.1) {
         this.stateManager.changeState(PlayerState.STAND)
       }
+    }
+
+    // 絶対最大速度（風込み）でクランプ
+    this.vx = Math.max(-this.WIND_MAX_SPEED, Math.min(this.WIND_MAX_SPEED, this.vx))
+  }
+
+  /**
+   * 摩擦を適用してvxを0に近づける
+   */
+  private applyFriction() {
+    if (Math.abs(this.vx) < this.GROUND_FRICTION) {
+      this.vx = 0
+    } else if (this.vx > 0) {
+      this.vx -= this.GROUND_FRICTION
+    } else {
+      this.vx += this.GROUND_FRICTION
     }
   }
 
