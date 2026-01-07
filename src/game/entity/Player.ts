@@ -3,7 +3,7 @@ import { HealthComponent } from '@game/components/HealthComponent'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
 import { BLOCKSIZE, SFX_KEYS } from '@game/config'
-import { PlayerState, StageLayers } from '@game/types'
+import { PlayerState, StageContext } from '@game/types'
 import { AudioService } from '@ptre/audio/AudioService'
 import { StateManager } from '@ptre/components/StateManager'
 import { Input } from '@ptre/core/Input'
@@ -50,7 +50,7 @@ export class Player extends Entity {
     x: number,
     y: number,
     input: Input,
-    stage: StageLayers,
+    context: StageContext,
     maxHp: number = 5,
     initialHp?: number
   ) {
@@ -59,9 +59,9 @@ export class Player extends Entity {
 
     this.input = input
     this.physics = new PhysicsComponent(this)
-    this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.tilemap = new TilemapCollisionComponent(this, context)
     this.health = new HealthComponent(initialHp ?? maxHp, maxHp)
-    this.fallDeath = new FallDeathComponent(stage[0].length * BLOCKSIZE)
+    this.fallDeath = new FallDeathComponent(context.layers[0].length * BLOCKSIZE)
 
     // 衝突反応を登録
     this.setupCollisionReactions()

@@ -1,4 +1,5 @@
 import { Z_INDEX } from '@game/config'
+import { BlockDataMap } from '@game/types'
 import { Container, Graphics } from 'pixi.js'
 
 import { CloudBackground } from './CloudBackground'
@@ -13,6 +14,7 @@ export interface ThemeRendererConfig {
   stageWidth: number
   stageHeight: number
   tileCount: number
+  blockData: BlockDataMap
   bgPattern?: string[]
   fgPattern?: string[]
 }
@@ -47,6 +49,7 @@ export class ThemeRenderer {
       stageWidth,
       stageHeight,
       tileCount,
+      blockData,
       bgPattern,
       fgPattern,
     } = config
@@ -85,7 +88,14 @@ export class ThemeRenderer {
 
     // 視差背景
     if (bgPattern && bgPattern.length > 0) {
-      this.parallaxBackground = new ParallaxBackground(bgPattern, stageWidth, stageHeight, 0.5, 1.0)
+      this.parallaxBackground = new ParallaxBackground(
+        bgPattern,
+        stageWidth,
+        stageHeight,
+        blockData,
+        0.5,
+        1.0
+      )
       this.parallaxBackground.container.zIndex = Z_INDEX.BACKGROUND
       this.scrollContainer.addChild(this.parallaxBackground.container)
     }
@@ -105,6 +115,7 @@ export class ThemeRenderer {
         fgPattern,
         stageWidth,
         stageHeight,
+        blockData,
         -0.5,
         1.0
       )

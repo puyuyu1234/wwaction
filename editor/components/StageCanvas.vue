@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 
+import { useEditorState } from '../composables/useEditorState'
 import { useStageEditor } from '../composables/useStageEditor'
 import { useStageLoader } from '../composables/useStageLoader'
 import { EDITOR_CONFIG } from '../config'
@@ -16,6 +17,8 @@ const {
   removeLayer,
   setCurrentLayer,
 } = useStageEditor()
+
+const { theme, setTheme } = useEditorState()
 
 const canvasRef = ref<HTMLDivElement>()
 let editor: GridEditor | null = null
@@ -34,8 +37,9 @@ onMounted(async () => {
 
   // 初期ステージデータを読み込み
   const { loadStage } = useStageLoader()
-  const data = await loadStage(0)
-  stageData.value = data
+  const { layers, theme: initialTheme } = await loadStage(0)
+  setTheme(initialTheme)
+  stageData.value = layers
   refreshAllLayers()
 
   // クリックでタイル配置
@@ -60,6 +64,13 @@ onMounted(async () => {
 // レイヤー変更時に再描画
 watch(currentLayer, () => {
   refreshAllLayers()
+})
+
+// テーマ変更時に再描画
+watch(theme, () => {
+  if (editor) {
+    editor.rerender()
+  }
 })
 
 // 外部からアクセス可能にする（App.vueから使用）

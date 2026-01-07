@@ -3,10 +3,17 @@ import { ref, watch, computed } from 'vue'
 
 import StageCanvas from './components/StageCanvas.vue'
 import StageSidebar from './components/StageSidebar.vue'
+import ThemeEditor from './components/ThemeEditor.vue'
 import TilePalette from './components/TilePalette.vue'
+import { useEditorState } from './composables/useEditorState'
 import { useStageLoader } from './composables/useStageLoader'
 
+// タブ切り替え
+type EditorTab = 'stage' | 'theme'
+const activeTab = ref<EditorTab>('stage')
+
 const { selectedStage, loadStage, saveStage } = useStageLoader()
+const { setTheme } = useEditorState()
 
 // StageCanvas の参照を取得（defineExpose で公開されたAPIにアクセス）
 const stageCanvasRef = ref<InstanceType<typeof StageCanvas>>()
@@ -45,8 +52,9 @@ function handleRemoveLayer() {
 // ステージ選択時に自動読み込み（初回以外）
 watch(selectedStage, async (newStage) => {
   try {
-    const data = await loadStage(newStage)
-    stageCanvasRef.value?.loadStageData(data)
+    const { layers, theme } = await loadStage(newStage)
+    setTheme(theme)
+    stageCanvasRef.value?.loadStageData(layers)
   } catch {
     // エラーは composable 内で処理済み
   }
@@ -70,31 +78,57 @@ const handleSave = async () => {
 <template>
   <div class="editor">
     <div class="toolbar">
-      <button @click="handleSave">Save</button>
-      <div class="layer-controls">
-        <span class="layer-label">Layer:</span>
+      <!-- タブ切り替え -->
+      <div class="tabs">
         <button
-          v-for="i in layerCount"
-          :key="i - 1"
-          :class="{ active: currentLayer === i - 1 }"
-          @click="handleLayerChange(i - 1)"
+          :class="{ active: activeTab === 'stage' }"
+          @click="activeTab = 'stage'"
         >
-          {{ i - 1 }}
+          Stage
         </button>
-        <button class="layer-add" @click="handleAddLayer">+</button>
         <button
-          class="layer-remove"
-          :disabled="layerCount <= 1"
-          @click="handleRemoveLayer"
+          :class="{ active: activeTab === 'theme' }"
+          @click="activeTab = 'theme'"
         >
-          -
+          Theme
         </button>
       </div>
+
+      <!-- ステージエディタ用ツールバー -->
+      <template v-if="activeTab === 'stage'">
+        <button @click="handleSave">Save</button>
+        <div class="layer-controls">
+          <span class="layer-label">Layer:</span>
+          <button
+            v-for="i in layerCount"
+            :key="i - 1"
+            :class="{ active: currentLayer === i - 1 }"
+            @click="handleLayerChange(i - 1)"
+          >
+            {{ i - 1 }}
+          </button>
+          <button class="layer-add" @click="handleAddLayer">+</button>
+          <button
+            class="layer-remove"
+            :disabled="layerCount <= 1"
+            @click="handleRemoveLayer"
+          >
+            -
+          </button>
+        </div>
+      </template>
     </div>
-    <div class="main">
+
+    <!-- ステージエディタ -->
+    <div v-if="activeTab === 'stage'" class="main">
       <StageSidebar v-model="selectedStage" />
       <StageCanvas ref="stageCanvasRef" />
       <TilePalette v-model="selectedTile" />
+    </div>
+
+    <!-- テーマエディタ -->
+    <div v-else-if="activeTab === 'theme'" class="main theme-main">
+      <ThemeEditor />
     </div>
   </div>
 </template>
@@ -175,5 +209,36 @@ button:hover,
   display: flex;
   flex: 1;
   overflow: hidden;
+}
+
+.theme-main {
+  background: #1a1a1a;
+  flex: 1;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-right: 20px;
+  padding-right: 20px;
+  border-right: 1px solid #444;
+}
+
+.tabs button {
+  padding: 8px 16px;
+  background: #333;
+  border: none;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  color: #888;
+}
+
+.tabs button.active {
+  background: #444;
+  color: #fff;
+}
+
+.tabs button:hover:not(.active) {
+  background: #3a3a3a;
 }
 </style>

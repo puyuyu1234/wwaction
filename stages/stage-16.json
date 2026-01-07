@@ -1,19 +1,25 @@
-[
-  [
-    "llllllllllllllllllll",
-    "BBBBBBBBBBBBBBBBBBJl",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    "                  ql",
-    " 0                ql",
-    "bbbbbbbbbbbbbbbbbbbb",
-    "llllllllllllllllllll",
-    "llllllllllllllllllll"
+{
+  "theme": "forest",
+  "fg": [
+    "                         NO                    "
+  ],
+  "layers": [
+    [
+      "llllllllllllllllllll",
+      "BBBBBBBBBBBBBBBBBBJl",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      "                  ql",
+      " 0                ql",
+      "bbbbbbbbbbbbbbbbbbbb",
+      "llllllllllllllllllll",
+      "llllllllllllllllllll"
+    ]
   ]
-]
+}

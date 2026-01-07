@@ -1,8 +1,9 @@
 /**
  * ゲーム固有定数
  */
-import type { BlockData, UITypeData } from './types'
+import type { BlockData, EntityDataMap, UITypeData } from './types'
 import { CollisionType } from './types'
+import { THEME_BLOCK_OVERRIDE, THEME_ENTITY_OVERRIDE } from '@/generated/themes'
 
 /** デバッグモード */
 export const DEBUG = import.meta.env.DEV
@@ -33,8 +34,11 @@ export const Z_INDEX = {
   UI: 1000,
 } as const
 
-/** ブロックデータ */
-export const BLOCKDATA: Partial<Record<string, BlockData>> = {
+/** ブロックデータの型 */
+export type BlockDataMap = Partial<Record<string, BlockData>>
+
+/** ベースブロックマップ（全テーマ共通） */
+export const BASE_BLOCKDATA: BlockDataMap = {
   ' ': { frame: [0], type: CollisionType.NONE },
   a: { frame: [1], type: CollisionType.PLATFORM },
   b: { frame: [2], type: CollisionType.PLATFORM },
@@ -127,6 +131,18 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
   '~': { frame: [72], type: CollisionType.NONE },
 }
 
+// THEME_BLOCK_OVERRIDE は generated/themes.ts からインポート
+
+/**
+ * テーマに応じたブロックマップを取得
+ */
+export function getBlockData(theme: string): BlockDataMap {
+  return {
+    ...BASE_BLOCKDATA,
+    ...THEME_BLOCK_OVERRIDE[theme],
+  }
+}
+
 /**
  * 難易度ごとのHP
  * [EASY, NORMAL, HARD, LUNATIC]
@@ -134,11 +150,9 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
 export const HPDATA = [9, 5, 3, 1]
 
 /**
- * エンティティスポーンマップ
- * キー: ステージマップ内の文字
- * 値: エンティティ設定
+ * ベースエンティティマップ（全テーマ共通）
  */
-export const ENTITYDATA = {
+export const BASE_ENTITYDATA: EntityDataMap = {
   '1': { entityClass: 'Nasake' },
   '2': { entityClass: 'Gurasan' },
   '3': { entityClass: 'Potion' },
@@ -147,7 +161,19 @@ export const ENTITYDATA = {
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
   '8': { entityClass: 'Semi' },
-} as const
+}
+
+// THEME_ENTITY_OVERRIDE は generated/themes.ts からインポート
+
+/**
+ * テーマに応じたエンティティマップを取得
+ */
+export function getEntityData(theme: string): EntityDataMap {
+  return {
+    ...BASE_ENTITYDATA,
+    ...THEME_ENTITY_OVERRIDE[theme],
+  }
+}
 
 /**
  * 効果音キー

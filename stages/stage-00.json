@@ -1,36 +1,39 @@
-[
-  [
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                 d  ",
-    "                                                               fon 1",
-    "                                                  pfp         abbbbb",
-    "                                                 gbbbh        klllll",
-    "                                peeo             qlllr        klllll",
-    "d                              gbbbbh            qlllr      abbullll",
-    "nopoop  d             gh    d  qllllr         d  qlllr d    kllmllll",
-    "bbbbbbhonopp     pfepgish 1 nooqllllr     ppoonooqlllronop  kllmllll",
-    "llllllsbbbbbh   gbbbbillsbbbbbbillllr    gbbbbbbbbbbbbbbbbbbwllmllll",
-    "llllltbbbullr   qlllllvbbbwlllllllllr    qllllllllllllllllllrllmllll",
-    "lllllklllmllr   qlllllqlllrlllllllllr    qllllllllllllllllllrllmllll"
-  ],
-  [
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                    ",
-    "                                                                ee  ",
-    "                                                                    ",
-    "                                                                    ",
-    "                                                             pf     ",
-    "                                                                    ",
-    " 0                                                                  ",
-    "                                                   ppp              ",
-    "      j                 j                                           ",
-    "                                                                    ",
-    " j             d               j   j          j                     "
+{
+  "theme": "plain",
+  "layers": [
+    [
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                 d  ",
+      "                                                               fon 1",
+      "                                                  pfp         abbbbb",
+      "                                                 gbbbh        klllll",
+      "                                peeo             qlllr        klllll",
+      "d                              gbbbbh            qlllr      abbullll",
+      "nopoop  d             gh    d  qllllr         d  qlllr d    kllmllll",
+      "bbbbbbhonopp     pfepgish 1 nooqllllr     ppoonooqlllronop  kllmllll",
+      "llllllsbbbbbh   gbbbbillsbbbbbbillllr    gbbbbbbbbbbbbbbbbbbwllmllll",
+      "llllltbbbullr   qlllllvbbbwlllllllllr    qllllllllllllllllllrllmllll",
+      "lllllklllmllr   qlllllqlllrlllllllllr    qllllllllllllllllllrllmllll"
+    ],
+    [
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                    ",
+      "                                                                ee  ",
+      "                                                                    ",
+      "                                                                    ",
+      "                                                             pf     ",
+      "                                                                    ",
+      " 0                                                                  ",
+      "                                                   ppp              ",
+      "      j                 j                                           ",
+      "                                                                    ",
+      " j             d               j   j          j                     "
+    ]
   ]
-]
+}

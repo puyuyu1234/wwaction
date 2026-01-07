@@ -1,6 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { CommonBehaviors } from './commonBehaviors'
@@ -18,9 +18,9 @@ import { SunGlass } from './SunGlass'
 export class Gurasan extends Entity {
   protected physics: PhysicsComponent
   protected tilemap: TilemapCollisionComponent
-  protected stage: StageLayers
+  protected context: StageContext
 
-  constructor(centerX: number, centerY: number, stage: StageLayers) {
+  constructor(centerX: number, centerY: number, context: StageContext) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
     // スプライトサイズ: 16x16
     // hitboxも中心基準: (-4,-4,8,12)
@@ -29,13 +29,13 @@ export class Gurasan extends Entity {
     // タグ 'enemy': プレイヤーとの衝突判定で使用
     super('entity', centerX, centerY, 16, 16, hitbox, ['enemy'])
 
-    this.stage = stage
+    this.context = context
     this.vx = -0.5 // 左方向に移動
     this.scale.x = 1 // 敵は左向き時に scale.x = 1
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
-    this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.tilemap = new TilemapCollisionComponent(this, context)
 
     // 風との衝突反応を設定: 分裂する
     this.collisionReaction.on('wind', () => {
@@ -51,7 +51,7 @@ export class Gurasan extends Entity {
    */
   private split() {
     // Nasake を生成（現在の速度の半分で移動、向きを引き継ぐ）
-    const nasake = new Nasake(this.x, this.y, this.stage)
+    const nasake = new Nasake(this.x, this.y, this.context)
     nasake.vx = this.vx / 2
     nasake.scale.x = this.scale.x // 向きを引き継ぐ
 

@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "stages:generate": "tsx scripts/generate-stages.ts",
-    "dev": "pnpm stages:generate && vite",
-    "build": "pnpm stages:generate && vue-tsc && vite build",
+    "themes:generate": "tsx scripts/generate-themes.ts",
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",

@@ -1,6 +1,7 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
-import { BLOCKSIZE, BLOCKDATA, DEBUG, FONT, ENTITYDATA, Z_INDEX } from '@game/config'
+import { BLOCKSIZE, DEBUG, FONT, getBlockData, getEntityData, Z_INDEX } from '@game/config'
 import { Entity } from '@game/entity/Entity'
+import { DekaNasake } from '@game/entity/DekaNasake'
 import { Fun } from '@game/entity/Fun'
 import { Funkorogashi } from '@game/entity/Funkorogashi'
 import { Goal } from '@game/entity/Goal'
@@ -15,7 +16,7 @@ import { Semi } from '@game/entity/Semi'
 import { Shimi } from '@game/entity/Shimi'
 import { WindPool } from '@game/entity/WindPool'
 import { GameSession } from '@game/GameSession'
-import { StageLayers } from '@game/types'
+import { BlockDataMap, StageLayers, StageContext } from '@game/types'
 import { HPBar } from '@game/ui/HPBar'
 import { SceneTransition } from '@game/ui/SceneTransition'
 import { StageName } from '@game/ui/StageName'
@@ -36,6 +37,8 @@ import { STAGEDATA } from '@/generated/stages'
  */
 export class StageScene extends Scene {
   private stage: StageLayers
+  private stageContext: StageContext
+  private blockData: BlockDataMap
   private player!: Player
   private entities: Entity[] = []
   private stageGraphics: Graphics
@@ -100,6 +103,15 @@ export class StageScene extends Scene {
     // 全レイヤーをパースして衝突判定用に使用
     this.stage = this.stageData.stages.map((layer) => layer.map((row) => row.split('')))
 
+    // テーマに応じたブロックデータを取得
+    this.blockData = getBlockData(this.stageData.theme)
+
+    // StageContext を生成（エンティティに渡す）
+    this.stageContext = {
+      layers: this.stage,
+      blockData: this.blockData,
+    }
+
     // ステージサイズを計算（最初のレイヤーを基準）
     const firstLayer = this.stage[0]
     this.stageWidth = firstLayer[0].length * BLOCKSIZE
@@ -116,6 +128,7 @@ export class StageScene extends Scene {
       stageWidth: this.stageWidth,
       stageHeight: this.stageHeight,
       tileCount: this.stage[0].length,
+      blockData: this.blockData,
       bgPattern: this.stageData.bg,
       fgPattern: this.stageData.fg,
     })
@@ -165,7 +178,7 @@ export class StageScene extends Scene {
 
     // 風プールを初期化
     this.windPool = new WindPool({
-      stage: this.stage,
+      context: this.stageContext,
       onAddEntity: (entity) => this.addEntity(entity),
     })
     this.windPool.getWindEntities().forEach((wind) => this.addEntity(wind))
@@ -252,7 +265,7 @@ export class StageScene extends Scene {
       playerCenterX,
       playerCenterY,
       this.input,
-      this.stage,
+      this.stageContext,
       this.session.maxHp,
       this.session.hp
     )
@@ -351,12 +364,12 @@ export class StageScene extends Scene {
         const char = layerData[y][x]
         if (char === ' ' || char === '0') continue
 
-        // BLOCKDATAからフレーム番号を取得
-        const blockData = BLOCKDATA[char]
-        if (!blockData || blockData.frame[0] === 0) continue
+        // blockDataからフレーム番号を取得
+        const block = this.blockData[char]
+        if (!block || block.frame[0] === 0) continue
 
         // フレーム番号でテクスチャを取得
-        const frameIndex = blockData.frame[0]
+        const frameIndex = block.frame[0]
         const texture = tileset.textures[`frame_${frameIndex}`]
         if (texture) {
           const sprite = new Sprite(texture)
@@ -375,14 +388,15 @@ export class StageScene extends Scene {
    */
   private spawnEntitiesFromStage() {
     const entityFactory: Record<string, (x: number, y: number) => Entity> = {
-      Nasake: (x, y) => new Nasake(x + 8, y + 8, this.stage),
-      Gurasan: (x, y) => new Gurasan(x + 8, y + 8, this.stage),
-      GurasanNotFall: (x, y) => new GurasanNotFall(x + 8, y + 8, this.stage),
-      Potion: (x, y) => new Potion(x + 8, y + 8, this.stage),
-      Nuefu: (x, y) => new Nuefu(x + 8, y + 8, this.stage),
-      Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stage),
+      Nasake: (x, y) => new Nasake(x + 8, y + 8, this.stageContext),
+      Gurasan: (x, y) => new Gurasan(x + 8, y + 8, this.stageContext),
+      GurasanNotFall: (x, y) => new GurasanNotFall(x + 8, y + 8, this.stageContext),
+      Potion: (x, y) => new Potion(x + 8, y + 8, this.stageContext),
+      Nuefu: (x, y) => new Nuefu(x + 8, y + 8, this.stageContext),
+      Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stageContext),
+      Dekanasake: (x, y) => new DekaNasake(x + 16, y + 16, this.stageContext),
       Funkorogashi: (x, y) => {
-        const funko = new Funkorogashi(x + 8, y + 8, this.stage, () => this.player.x)
+        const funko = new Funkorogashi(x + 8, y + 8, this.stageContext, () => this.player.x)
         funko.behavior.on('spawnFun', (fun: Fun) => {
           this.addEntity(fun)
         })
@@ -397,16 +411,17 @@ export class StageScene extends Scene {
       },
     }
 
+    // テーマに応じたエンティティマップを取得
+    const entityData = getEntityData(this.stageData.theme)
+
     // 全レイヤーをスキャンしてエンティティを生成
     for (const layer of this.stage) {
       for (let y = 0; y < layer.length; y++) {
         for (let x = 0; x < layer[y].length; x++) {
           const char = layer[y][x]
 
-          if (char in ENTITYDATA) {
-            const entityKey = char as keyof typeof ENTITYDATA
-            const entityData = ENTITYDATA[entityKey]
-            const entityName = entityData.entityClass
+          if (char in entityData) {
+            const entityName = entityData[char].entityClass
 
             const factory = entityFactory[entityName]
             if (factory) {

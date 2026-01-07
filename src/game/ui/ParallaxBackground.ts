@@ -1,4 +1,5 @@
-import { BLOCKDATA, BLOCKSIZE } from '@game/config'
+import { BLOCKSIZE } from '@game/config'
+import { BlockDataMap } from '@game/types'
 import { AssetLoader } from '@ptre/core/AssetLoader'
 import { TilingSprite, Texture, RenderTexture, Container, Sprite } from 'pixi.js'
 
@@ -13,11 +14,13 @@ export class ParallaxBackground {
   private tilingSprite: TilingSprite
   private parallaxRateX: number
   private parallaxRateY: number
+  private blockData: BlockDataMap
 
   /**
    * @param bgPattern 背景パターン配列（例：['y'] または ['yz', 'ab']）
    * @param width 背景の描画幅（ステージ幅を指定）
    * @param height 背景の描画高さ（ステージ高さを指定）
+   * @param blockData テーマ適用済みブロックデータ
    * @param parallaxRateX X軸のカメラ追従レート（0.5 = カメラの半分の速度でスクロール）
    * @param parallaxRateY Y軸のカメラ追従レート（1.0 = カメラと同じ速度）
    */
@@ -25,9 +28,11 @@ export class ParallaxBackground {
     bgPattern: string[],
     width: number,
     height: number,
+    blockData: BlockDataMap,
     parallaxRateX = 0.5,
     parallaxRateY = 1.0
   ) {
+    this.blockData = blockData
     this.parallaxRateX = parallaxRateX
     this.parallaxRateY = parallaxRateY
 
@@ -122,8 +127,8 @@ export class ParallaxBackground {
       return Texture.EMPTY
     }
 
-    // BLOCKDATAからフレーム番号を取得
-    const blockData = BLOCKDATA[bgKey]
+    // blockDataからフレーム番号を取得
+    const blockData = this.blockData[bgKey]
     if (!blockData?.frame || blockData.frame.length === 0) {
       return Texture.EMPTY
     }

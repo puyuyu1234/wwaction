@@ -1,22 +1,29 @@
 <script setup lang="ts">
-import { Application, Sprite, Graphics } from 'pixi.js'
-import { ref, onMounted } from 'vue'
+import { Application, Sprite, Graphics, Spritesheet } from 'pixi.js'
+import { ref, onMounted, computed, watch } from 'vue'
 
-import { BLOCKDATA, ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
+import { BASE_ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
+import { useEditorState } from '../composables/useEditorState'
 
 const modelValue = defineModel<string>()
 
+const { blockData } = useEditorState()
+
 // タイルとエンティティを統合
-const blockTiles = Object.keys(BLOCKDATA)
-const entityTiles = ['0', ...Object.keys(ENTITYDATA)] // 0: Player を追加
+const blockTiles = computed(() => Object.keys(blockData.value))
+const entityTiles = ['0', ...Object.keys(BASE_ENTITYDATA)] // 0: Player を追加
 
 const tileCanvases = ref<Record<string, string>>({})
 
+// タイルプレビュー生成用の状態
+let pixiApp: Application | null = null
+let tilesetSheet: Spritesheet | null = null
+
 onMounted(async () => {
   // PixiJSアプリ初期化（オフスクリーン）
-  const app = new Application()
-  await app.init({
+  pixiApp = new Application()
+  await pixiApp.init({
     width: BLOCKSIZE * 2,
     height: BLOCKSIZE * 2,
     backgroundAlpha: 0,
@@ -24,34 +31,52 @@ onMounted(async () => {
 
   // アセット読込（useAssets composable を使用）
   const { loadTilesetSpritesheet } = useAssets()
-  const tilesetSheet = await loadTilesetSpritesheet()
+  tilesetSheet = await loadTilesetSpritesheet()
 
-  // 各タイルのプレビュー画像を生成
-  for (const tile of blockTiles) {
-    const blockData = BLOCKDATA[tile]
-    if (!blockData?.frame || blockData.frame.length === 0) {
-      // 空タイル
-      tileCanvases.value[tile] = createEmptyTileCanvas()
+  // 初回生成
+  await generateTilePreviews()
+
+  // エンティティ用プレースホルダー（テーマ非依存）
+  for (const tile of entityTiles) {
+    tileCanvases.value[tile] = createEntityPlaceholder(tile)
+  }
+})
+
+// テーマ変更時にプレビューを再生成
+watch(blockData, async () => {
+  if (pixiApp && tilesetSheet) {
+    await generateTilePreviews()
+  }
+})
+
+async function generateTilePreviews() {
+  if (!pixiApp || !tilesetSheet) return
+
+  const newCanvases: Record<string, string> = {}
+
+  for (const tile of blockTiles.value) {
+    const block = blockData.value[tile]
+    if (!block?.frame || block.frame.length === 0) {
+      newCanvases[tile] = createEmptyTileCanvas()
       continue
     }
 
-    const frameIndex = blockData.frame[0]
+    const frameIndex = block.frame[0]
     const frameName = `frame_${frameIndex}`
     const texture = tilesetSheet.textures[frameName]
 
     if (texture) {
-      tileCanvases.value[tile] = await renderSpriteToCanvas(app, texture, blockData.param?.alpha)
+      newCanvases[tile] = await renderSpriteToCanvas(pixiApp, texture, block.param?.alpha)
     }
   }
 
-  // エンティティ用プレースホルダー
+  // エンティティは維持
   for (const tile of entityTiles) {
-    tileCanvases.value[tile] = createEntityPlaceholder(tile)
+    newCanvases[tile] = tileCanvases.value[tile] || createEntityPlaceholder(tile)
   }
 
-  // アプリ破棄
-  app.destroy(true)
-})
+  tileCanvases.value = newCanvases
+}
 
 async function renderSpriteToCanvas(
   app: Application,
