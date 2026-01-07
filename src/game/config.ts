@@ -1,8 +1,9 @@
 /**
  * ゲーム固有定数
  */
-import type { BlockData, UITypeData } from './types'
+import type { BlockData, EntityDataMap, UITypeData } from './types'
 import { CollisionType } from './types'
+import { THEME_BLOCK_OVERRIDE, THEME_ENTITY_OVERRIDE } from '@/generated/themes'
 
 /** デバッグモード */
 export const DEBUG = import.meta.env.DEV
@@ -130,15 +131,7 @@ export const BASE_BLOCKDATA: BlockDataMap = {
   '~': { frame: [72], type: CollisionType.NONE },
 }
 
-/**
- * テーマ別ブロックオーバーライド
- * ベースマップの一部をテーマごとに上書き
- */
-export const THEME_BLOCK_OVERRIDE: Record<string, BlockDataMap> = {
-  // forest: {
-  //   'g': { frame: [100], type: CollisionType.SOLID },
-  // },
-}
+// THEME_BLOCK_OVERRIDE は generated/themes.ts からインポート
 
 /**
  * テーマに応じたブロックマップを取得
@@ -157,11 +150,6 @@ export function getBlockData(theme: string): BlockDataMap {
 export const HPDATA = [9, 5, 3, 1]
 
 /**
- * エンティティデータの型
- */
-export type EntityDataMap = Record<string, { entityClass: string }>
-
-/**
  * ベースエンティティマップ（全テーマ共通）
  */
 export const BASE_ENTITYDATA: EntityDataMap = {
@@ -175,15 +163,7 @@ export const BASE_ENTITYDATA: EntityDataMap = {
   '8': { entityClass: 'Semi' },
 }
 
-/**
- * テーマ別エンティティオーバーライド
- * ベースマップの一部をテーマごとに上書き
- */
-export const THEME_ENTITY_OVERRIDE: Record<string, EntityDataMap> = {
-  // forest: {
-  //   '1': { entityClass: 'DekaNasake' },
-  // },
-}
+// THEME_ENTITY_OVERRIDE は generated/themes.ts からインポート
 
 /**
  * テーマに応じたエンティティマップを取得

@@ -94,6 +94,9 @@ export interface StageData {
   stages: string[][]
 }
 
+/** エンティティデータマップ */
+export type EntityDataMap = Record<string, { entityClass: string }>
+
 /** UIタイプデータ */
 export interface UITypeData {
   /** 使用する画像キー */
