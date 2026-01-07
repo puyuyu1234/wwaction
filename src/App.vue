@@ -106,10 +106,13 @@ body {
 .game-container {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0);
   background: #000;
+  box-sizing: border-box;
 }
 
 #game {

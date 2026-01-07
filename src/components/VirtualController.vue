@@ -61,7 +61,7 @@ const handleEnd = (key: string, e: Event) => {
 <style scoped>
 .virtual-controller {
   position: fixed;
-  bottom: 2vw;
+  bottom: calc(2vw + env(safe-area-inset-bottom, 0));
   left: 0;
   right: 0;
   display: flex;
