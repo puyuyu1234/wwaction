@@ -2,14 +2,14 @@
 import { Application, Sprite, Graphics } from 'pixi.js'
 import { ref, onMounted } from 'vue'
 
-import { BLOCKDATA, ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
+import { BLOCKDATA, BASE_ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
 
 const modelValue = defineModel<string>()
 
 // タイルとエンティティを統合
 const blockTiles = Object.keys(BLOCKDATA)
-const entityTiles = ['0', ...Object.keys(ENTITYDATA)] // 0: Player を追加
+const entityTiles = ['0', ...Object.keys(BASE_ENTITYDATA)] // 0: Player を追加
 
 const tileCanvases = ref<Record<string, string>>({})
 

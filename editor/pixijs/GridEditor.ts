@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3'
 import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
 
-import { BLOCKDATA, BLOCKSIZE, ENTITYDATA } from '../../src/game/config'
+import { BLOCKDATA, BLOCKSIZE, BASE_ENTITYDATA } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
 import { EDITOR_CONFIG } from '../config'
 
@@ -135,7 +135,7 @@ export class GridEditor extends EventEmitter {
     const posY = (y + EDITOR_CONFIG.MARGIN) * BLOCKSIZE
 
     // エンティティチェック（'0'=Player も含む）
-    const entityData = ENTITYDATA[tile as keyof typeof ENTITYDATA]
+    const entityData = BASE_ENTITYDATA[tile]
     const isEntity = entityData || tile === '0'
     if (isEntity) {
       // エンティティはプレースホルダーで描画（仮）

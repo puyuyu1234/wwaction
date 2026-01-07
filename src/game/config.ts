@@ -33,8 +33,11 @@ export const Z_INDEX = {
   UI: 1000,
 } as const
 
-/** ブロックデータ */
-export const BLOCKDATA: Partial<Record<string, BlockData>> = {
+/** ブロックデータの型 */
+export type BlockDataMap = Partial<Record<string, BlockData>>
+
+/** ベースブロックマップ（全テーマ共通） */
+export const BASE_BLOCKDATA: BlockDataMap = {
   ' ': { frame: [0], type: CollisionType.NONE },
   a: { frame: [1], type: CollisionType.PLATFORM },
   b: { frame: [2], type: CollisionType.PLATFORM },
@@ -128,17 +131,40 @@ export const BLOCKDATA: Partial<Record<string, BlockData>> = {
 }
 
 /**
+ * テーマ別ブロックオーバーライド
+ * ベースマップの一部をテーマごとに上書き
+ */
+export const THEME_BLOCK_OVERRIDE: Record<string, BlockDataMap> = {
+  // forest: {
+  //   'g': { frame: [100], type: CollisionType.SOLID },
+  // },
+}
+
+/**
+ * テーマに応じたブロックマップを取得
+ */
+export function getBlockData(theme: string): BlockDataMap {
+  return {
+    ...BASE_BLOCKDATA,
+    ...THEME_BLOCK_OVERRIDE[theme],
+  }
+}
+
+/**
  * 難易度ごとのHP
  * [EASY, NORMAL, HARD, LUNATIC]
  */
 export const HPDATA = [9, 5, 3, 1]
 
 /**
- * エンティティスポーンマップ
- * キー: ステージマップ内の文字
- * 値: エンティティ設定
+ * エンティティデータの型
  */
-export const ENTITYDATA = {
+export type EntityDataMap = Record<string, { entityClass: string }>
+
+/**
+ * ベースエンティティマップ（全テーマ共通）
+ */
+export const BASE_ENTITYDATA: EntityDataMap = {
   '1': { entityClass: 'Nasake' },
   '2': { entityClass: 'Gurasan' },
   '3': { entityClass: 'Potion' },
@@ -147,7 +173,27 @@ export const ENTITYDATA = {
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
   '8': { entityClass: 'Semi' },
-} as const
+}
+
+/**
+ * テーマ別エンティティオーバーライド
+ * ベースマップの一部をテーマごとに上書き
+ */
+export const THEME_ENTITY_OVERRIDE: Record<string, EntityDataMap> = {
+  // forest: {
+  //   '1': { entityClass: 'DekaNasake' },
+  // },
+}
+
+/**
+ * テーマに応じたエンティティマップを取得
+ */
+export function getEntityData(theme: string): EntityDataMap {
+  return {
+    ...BASE_ENTITYDATA,
+    ...THEME_ENTITY_OVERRIDE[theme],
+  }
+}
 
 /**
  * 効果音キー

@@ -1,5 +1,5 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
-import { BLOCKSIZE, BLOCKDATA, DEBUG, FONT, ENTITYDATA, Z_INDEX } from '@game/config'
+import { BLOCKSIZE, BLOCKDATA, DEBUG, FONT, getEntityData, Z_INDEX } from '@game/config'
 import { Entity } from '@game/entity/Entity'
 import { Fun } from '@game/entity/Fun'
 import { Funkorogashi } from '@game/entity/Funkorogashi'
@@ -397,16 +397,17 @@ export class StageScene extends Scene {
       },
     }
 
+    // テーマに応じたエンティティマップを取得
+    const entityData = getEntityData(this.stageData.theme)
+
     // 全レイヤーをスキャンしてエンティティを生成
     for (const layer of this.stage) {
       for (let y = 0; y < layer.length; y++) {
         for (let x = 0; x < layer[y].length; x++) {
           const char = layer[y][x]
 
-          if (char in ENTITYDATA) {
-            const entityKey = char as keyof typeof ENTITYDATA
-            const entityData = ENTITYDATA[entityKey]
-            const entityName = entityData.entityClass
+          if (char in entityData) {
+            const entityName = entityData[char].entityClass
 
             const factory = entityFactory[entityName]
             if (factory) {
