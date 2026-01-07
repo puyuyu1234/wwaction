@@ -1,4 +1,6 @@
 {
   "blocks": {},
-  "entities": {}
+  "entities": {
+    "8": { "entityClass": "Dekanasake" }
+  }
 }

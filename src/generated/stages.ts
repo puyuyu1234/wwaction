@@ -402,6 +402,23 @@ export const STAGEDATA: StageData[] = [
         "llm abbbbbbbbbbc kll",
         "llm kllllllllllm kll",
         "llm kllllllllllm kll"
+      ],
+      [
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "                    ",
+        "              8     ",
+        "                    ",
+        "                    ",
+        "                    "
       ]
     ]
   },

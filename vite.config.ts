@@ -11,6 +11,22 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     vue(),
     {
+      name: 'auto-generate',
+      buildStart() {
+        // dev/build開始時に自動生成
+        execSync('pnpm tsx scripts/generate-stages.ts', { stdio: 'inherit' })
+        execSync('pnpm tsx scripts/generate-themes.ts', { stdio: 'inherit' })
+      },
+      handleHotUpdate({ file }) {
+        // JSON手動編集時にも再生成
+        if (file.includes('/stages/') && file.endsWith('.json')) {
+          execSync('pnpm tsx scripts/generate-stages.ts', { stdio: 'inherit' })
+        } else if (file.includes('/themes/') && file.endsWith('.json')) {
+          execSync('pnpm tsx scripts/generate-themes.ts', { stdio: 'inherit' })
+        }
+      }
+    },
+    {
       name: 'stage-save-api',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {

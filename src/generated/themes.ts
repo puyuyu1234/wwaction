@@ -13,4 +13,10 @@ export const THEME_BLOCK_OVERRIDE: Record<string, BlockDataMap> = {}
 /**
  * テーマ別エンティティオーバーライド
  */
-export const THEME_ENTITY_OVERRIDE: Record<string, EntityDataMap> = {}
+export const THEME_ENTITY_OVERRIDE: Record<string, EntityDataMap> = {
+  "plain": {
+    "8": {
+      "entityClass": "Dekanasake"
+    }
+  }
+}
