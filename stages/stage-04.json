@@ -1,36 +1,39 @@
-[
-  [
-    "                                                      gbbbbh      ",
-    "                                                      qllllr      ",
-    "                                                      qllllr      ",
-    "                                                      qllllr      ",
-    "                                                      qllllr      ",
-    "                                                      qllllr      ",
-    "                                                      qllllr      ",
-    "op0                     ee   pop      4               qllllr      ",
-    "bbbbbc                 gbbh gbbbh    gh    gbh4       ABBBBC      ",
-    "lllllm                 qllr qlllrxxxxqrxxxxqlsh4       zzzz     e ",
-    "lllllm   efefe    4    qllr3qlllsbbbbisbbbbillsh4              gbb",
-    "lllllm  gbbbbbhxxghxxgbillrxqllllllllllllllllllsh feefo    poogill",
-    "lllllm  qlllllsbbisbbillllsbilllllllllllllllllllsbbbbbbh  gbbbilll",
-    "llllvbbbillllllllllllllllllllllllllllltbbbbbullllllllllr  qlllllll",
-    "llllqlllllllllllllllllllllllllllllllllklllllmllllllllllr  qlllllll"
-  ],
-  [
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                                                  ",
-    "                                       d                          ",
-    "     poo                               noooo                      ",
-    "                                                                  ",
-    "         j              j                                      j  "
+{
+  "theme": "plain",
+  "layers": [
+    [
+      "                                                      gbbbbh      ",
+      "                                                      qllllr      ",
+      "                                                      qllllr      ",
+      "                                                      qllllr      ",
+      "                                                      qllllr      ",
+      "                                                      qllllr      ",
+      "                                                      qllllr      ",
+      "op0                     ee   pop      4               qllllr      ",
+      "bbbbbc                 gbbh gbbbh    gh    gbh4       ABBBBC      ",
+      "lllllm                 qllr qlllrxxxxqrxxxxqlsh4       zzzz     e ",
+      "lllllm   efefe    4    qllr3qlllsbbbbisbbbbillsh4              gbb",
+      "lllllm  gbbbbbhxxghxxgbillrxqllllllllllllllllllsh feefo    poogill",
+      "lllllm  qlllllsbbisbbillllsbilllllllllllllllllllsbbbbbbh  gbbbilll",
+      "llllvbbbillllllllllllllllllllllllllllltbbbbbullllllllllr  qlllllll",
+      "llllqlllllllllllllllllllllllllllllllllklllllmllllllllllr  qlllllll"
+    ],
+    [
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                                                  ",
+      "                                       d                          ",
+      "     poo                               noooo                      ",
+      "                                                                  ",
+      "         j              j                                      j  "
+    ]
   ]
-]
+}

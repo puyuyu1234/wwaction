@@ -59,19 +59,39 @@ export interface StageContext {
   blockData: BlockDataMap
 }
 
-/** ステージデータ */
+/**
+ * ステージJSON入力形式
+ * stages/*.json のフォーマット（bg/fgはオプショナル）
+ */
+export interface StageDataInput {
+  name?: string
+  engName?: string
+  bgm?: string
+  theme: StageTheme
+  /** 背景パターン（省略時はテーマデフォルト） */
+  bg?: string[]
+  /** 前景パターン（省略時はテーマデフォルト） */
+  fg?: string[]
+  /** タイルマップレイヤー配列 */
+  layers: string[][]
+}
+
+/**
+ * ステージデータ（ランタイム用）
+ * generate-stages.ts によりデフォルト値が適用された状態
+ */
 export interface StageData {
   name?: string
   engName?: string
   /** BGMファイル名（拡張子なし） */
   bgm?: string
   theme: StageTheme
+  /** 背景パターン（デフォルト適用済み） */
   bg: string[]
+  /** 前景パターン（デフォルト適用済み） */
   fg: string[]
+  /** タイルマップレイヤー配列 */
   stages: string[][]
-  param?: {
-    boss?: unknown // TODO: ボスクラス型を定義
-  }
 }
 
 /** UIタイプデータ */

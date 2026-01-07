@@ -1,19 +1,22 @@
-[
-  [
-    "BBBBBBBBBBBBBBBJllll",
-    "               qllll",
-    "               qllll",
-    "               qllll",
-    "               qllll",
-    "               qllll",
-    "               qllll",
-    "               qllll",
-    "               qllll",
-    "                    ",
-    " 0    np edede      ",
-    "bbbbbbbbbbbbbbbbbbbb",
-    "llllllllllllllllllll",
-    "llllllllllllllllllll",
-    "llllllllllllllllllll"
+{
+  "theme": "plain",
+  "layers": [
+    [
+      "BBBBBBBBBBBBBBBJllll",
+      "               qllll",
+      "               qllll",
+      "               qllll",
+      "               qllll",
+      "               qllll",
+      "               qllll",
+      "               qllll",
+      "               qllll",
+      "                    ",
+      " 0    np edede      ",
+      "bbbbbbbbbbbbbbbbbbbb",
+      "llllllllllllllllllll",
+      "llllllllllllllllllll",
+      "llllllllllllllllllll"
+    ]
   ]
-]
+}

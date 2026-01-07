@@ -1,19 +1,22 @@
-[
-  [
-    "                                                              ",
-    "               xxxxxxxx                                       ",
-    "               gbbbbbbh                                       ",
-    "               qlKBBJlr                                       ",
-    "        oop 5  qlrzzqlr   pooo         j                      ",
-    "      gbbbbbh  qlr 1qlr  gbbbbbh      gbh                     ",
-    "      qlllllr  qlsbbilr  qlllllr      qlsh                    ",
-    "      ABJlKBC  ABBBBBBC  ABJlllr      qllsh                   ",
-    "        qlr                qlllr      qlllsh                  ",
-    "        qlr                qlllr      qllllsh                 ",
-    " 0fefefeqlr  gh   gh   gh  qlllr      qlllllsh     5     fefo ",
-    "bbbbbbbbilr  qr   qr   qr  qlllr      qllllllsh 53eee35 gbbbbb",
-    "llllllllllr  qr  2qr   qr  qlllr      qlllllllsbbbbbbbbbilllll",
-    "llllllllllrooqroooqr   qr  qlllr      qlllllllllllllllllllllll",
-    "llllllllllsbbisbbbir   qr  qlllr      qlllllllllllllllllllllll"
+{
+  "theme": "plain",
+  "layers": [
+    [
+      "                                                              ",
+      "               xxxxxxxx                                       ",
+      "               gbbbbbbh                                       ",
+      "               qlKBBJlr                                       ",
+      "        oop 5  qlrzzqlr   pooo         j                      ",
+      "      gbbbbbh  qlr 1qlr  gbbbbbh      gbh                     ",
+      "      qlllllr  qlsbbilr  qlllllr      qlsh                    ",
+      "      ABJlKBC  ABBBBBBC  ABJlllr      qllsh                   ",
+      "        qlr                qlllr      qlllsh                  ",
+      "        qlr                qlllr      qllllsh                 ",
+      " 0fefefeqlr  gh   gh   gh  qlllr      qlllllsh     5     fefo ",
+      "bbbbbbbbilr  qr   qr   qr  qlllr      qllllllsh 53eee35 gbbbbb",
+      "llllllllllr  qr  2qr   qr  qlllr      qlllllllsbbbbbbbbbilllll",
+      "llllllllllrooqroooqr   qr  qlllr      qlllllllllllllllllllllll",
+      "llllllllllsbbisbbbir   qr  qlllr      qlllllllllllllllllllllll"
+    ]
   ]
-]
+}

@@ -1,19 +1,22 @@
-[
-  [
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    " 0                  ",
-    "bbc          *   abb",
-    "llm pooooooooooo kll",
-    "llm abbbbbbbbbbc kll",
-    "llm kllllllllllm kll",
-    "llm kllllllllllm kll"
+{
+  "theme": "plain",
+  "layers": [
+    [
+      "                    ",
+      "                    ",
+      "                    ",
+      "                    ",
+      "                    ",
+      "                    ",
+      "                    ",
+      "                    ",
+      "                    ",
+      " 0                  ",
+      "bbc          *   abb",
+      "llm pooooooooooo kll",
+      "llm abbbbbbbbbbc kll",
+      "llm kllllllllllm kll",
+      "llm kllllllllllm kll"
+    ]
   ]
-]
+}
