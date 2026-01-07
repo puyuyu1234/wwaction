@@ -2,13 +2,13 @@
 import { Application, Sprite, Graphics } from 'pixi.js'
 import { ref, onMounted } from 'vue'
 
-import { BLOCKDATA, BASE_ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
+import { BASE_BLOCKDATA, BASE_ENTITYDATA, BLOCKSIZE } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
 
 const modelValue = defineModel<string>()
 
 // タイルとエンティティを統合
-const blockTiles = Object.keys(BLOCKDATA)
+const blockTiles = Object.keys(BASE_BLOCKDATA)
 const entityTiles = ['0', ...Object.keys(BASE_ENTITYDATA)] // 0: Player を追加
 
 const tileCanvases = ref<Record<string, string>>({})
@@ -28,7 +28,7 @@ onMounted(async () => {
 
   // 各タイルのプレビュー画像を生成
   for (const tile of blockTiles) {
-    const blockData = BLOCKDATA[tile]
+    const blockData = BASE_BLOCKDATA[tile]
     if (!blockData?.frame || blockData.frame.length === 0) {
       // 空タイル
       tileCanvases.value[tile] = createEmptyTileCanvas()

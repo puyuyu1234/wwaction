@@ -1,4 +1,5 @@
-import { StageLayers } from '@game/types'
+import { BASE_BLOCKDATA } from '@game/config'
+import { StageLayers, StageContext } from '@game/types'
 import { describe, it, expect, vi } from 'vitest'
 
 import { DekaNasake } from './DekaNasake'
@@ -14,9 +15,14 @@ vi.mock('@ptre/core/AssetLoader', () => ({
   },
 }))
 
+/** テスト用のStageContextを作成 */
+function createTestContext(layers: StageLayers): StageContext {
+  return { layers, blockData: BASE_BLOCKDATA }
+}
+
 describe('DekaNasake', () => {
   // 床あり・壁なしのステージ
-  const openStage: StageLayers = [
+  const openStage = createTestContext([
     [
       '                    '.split(''),
       '                    '.split(''),
@@ -24,10 +30,10 @@ describe('DekaNasake', () => {
       '                    '.split(''),
       'gggggggggggggggggggg'.split(''), // 床
     ],
-  ]
+  ])
 
   // 左側に壁があるステージ
-  const leftWallStage: StageLayers = [
+  const leftWallStage = createTestContext([
     [
       'g                   '.split(''),
       'g                   '.split(''),
@@ -35,7 +41,7 @@ describe('DekaNasake', () => {
       'g                   '.split(''),
       'gggggggggggggggggggg'.split(''),
     ],
-  ]
+  ])
 
   describe('移動と壁での反転', () => {
     it('左方向に移動し、壁に当たると右向きに反転する', () => {
@@ -56,7 +62,7 @@ describe('DekaNasake', () => {
   describe('崖での反転', () => {
     it('崖を検知すると反転する', () => {
       // 左側が崖のステージ（初期は左向きなので左に進む）
-      const cliffLeftStage: StageLayers = [
+      const cliffLeftStage = createTestContext([
         [
           '                    '.split(''),
           '                    '.split(''),
@@ -64,7 +70,7 @@ describe('DekaNasake', () => {
           '                    '.split(''),
           '              gggggg'.split(''), // 左側が崖
         ],
-      ]
+      ])
       const deka = new DekaNasake(240, 48, cliffLeftStage)
       const initialScaleX = deka.scale.x
 

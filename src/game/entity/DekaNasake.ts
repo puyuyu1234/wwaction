@@ -1,6 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 import { StateManager } from '@ptre/components/StateManager'
 import { Rectangle } from '@ptre/core/Rectangle'
 
@@ -38,7 +38,7 @@ export class DekaNasake extends Entity {
     run: 1.0,
   } as const
 
-  constructor(centerX: number, centerY: number, stage: StageLayers) {
+  constructor(centerX: number, centerY: number, context: StageContext) {
     // スプライトサイズ: 32x32
     // hitboxは中心基準: (-8, -10, 16, 26)
     const hitbox = new Rectangle(-8, -10, 16, 26)
@@ -48,7 +48,7 @@ export class DekaNasake extends Entity {
     super('deka', centerX, centerY, 32, 32, hitbox, ['enemy'])
 
     this.physics = new PhysicsComponent(this)
-    this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.tilemap = new TilemapCollisionComponent(this, context)
     this.stateManager = new StateManager<DekaNasakeState>('walk')
 
     this.vx = this.direction * DekaNasake.SPEED.walk

@@ -1,6 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { CommonBehaviors } from './commonBehaviors'
@@ -18,13 +18,13 @@ export class Fun extends Entity {
   private _phase: 'growing' | 'flying' = 'growing'
   private growthLevel = 0 // 0~3
 
-  constructor(centerX: number, centerY: number, stage: StageLayers) {
+  constructor(centerX: number, centerY: number, context: StageContext) {
     const hitbox = new Rectangle(-5, -5, 10, 10)
     // 成長中はダメージ判定なし（発射時にenemyタグを追加）
     super('entity', centerX, centerY, 16, 16, hitbox, [])
 
     this.physics = new PhysicsComponent(this)
-    this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.tilemap = new TilemapCollisionComponent(this, context)
 
     // 風に当たると跳ねる
     this.collisionReaction.on('wind', () => {
