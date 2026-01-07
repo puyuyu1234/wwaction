@@ -1,15 +1,22 @@
 import { ref } from 'vue'
 
+import type { StageDataInput, StageTheme } from '../../src/game/types'
+
+export interface LoadedStage {
+  layers: string[][][]
+  theme: StageTheme
+}
+
 export function useStageLoader() {
   const selectedStage = ref<number>(0)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
   /**
-   * ステージデータを読み込む（レイヤー配列形式）
-   * @returns string[][][] - [layerIndex][y][x]
+   * ステージデータを読み込む
+   * @returns layers（レイヤー配列）とtheme
    */
-  async function loadStage(stageNumber: number): Promise<string[][][]> {
+  async function loadStage(stageNumber: number): Promise<LoadedStage> {
     isLoading.value = true
     error.value = null
 
@@ -21,9 +28,14 @@ export function useStageLoader() {
         throw new Error(`Stage ${numStr} not found`)
       }
 
-      const json: string[][] = await response.json()
+      const json: StageDataInput = await response.json()
       // 各レイヤーの各行をsplitして文字配列に変換
-      return json.map((layer) => layer.map((row) => row.split('')))
+      const layers = json.layers.map((layer) => layer.map((row) => row.split('')))
+
+      return {
+        layers,
+        theme: json.theme ?? 'plain',
+      }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'Unknown error'
       error.value = errorMessage

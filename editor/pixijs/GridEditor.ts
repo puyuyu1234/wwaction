@@ -1,8 +1,9 @@
 import { EventEmitter } from 'eventemitter3'
 import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
 
-import { BASE_BLOCKDATA, BLOCKSIZE, BASE_ENTITYDATA } from '../../src/game/config'
+import { BLOCKSIZE, BASE_ENTITYDATA } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
+import { useEditorState } from '../composables/useEditorState'
 import { EDITOR_CONFIG } from '../config'
 
 /**
@@ -160,9 +161,10 @@ export class GridEditor extends EventEmitter {
       return placeholder
     }
 
-    // タイルブロックチェック
-    const blockData = BASE_BLOCKDATA[tile]
-    if (!blockData?.frame || blockData.frame.length === 0) {
+    // タイルブロックチェック（テーマ対応）
+    const { blockData } = useEditorState()
+    const block = blockData.value[tile]
+    if (!block?.frame || block.frame.length === 0) {
       // 空タイルはグリッド線のみ
       return new Graphics()
         .rect(posX, posY, BLOCKSIZE, BLOCKSIZE)
@@ -170,7 +172,7 @@ export class GridEditor extends EventEmitter {
     }
 
     // スプライト作成
-    const frameIndex = blockData.frame[0]
+    const frameIndex = block.frame[0]
     const frameName = `frame_${frameIndex}`
     const texture = this.tilesetSpritesheet?.textures[frameName]
 
@@ -188,11 +190,20 @@ export class GridEditor extends EventEmitter {
     sprite.height = BLOCKSIZE
 
     // 透明度設定
-    if (blockData.param?.alpha !== undefined) {
-      sprite.alpha = blockData.param.alpha
+    if (block.param?.alpha !== undefined) {
+      sprite.alpha = block.param.alpha
     }
 
     return sprite
+  }
+
+  /**
+   * テーマ変更時に全タイルを再描画
+   */
+  rerender() {
+    if (this.allLayers.length > 0) {
+      this.loadAllLayers(this.allLayers, this.currentLayerIndex)
+    }
   }
 
   /**

@@ -4,9 +4,11 @@ import { ref, watch, computed } from 'vue'
 import StageCanvas from './components/StageCanvas.vue'
 import StageSidebar from './components/StageSidebar.vue'
 import TilePalette from './components/TilePalette.vue'
+import { useEditorState } from './composables/useEditorState'
 import { useStageLoader } from './composables/useStageLoader'
 
 const { selectedStage, loadStage, saveStage } = useStageLoader()
+const { setTheme } = useEditorState()
 
 // StageCanvas の参照を取得（defineExpose で公開されたAPIにアクセス）
 const stageCanvasRef = ref<InstanceType<typeof StageCanvas>>()
@@ -45,8 +47,9 @@ function handleRemoveLayer() {
 // ステージ選択時に自動読み込み（初回以外）
 watch(selectedStage, async (newStage) => {
   try {
-    const data = await loadStage(newStage)
-    stageCanvasRef.value?.loadStageData(data)
+    const { layers, theme } = await loadStage(newStage)
+    setTheme(theme)
+    stageCanvasRef.value?.loadStageData(layers)
   } catch {
     // エラーは composable 内で処理済み
   }
