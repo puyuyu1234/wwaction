@@ -1,7 +1,7 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
 import { Z_INDEX } from '@game/config'
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { CommonBehaviors } from './commonBehaviors'
@@ -25,7 +25,7 @@ const FLIPPED_FRAMES = 120
  * - 風を当てるとひっくり返る
  */
 export class Funkorogashi extends Entity {
-  private stage: StageLayers
+  private context: StageContext
   private getPlayerX: () => number
   private fun: Fun | null = null
   private timer = 0
@@ -33,14 +33,14 @@ export class Funkorogashi extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(centerX: number, centerY: number, stage: StageLayers, getPlayerX: () => number) {
+  constructor(centerX: number, centerY: number, context: StageContext, getPlayerX: () => number) {
     const hitbox = new Rectangle(-6, -6, 12, 12)
     super('entity', centerX, centerY, 16, 16, hitbox, [])
 
-    this.stage = stage
+    this.context = context
     this.getPlayerX = getPlayerX
     this.physics = new PhysicsComponent(this)
-    this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.tilemap = new TilemapCollisionComponent(this, context)
 
     // 風との衝突反応（常にひっくり返る）
     this.collisionReaction.on('wind', () => {
@@ -69,7 +69,7 @@ export class Funkorogashi extends Entity {
     this.timer = 0
 
     // フンを生成（フンコロガシの前方に配置、フンコロより奥に描画）
-    this.fun = new Fun(this.getFrontX(), this.y, this.stage)
+    this.fun = new Fun(this.getFrontX(), this.y, this.context)
     this.fun.zIndex = Z_INDEX.ENTITY - 1
 
     // チャージ中はアニメーション再生

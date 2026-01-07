@@ -1,4 +1,5 @@
-import { StageLayers } from '@game/types'
+import { BASE_BLOCKDATA } from '@game/config'
+import { StageLayers, StageContext } from '@game/types'
 import { describe, it, expect, vi } from 'vitest'
 
 import { Wind } from './Wind'
@@ -14,9 +15,14 @@ vi.mock('@ptre/core/AssetLoader', () => ({
   },
 }))
 
+/** テスト用のStageContextを作成 */
+function createTestContext(layers: StageLayers): StageContext {
+  return { layers, blockData: BASE_BLOCKDATA }
+}
+
 describe('Wind', () => {
   // 簡単なステージデータ（空のステージ）- 1レイヤー
-  const emptyStage: StageLayers = [
+  const emptyStage = createTestContext([
     [
       '                    '.split(''),
       '                    '.split(''),
@@ -25,7 +31,7 @@ describe('Wind', () => {
       '                    '.split(''),
       'gggggggggggggggggggg'.split(''), // 地面
     ],
-  ]
+  ])
 
   describe('初期化', () => {
     it('指定した位置に生成される', () => {

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3'
 import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
 
-import { BLOCKDATA, BLOCKSIZE, BASE_ENTITYDATA } from '../../src/game/config'
+import { BASE_BLOCKDATA, BLOCKSIZE, BASE_ENTITYDATA } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
 import { EDITOR_CONFIG } from '../config'
 
@@ -161,7 +161,7 @@ export class GridEditor extends EventEmitter {
     }
 
     // タイルブロックチェック
-    const blockData = BLOCKDATA[tile]
+    const blockData = BASE_BLOCKDATA[tile]
     if (!blockData?.frame || blockData.frame.length === 0) {
       // 空タイルはグリッド線のみ
       return new Graphics()

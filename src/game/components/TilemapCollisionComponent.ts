@@ -1,5 +1,5 @@
-import { BLOCKSIZE, BLOCKDATA } from '@game/config'
-import { CollisionType, StageLayers } from '@game/types'
+import { BLOCKSIZE } from '@game/config'
+import { BlockDataMap, CollisionType, StageLayers, StageContext } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 interface ICollisionEntity {
@@ -15,10 +15,16 @@ interface ICollisionEntity {
  * 複数レイヤーに対応: いずれかのレイヤーで衝突があれば衝突とみなす
  */
 export class TilemapCollisionComponent {
+  private layers: StageLayers
+  private blockData: BlockDataMap
+
   constructor(
     private entity: ICollisionEntity,
-    private layers: StageLayers
-  ) {}
+    context: StageContext
+  ) {
+    this.layers = context.layers
+    this.blockData = context.blockData
+  }
 
   private get currentHitbox(): Rectangle {
     return new Rectangle(
@@ -40,8 +46,8 @@ export class TilemapCollisionComponent {
       const blockKey = layer[by]?.[bx]
       if (!blockKey || blockKey === ' ') continue
 
-      const blockData = BLOCKDATA[blockKey]
-      if (blockData && types.includes(blockData.type)) {
+      const block = this.blockData[blockKey]
+      if (block && types.includes(block.type)) {
         return true
       }
     }
@@ -212,26 +218,26 @@ export class TilemapCollisionComponent {
       const blockKey = layer[by]?.[bx]
       if (!blockKey || blockKey === ' ') continue
 
-      const blockData = BLOCKDATA[blockKey]
+      const block = this.blockData[blockKey]
 
-      if (blockData?.type !== CollisionType.DAMAGE || !blockData.param?.damage) {
+      if (block?.type !== CollisionType.DAMAGE || !block.param?.damage) {
         continue
       }
 
       // ダメージブロックのhitboxを計算（ブロック座標基準）
-      const damageHitbox = blockData.param.hitbox
+      const damageHitbox = block.param.hitbox
         ? new Rectangle(
-            bx * BLOCKSIZE + blockData.param.hitbox.x,
-            by * BLOCKSIZE + blockData.param.hitbox.y,
-            blockData.param.hitbox.width,
-            blockData.param.hitbox.height
+            bx * BLOCKSIZE + block.param.hitbox.x,
+            by * BLOCKSIZE + block.param.hitbox.y,
+            block.param.hitbox.width,
+            block.param.hitbox.height
           )
         : new Rectangle(bx * BLOCKSIZE, by * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
 
       // エンティティのヒットボックスと衝突判定
       if (this.currentHitbox.hitTest(damageHitbox)) {
         return {
-          damage: blockData.param.damage,
+          damage: block.param.damage,
           isPit: false,
         }
       }

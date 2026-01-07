@@ -45,6 +45,20 @@ export type StageTheme = 'plain' | 'forest'
 /** ステージレイヤー（衝突判定用） */
 export type StageLayers = string[][][] // [layer][row][col]
 
+/** ブロックデータマップ */
+export type BlockDataMap = Partial<Record<string, BlockData>>
+
+/**
+ * ステージコンテキスト
+ * エンティティに渡すステージ関連情報をまとめたもの
+ */
+export interface StageContext {
+  /** ステージレイヤー */
+  layers: StageLayers
+  /** テーマ適用済みブロックデータ */
+  blockData: BlockDataMap
+}
+
 /** ステージデータ */
 export interface StageData {
   name?: string

@@ -1,4 +1,4 @@
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 
 import { CommonBehaviors } from './commonBehaviors'
 import { Gurasan } from './Gurasan'
@@ -9,8 +9,8 @@ import { Gurasan } from './Gurasan'
  * - 崖で方向転換する（落ちない）
  */
 export class GurasanNotFall extends Gurasan {
-  constructor(centerX: number, centerY: number, stage: StageLayers) {
-    super(centerX, centerY, stage)
+  constructor(centerX: number, centerY: number, context: StageContext) {
+    super(centerX, centerY, context)
   }
 
   tick() {

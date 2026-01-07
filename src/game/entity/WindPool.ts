@@ -1,11 +1,11 @@
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 
 import { Entity } from './Entity'
 import { Wind } from './Wind'
 
 interface WindPoolConfig {
   poolSize?: number
-  stage: StageLayers
+  context: StageContext
   onAddEntity: (entity: Entity) => void
 }
 
@@ -18,17 +18,17 @@ export class WindPool {
   private pool: Wind[] = []
   private poolIndex = 0
   private vanishingWinds: Array<{ wind: Wind; timer: number }> = []
-  private stage: StageLayers
+  private context: StageContext
   private onAddEntity: (entity: Entity) => void
 
   constructor(config: WindPoolConfig) {
     const poolSize = config.poolSize ?? 2
-    this.stage = config.stage
+    this.context = config.context
     this.onAddEntity = config.onAddEntity
 
     // プールを初期化
     for (let i = 0; i < poolSize; i++) {
-      this.pool.push(new Wind(-100, -100, 0, this.stage))
+      this.pool.push(new Wind(-100, -100, 0, this.context))
     }
   }
 
@@ -47,7 +47,7 @@ export class WindPool {
     const wind = this.pool[this.poolIndex]
 
     // 古い風の位置に消滅エフェクトを生成
-    const vanishingWind = new Wind(wind.x, wind.y, 0, this.stage)
+    const vanishingWind = new Wind(wind.x, wind.y, 0, this.context)
     vanishingWind.vx = wind.vx
     vanishingWind.vy = wind.vy
     vanishingWind.playAnimation('vanish')

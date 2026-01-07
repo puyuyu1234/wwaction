@@ -1,4 +1,4 @@
-import { BLOCKDATA, BLOCKSIZE } from '@game/config'
+import { BASE_BLOCKDATA, BLOCKSIZE } from '@game/config'
 import { AssetLoader } from '@ptre/core/AssetLoader'
 import { TilingSprite, Texture, RenderTexture, Container, Sprite } from 'pixi.js'
 
@@ -122,8 +122,8 @@ export class ParallaxBackground {
       return Texture.EMPTY
     }
 
-    // BLOCKDATAからフレーム番号を取得
-    const blockData = BLOCKDATA[bgKey]
+    // BASE_BLOCKDATAからフレーム番号を取得（背景はテーマ非依存）
+    const blockData = BASE_BLOCKDATA[bgKey]
     if (!blockData?.frame || blockData.frame.length === 0) {
       return Texture.EMPTY
     }

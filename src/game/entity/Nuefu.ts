@@ -1,6 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { StageLayers } from '@game/types'
+import { StageContext } from '@game/types'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { CommonBehaviors } from './commonBehaviors'
@@ -18,7 +18,7 @@ export class Nuefu extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
 
-  constructor(centerX: number, centerY: number, stage: StageLayers) {
+  constructor(centerX: number, centerY: number, context: StageContext) {
     // アンカーポイントが中央(0.5, 0.5)なので、座標は中心を指す
     // スプライトサイズ: 16x16
     // hitboxも中心基準: (-4,-4,8,12)
@@ -32,7 +32,7 @@ export class Nuefu extends Entity {
 
     // 必要なComponentを初期化
     this.physics = new PhysicsComponent(this)
-    this.tilemap = new TilemapCollisionComponent(this, stage)
+    this.tilemap = new TilemapCollisionComponent(this, context)
 
     // 風との衝突反応を設定
     this.collisionReaction.on('wind', () => {
