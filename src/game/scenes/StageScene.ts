@@ -1,6 +1,7 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
 import { BLOCKSIZE, DEBUG, FONT, getBlockData, getEntityData, Z_INDEX } from '@game/config'
 import { Entity } from '@game/entity/Entity'
+import { DekaNasake } from '@game/entity/DekaNasake'
 import { Fun } from '@game/entity/Fun'
 import { Funkorogashi } from '@game/entity/Funkorogashi'
 import { Goal } from '@game/entity/Goal'
@@ -393,6 +394,7 @@ export class StageScene extends Scene {
       Potion: (x, y) => new Potion(x + 8, y + 8, this.stageContext),
       Nuefu: (x, y) => new Nuefu(x + 8, y + 8, this.stageContext),
       Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stageContext),
+      Dekanasake: (x, y) => new DekaNasake(x + 16, y + 16, this.stageContext),
       Funkorogashi: (x, y) => {
         const funko = new Funkorogashi(x + 8, y + 8, this.stageContext, () => this.player.x)
         funko.behavior.on('spawnFun', (fun: Fun) => {

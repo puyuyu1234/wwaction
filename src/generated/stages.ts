@@ -414,8 +414,8 @@ export const STAGEDATA: StageData[] = [
         "                    ",
         "                    ",
         "                    ",
-        "                    ",
         "              8     ",
+        "                    ",
         "                    ",
         "                    ",
         "                    "

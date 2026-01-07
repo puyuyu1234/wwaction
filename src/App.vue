@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { SCREEN } from '@game/config'
+import { GameSession } from '@game/GameSession'
+import { StageScene } from '@game/scenes/StageScene'
 import { TitleScene } from '@game/scenes/TitleScene'
 import { AudioService } from '@ptre/audio/AudioService'
 import { GameFactory } from '@ptre/core/GameFactory'
@@ -63,10 +65,14 @@ onMounted(async () => {
   await assetLoader.loadSpritesheet('space', 'spritesheets/space.json')
   await assetLoader.loadImage('ui', 'img/ui.png')
 
-  // タイトルシーンから開始
-  const scene = new TitleScene(game.getInput())
-
-  game.changeScene(scene)
+  // DEV: 特定ステージを直接開始 / PROD: タイトルから
+  const DEBUG_STAGE: number | null = 0 // nullならタイトルから開始
+  if (import.meta.env.DEV && DEBUG_STAGE !== null) {
+    const session = new GameSession(1, DEBUG_STAGE)
+    game.changeScene(new StageScene(session, game.getInput(), SCREEN.WIDTH, SCREEN.HEIGHT))
+  } else {
+    game.changeScene(new TitleScene(game.getInput()))
+  }
   game.start()
 
   console.log('Game started!')

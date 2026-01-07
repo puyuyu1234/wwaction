@@ -54,24 +54,24 @@ export class DekaNasake extends Entity {
     this.vx = this.direction * DekaNasake.SPEED.walk
     this.scale.x = 1 // 左向き時に scale.x = 1
 
-    // 風との衝突反応: 吹き飛ばされて走り出す
-    this.collisionReaction.on('wind', () => {
-      this.onHitWind()
+    // 風との衝突反応: 風を跳ね返して逃走
+    this.collisionReaction.on('wind', (wind: Entity) => {
+      // hitWind状態中（time > 0）は反応しない
+      if (this.stateManager.getTime() > 0) {
+        if (this.stateManager.getState() === 'hitWind') return
+      }
+
+      // 風の速度を奪って逆向きにする
+      this.vx = wind.vx
+      wind.vx *= -1
+
+      // 状態を hitWind に変更
+      this.stateManager.changeState('hitWind')
+      this.playAnimation('stand')
     })
 
     // スプライトアニメーション初期化
     this.playAnimation('purupuru')
-  }
-
-  /**
-   * 風に当たった時の処理
-   */
-  private onHitWind() {
-    if (this.stateManager.getState() !== 'hitWind') {
-      this.stateManager.changeState('hitWind')
-      // 風で少し浮く
-      this.vy = -2
-    }
   }
 
   tick() {
@@ -86,9 +86,10 @@ export class DekaNasake extends Entity {
         break
 
       case 'hitWind':
-        // 吹き飛ばされ中は速度維持
+        // 吹き飛ばされ中は速度維持（風の速度を引き継ぐ）
         if (time >= DekaNasake.TIMER.hitWind) {
           this.stateManager.changeState('run')
+          this.playAnimation('purupuru')
         }
         break
 
