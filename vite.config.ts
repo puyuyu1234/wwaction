@@ -97,7 +97,10 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        editor: resolve(__dirname, 'editor/index.html')
+        // editorは開発時のみ使用（本番ビルドには含めない）
+        ...(mode !== 'production' && {
+          editor: resolve(__dirname, 'editor/index.html')
+        })
       }
     }
   }

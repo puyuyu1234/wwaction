@@ -14,25 +14,20 @@
       "*.js": "${capture}.spec.js, ${capture}.test.js",
       "*.jsx": "${capture}.spec.jsx, ${capture}.test.jsx"
     },
-
     // TypeScript設定
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-
     // エディタ設定
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     },
-
     // ファイル除外設定（検索/表示から除外）
     "files.exclude": {
       "**/.git": true,
       "**/node_modules": true,
-      "**/dist": true,
       "**/.DS_Store": true
     },
-
     // 検索除外設定
     "search.exclude": {
       "**/node_modules": true,
