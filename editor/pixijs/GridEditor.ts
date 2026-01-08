@@ -189,11 +189,6 @@ export class GridEditor extends EventEmitter {
     sprite.width = BLOCKSIZE
     sprite.height = BLOCKSIZE
 
-    // 透明度設定
-    if (block.param?.alpha !== undefined) {
-      sprite.alpha = block.param.alpha
-    }
-
     return sprite
   }
 

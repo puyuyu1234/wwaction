@@ -256,10 +256,11 @@ function removeOverride(key: string) {
 async function saveTheme() {
   const blocks: Record<string, BlockData> = {}
   for (const override of overrides.value) {
+    // DAMAGEタイプはparamが必要だが、テーマエディタでは対応しないためキャスト
     blocks[override.key] = {
       frame: override.frame,
       type: override.type,
-    }
+    } as BlockData
   }
 
   try {
