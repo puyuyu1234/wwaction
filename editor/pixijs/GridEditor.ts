@@ -23,8 +23,10 @@ export class GridEditor extends EventEmitter {
   private isDragging = false
   private stageBorder?: Graphics // ステージ境界線（黄色）
   private marginBorder?: Graphics // マージン境界線（赤）
+  private gridBackground?: Graphics // グリッド背景（キャッシュ）
   private actualStageWidth = 0 // 実際のステージ幅（空白除く）
   private actualStageHeight = 0 // 実際のステージ高さ（空白除く）
+  private cachedGridSize = { width: 0, height: 0 } // キャッシュしたグリッドサイズ
 
   constructor(width: number, height: number) {
     super()
@@ -227,9 +229,8 @@ export class GridEditor extends EventEmitter {
     this.app.renderer.resize(canvasWidth * BLOCKSIZE, canvasHeight * BLOCKSIZE)
     this.grid.hitArea = this.app.screen
 
-    // 既存のコンテンツをクリア
-    this.grid.removeChildren()
-    this.layerContainers = []
+    // 既存のコンテンツを適切に破棄（メモリリーク防止）
+    this.destroyLayerContainers()
     this.sprites = Array(this.height).fill(null).map(() => [])
 
     // グリッド背景描画
@@ -381,6 +382,24 @@ export class GridEditor extends EventEmitter {
   }
 
   private drawGridBackground() {
+    // サイズが変わっていなければキャッシュを再利用
+    if (
+      this.gridBackground &&
+      this.cachedGridSize.width === this.width &&
+      this.cachedGridSize.height === this.height
+    ) {
+      if (!this.gridBackground.parent) {
+        this.grid.addChild(this.gridBackground)
+      }
+      return
+    }
+
+    // 既存の背景を破棄
+    if (this.gridBackground) {
+      this.grid.removeChild(this.gridBackground)
+      this.gridBackground.destroy()
+    }
+
     const bg = new Graphics()
     const marginStart = EDITOR_CONFIG.MARGIN
     const marginEnd = marginStart + this.actualStageWidth
@@ -401,5 +420,106 @@ export class GridEditor extends EventEmitter {
     bg.zIndex = -1
     this.grid.addChild(bg)
     this.grid.sortableChildren = true
+
+    // キャッシュを更新
+    this.gridBackground = bg
+    this.cachedGridSize = { width: this.width, height: this.height }
+  }
+
+  /**
+   * レイヤーコンテナを適切に破棄
+   */
+  private destroyLayerContainers() {
+    // 境界線は保持するので先に削除
+    if (this.stageBorder) {
+      this.grid.removeChild(this.stageBorder)
+    }
+    if (this.marginBorder) {
+      this.grid.removeChild(this.marginBorder)
+    }
+    if (this.gridBackground) {
+      this.grid.removeChild(this.gridBackground)
+    }
+
+    // レイヤーコンテナを破棄
+    for (const container of this.layerContainers) {
+      container.destroy({ children: true })
+    }
+    this.layerContainers = []
+
+    // グリッドの残りの子も破棄（念のため）
+    while (this.grid.children.length > 0) {
+      const child = this.grid.children[0]
+      this.grid.removeChild(child)
+      child.destroy({ children: true })
+    }
+  }
+
+  /**
+   * 単一タイルを効率的に更新（全体再描画を回避）
+   */
+  updateSingleTile(x: number, y: number, tile: string) {
+    // 現在のレイヤーのコンテナを取得
+    const container = this.layerContainers[this.currentLayerIndex]
+    if (!container) return
+
+    // データを更新
+    if (this.tiles[y]) {
+      this.tiles[y][x] = tile
+    }
+    if (this.allLayers[this.currentLayerIndex]?.[y]) {
+      this.allLayers[this.currentLayerIndex][y][x] = tile
+    }
+
+    // 既存スプライトを破棄
+    const oldSprite = this.sprites[y]?.[x]
+    if (oldSprite) {
+      container.removeChild(oldSprite)
+      oldSprite.destroy({ children: true })
+    }
+
+    // 新しいスプライトを作成
+    const newSprite = this.createTileSprite(tile, x, y)
+    if (!this.sprites[y]) {
+      this.sprites[y] = []
+    }
+    this.sprites[y][x] = newSprite
+    container.addChild(newSprite)
+  }
+
+  /**
+   * エディタのリソースを完全に解放
+   */
+  destroy() {
+    // イベントリスナーを削除
+    this.removeAllListeners()
+
+    // 境界線を破棄
+    if (this.stageBorder) {
+      this.stageBorder.destroy()
+      this.stageBorder = undefined
+    }
+    if (this.marginBorder) {
+      this.marginBorder.destroy()
+      this.marginBorder = undefined
+    }
+    if (this.gridBackground) {
+      this.gridBackground.destroy()
+      this.gridBackground = undefined
+    }
+
+    // レイヤーコンテナを破棄
+    for (const container of this.layerContainers) {
+      container.destroy({ children: true })
+    }
+    this.layerContainers = []
+
+    // グリッドを破棄
+    this.grid.destroy({ children: true })
+
+    // アプリケーションを破棄
+    if (this.app) {
+      this.app.destroy(true, { children: true, texture: true })
+    }
   }
 }
