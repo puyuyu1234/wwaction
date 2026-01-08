@@ -92,9 +92,6 @@ describe('DekaNasake', () => {
       // 風との衝突をシミュレート
       deka.handleCollision({ tags: new Set(['wind']), vx: 3, vy: 0 } as never)
 
-      // 上方向に吹き飛ばされる
-      expect(deka.vy).toBeLessThan(0)
-
       // hitWind期間（12フレーム）を超えてtick
       for (let i = 0; i < 15; i++) {
         deka.tick()

@@ -1,7 +1,7 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
 import { BLOCKSIZE, DEBUG, FONT, getBlockData, getEntityData, Z_INDEX } from '@game/config'
-import { Entity } from '@game/entity/Entity'
 import { DekaNasake } from '@game/entity/DekaNasake'
+import { Entity } from '@game/entity/Entity'
 import { Fun } from '@game/entity/Fun'
 import { Funkorogashi } from '@game/entity/Funkorogashi'
 import { Goal } from '@game/entity/Goal'

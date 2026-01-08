@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
 import { Application, Sprite, Graphics, Spritesheet, Texture } from 'pixi.js'
+import { ref, onMounted, computed, watch } from 'vue'
 
 import { BASE_BLOCKDATA, BLOCKSIZE } from '../../src/game/config'
 import { CollisionType } from '../../src/game/types'
@@ -323,8 +323,8 @@ async function saveTheme() {
               :key="block.key"
               class="base-block"
               :class="{ selected: selectedBaseBlock === block.key }"
-              @click="selectedBaseBlock = block.key"
               :title="`${block.key} (frame ${block.frame?.[0]})`"
+              @click="selectedBaseBlock = block.key"
             >
               <img v-if="getBaseBlockPreview(block.key)" :src="getBaseBlockPreview(block.key)" class="block-preview" />
               <span class="block-key">{{ block.key }}</span>
