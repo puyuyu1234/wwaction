@@ -1,19 +1,9 @@
 import { BGM_CONFIG } from '@game/bgmConfig'
 import { BLOCKSIZE, DEBUG, FONT, getBlockData, getEntityData, Z_INDEX } from '@game/config'
-import { DekaNasake } from '@game/entity/DekaNasake'
 import { Entity } from '@game/entity/Entity'
-import { Fun } from '@game/entity/Fun'
-import { Funkorogashi } from '@game/entity/Funkorogashi'
+import { createEntity } from '@game/entity/EntityFactory'
 import { Goal } from '@game/entity/Goal'
-import { Gurasan } from '@game/entity/Gurasan'
-import { GurasanNotFall } from '@game/entity/GurasanNotFall'
-import { Nasake } from '@game/entity/Nasake'
-import { Nuefu } from '@game/entity/Nuefu'
-import { Onpu } from '@game/entity/Onpu'
 import { Player } from '@game/entity/Player'
-import { Potion } from '@game/entity/Potion'
-import { Semi } from '@game/entity/Semi'
-import { Shimi } from '@game/entity/Shimi'
 import { WindPool } from '@game/entity/WindPool'
 import { GameSession } from '@game/GameSession'
 import { BlockDataMap, StageLayers, StageContext } from '@game/types'
@@ -387,30 +377,6 @@ export class StageScene extends Scene {
    * ステージデータからエンティティを生成（全レイヤーをスキャン）
    */
   private spawnEntitiesFromStage() {
-    const entityFactory: Record<string, (x: number, y: number) => Entity> = {
-      Nasake: (x, y) => new Nasake(x + 8, y + 8, this.stageContext),
-      Gurasan: (x, y) => new Gurasan(x + 8, y + 8, this.stageContext),
-      GurasanNotFall: (x, y) => new GurasanNotFall(x + 8, y + 8, this.stageContext),
-      Potion: (x, y) => new Potion(x + 8, y + 8, this.stageContext),
-      Nuefu: (x, y) => new Nuefu(x + 8, y + 8, this.stageContext),
-      Shimi: (x, y) => new Shimi(x + 16, y + 8, this.stageContext),
-      Dekanasake: (x, y) => new DekaNasake(x + 16, y + 16, this.stageContext),
-      Funkorogashi: (x, y) => {
-        const funko = new Funkorogashi(x + 8, y + 8, this.stageContext, () => this.player.x)
-        funko.behavior.on('spawnFun', (fun: Fun) => {
-          this.addEntity(fun)
-        })
-        return funko
-      },
-      Semi: (x, y) => {
-        const semi = new Semi(x + 8, y + 8, () => this.player.x)
-        semi.behavior.on('spawnOnpu', (onpu: Onpu) => {
-          this.addEntity(onpu)
-        })
-        return semi
-      },
-    }
-
     // テーマに応じたエンティティマップを取得
     const entityData = getEntityData(this.stageData.theme)
 
@@ -422,10 +388,12 @@ export class StageScene extends Scene {
 
           if (char in entityData) {
             const entityName = entityData[char].entityClass
-
-            const factory = entityFactory[entityName]
-            if (factory) {
-              const entity = factory(x * BLOCKSIZE, y * BLOCKSIZE)
+            const entity = createEntity(entityName, x * BLOCKSIZE, y * BLOCKSIZE, {
+              context: this.stageContext,
+              getPlayerX: () => this.player.x,
+              onSpawn: (e) => this.addEntity(e),
+            })
+            if (entity) {
               this.addEntity(entity)
             }
           }
