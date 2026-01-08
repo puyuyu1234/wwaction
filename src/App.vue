@@ -48,9 +48,10 @@ onMounted(async () => {
   if (!canvasRef.value) return
 
   // ユーザーインタラクション検知（一度だけ）
+  // HTML仕様のactivation triggering events + iOS Safari対応
   window.addEventListener('keydown', handleUserInteraction, { once: true })
-  window.addEventListener('click', handleUserInteraction, { once: true })
-  window.addEventListener('touchstart', handleUserInteraction, { once: true })
+  window.addEventListener('mousedown', handleUserInteraction, { once: true })
+  window.addEventListener('touchend', handleUserInteraction, { once: true })
 
   // ゲーム初期化
   const { game, assetLoader } = await GameFactory.createGame('game', SCREEN.WIDTH, SCREEN.HEIGHT)
