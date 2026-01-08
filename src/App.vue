@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { loadAllSfx } from '@game/audio/sfx'
 import { SCREEN } from '@game/config'
 import { GameSession } from '@game/GameSession'
 import { StageScene } from '@game/scenes/StageScene'
@@ -26,15 +27,7 @@ const initAudioOnce = async () => {
     await audio.init()
 
     // 効果音をロード
-    const base = import.meta.env.BASE_URL
-    await audio.loadSounds({
-      jump: `${base}assets/sound/sfx/jump.mp3`,
-      heal: `${base}assets/sound/sfx/heal.mp3`,
-      wind: `${base}assets/sound/sfx/wind.mp3`,
-      damage: `${base}assets/sound/sfx/damage.mp3`,
-      semi: `${base}assets/sound/sfx/semi.ogg`,
-      coin: `${base}assets/sound/sfx/coin.ogg`,
-    })
+    await loadAllSfx(import.meta.env.BASE_URL)
 
     console.log('AudioService initialized!')
   }

@@ -1,6 +1,6 @@
+import { playSfx, SFX } from '@game/audio/sfx'
 import type { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { SFX_KEYS, SCREEN } from '@game/config'
-import { AudioService } from '@ptre/audio/AudioService'
+import { SCREEN } from '@game/config'
 
 import type { Entity } from './Entity'
 
@@ -58,7 +58,7 @@ export const CommonBehaviors = {
     // 画面内かつ最短間隔を超えていればSE再生
     const now = performance.now()
     if (isOnScreen(entity) && now - lastWindJumpSETime >= WIND_JUMP_SE_INTERVAL) {
-      AudioService.getInstance().playSound(SFX_KEYS.JUMP)
+      playSfx(SFX.JUMP)
       lastWindJumpSETime = now
     }
   },

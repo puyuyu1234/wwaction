@@ -178,18 +178,6 @@ export function getEntityData(theme: string): EntityDataMap {
   }
 }
 
-/**
- * 効果音キー
- */
-export const SFX_KEYS = {
-  JUMP: 'jump',
-  DAMAGE: 'damage',
-  HEAL: 'heal',
-  GOAL: 'goal',
-  WIND: 'wind',
-  SEMI: 'semi',
-  COIN: 'coin',
-} as const
 
 /**
  * UIタイプデータマップ
