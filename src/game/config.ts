@@ -162,6 +162,8 @@ export const BASE_ENTITYDATA: EntityDataMap = {
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
   '8': { entityClass: 'Semi' },
+  '?': { entityClass: 'Potion' },
+  '~': { entityClass: 'Coin' },
 }
 
 // THEME_ENTITY_OVERRIDE は generated/themes.ts からインポート
@@ -186,6 +188,7 @@ export const SFX_KEYS = {
   GOAL: 'goal',
   WIND: 'wind',
   SEMI: 'semi',
+  COIN: 'coin',
 } as const
 
 /**

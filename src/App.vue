@@ -33,6 +33,7 @@ const initAudioOnce = async () => {
       wind: `${base}assets/sound/sfx/wind.mp3`,
       damage: `${base}assets/sound/sfx/damage.mp3`,
       semi: `${base}assets/sound/sfx/semi.ogg`,
+      coin: `${base}assets/sound/sfx/coin.ogg`,
     })
 
     console.log('AudioService initialized!')
@@ -67,7 +68,7 @@ onMounted(async () => {
   await assetLoader.loadImage('ui', 'img/ui.png')
 
   // DEV: 特定ステージを直接開始 / PROD: タイトルから
-  const DEBUG_STAGE: number | null = 0 // nullならタイトルから開始
+  const DEBUG_STAGE: number | null = 1 // nullならタイトルから開始
   if (import.meta.env.DEV && DEBUG_STAGE !== null) {
     const session = new GameSession(1, DEBUG_STAGE)
     game.changeScene(new StageScene(session, game.getInput(), SCREEN.WIDTH, SCREEN.HEIGHT))

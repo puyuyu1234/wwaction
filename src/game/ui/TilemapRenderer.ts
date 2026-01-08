@@ -1,7 +1,7 @@
 import { BLOCKSIZE } from '@game/config'
 import { BlockDataMap } from '@game/types'
 import { AssetLoader } from '@ptre/core/AssetLoader'
-import { Container, Sprite } from 'pixi.js'
+import { AnimatedSprite, Container, Sprite, Texture } from 'pixi.js'
 
 export interface TilemapRendererConfig {
   /** ステージデータ（文字列配列の配列、レイヤーごと） */
@@ -59,14 +59,31 @@ export class TilemapRenderer {
         const block = blockData[char]
         if (!block || block.frame[0] === 0) continue
 
-        // フレーム番号でテクスチャを取得
-        const frameIndex = block.frame[0]
-        const texture = tileset.textures[`frame_${frameIndex}`]
-        if (texture) {
-          const sprite = new Sprite(texture)
-          sprite.x = x * BLOCKSIZE
-          sprite.y = y * BLOCKSIZE
-          layerContainer.addChild(sprite)
+        // 複数フレームの場合はAnimatedSpriteを使用
+        if (block.frame.length > 1) {
+          const textures: Texture[] = []
+          for (const frameIndex of block.frame) {
+            const texture = tileset.textures[`frame_${frameIndex}`]
+            if (texture) textures.push(texture)
+          }
+          if (textures.length > 0) {
+            const animatedSprite = new AnimatedSprite(textures)
+            animatedSprite.x = x * BLOCKSIZE
+            animatedSprite.y = y * BLOCKSIZE
+            animatedSprite.animationSpeed = 1 / (block.freq ?? 8)
+            animatedSprite.play()
+            layerContainer.addChild(animatedSprite)
+          }
+        } else {
+          // 単一フレームの場合は通常のSprite
+          const frameIndex = block.frame[0]
+          const texture = tileset.textures[`frame_${frameIndex}`]
+          if (texture) {
+            const sprite = new Sprite(texture)
+            sprite.x = x * BLOCKSIZE
+            sprite.y = y * BLOCKSIZE
+            layerContainer.addChild(sprite)
+          }
         }
       }
     }

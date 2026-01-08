@@ -1,5 +1,6 @@
 import { StageContext } from '@game/types'
 
+import { Coin } from './Coin'
 import { DekaNasake } from './DekaNasake'
 import { Entity } from './Entity'
 import { Fun } from './Fun'
@@ -45,6 +46,9 @@ export function createEntity(
 
     case 'Potion':
       return new Potion(x + 8, y + 8, context)
+
+    case 'Coin':
+      return new Coin(x + 8, y + 8, context)
 
     case 'Nuefu':
       return new Nuefu(x + 8, y + 8, context)

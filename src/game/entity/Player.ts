@@ -92,6 +92,12 @@ export class Player extends Entity {
       item.behavior.destroy()
     })
 
+    // コインとの衝突: SE再生 + アイテム消滅
+    this.collisionReaction.on('coin', (item) => {
+      this.audio.playSound(SFX_KEYS.COIN)
+      item.behavior.destroy()
+    })
+
     // ゴールとの衝突: nextStageイベント発火（一度だけ）
     this.collisionReaction.on('goal', () => {
       if (this.hasReachedGoal) return
