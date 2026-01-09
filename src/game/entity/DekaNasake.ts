@@ -61,9 +61,10 @@ export class DekaNasake extends Entity {
         if (this.stateManager.getState() === 'hitWind') return
       }
 
-      // 風の速度を奪って逆向きにする
+      // 風の速度を奪い、風を自分の進行方向に跳ね返す
+      const oldDirection = this.direction
       this.vx = wind.vx
-      wind.vx *= -1
+      wind.vx = 2 * oldDirection
 
       // 状態を hitWind に変更
       this.stateManager.changeState('hitWind')

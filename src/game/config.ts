@@ -3,6 +3,7 @@
  */
 import type { BlockData, EntityDataMap, UITypeData } from './types'
 import { CollisionType } from './types'
+
 import { THEME_BLOCK_OVERRIDE, THEME_ENTITY_OVERRIDE } from '@/generated/themes'
 
 /** デバッグモード */
@@ -89,8 +90,8 @@ export const BASE_BLOCKDATA: BlockDataMap = {
     type: CollisionType.DAMAGE,
     param: { hitbox: { x: 0, y: 1, width: 4, height: 14 }, damage: 1 },
   },
-  H: { frame: [34], type: CollisionType.NONE, param: { layer: 'top', alpha: 0.8 } },
-  I: { frame: [35], type: CollisionType.NONE, param: { layer: 'top', alpha: 0.8 } },
+  H: { frame: [34], type: CollisionType.NONE },
+  I: { frame: [35], type: CollisionType.NONE },
   J: { frame: [36], type: CollisionType.SOLID },
   K: { frame: [37], type: CollisionType.SOLID },
   L: { frame: [38], type: CollisionType.SOLID },
@@ -124,11 +125,9 @@ export const BASE_BLOCKDATA: BlockDataMap = {
   '=': { frame: [65], type: CollisionType.NONE },
   '[': { frame: [66], type: CollisionType.NONE },
   ']': { frame: [67], type: CollisionType.NONE },
-  '|': { frame: [68], type: CollisionType.NONE },
-  ':': { frame: [69], type: CollisionType.NONE },
+  '|': { frame: [68], type: CollisionType.SOLID },
+  ':': { frame: [69], type: CollisionType.PLATFORM },
   ';': { frame: [70], type: CollisionType.NONE },
-  '?': { frame: [71], type: CollisionType.NONE },
-  '~': { frame: [72], type: CollisionType.NONE },
 }
 
 // THEME_BLOCK_OVERRIDE は generated/themes.ts からインポート
@@ -155,12 +154,14 @@ export const HPDATA = [9, 5, 3, 1]
 export const BASE_ENTITYDATA: EntityDataMap = {
   '1': { entityClass: 'Nasake' },
   '2': { entityClass: 'Gurasan' },
-  '3': { entityClass: 'Potion' },
-  '4': { entityClass: 'GurasanNotFall' },
+  '3': { entityClass: 'GurasanNotFall' },
+  '4': { entityClass: '' },
   '5': { entityClass: 'Nuefu' },
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
   '8': { entityClass: 'Semi' },
+  '?': { entityClass: 'Potion' },
+  '~': { entityClass: 'Coin' },
 }
 
 // THEME_ENTITY_OVERRIDE は generated/themes.ts からインポート
@@ -175,17 +176,6 @@ export function getEntityData(theme: string): EntityDataMap {
   }
 }
 
-/**
- * 効果音キー
- */
-export const SFX_KEYS = {
-  JUMP: 'jump',
-  DAMAGE: 'damage',
-  HEAL: 'heal',
-  GOAL: 'goal',
-  WIND: 'wind',
-  SEMI: 'semi',
-} as const
 
 /**
  * UIタイプデータマップ

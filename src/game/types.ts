@@ -14,19 +14,47 @@ export enum CollisionType {
   DAMAGE = 3,
 }
 
-/** ブロックデータ */
-export interface BlockData {
+/** ダメージブロックのヒットボックス */
+export interface DamageHitbox {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+/** 基本ブロックデータ */
+interface BaseBlockData {
   frame: number[]
-  type: CollisionType
-  param?: {
-    hitbox?: { x: number; y: number; width: number; height: number }
-    damage?: number
-    freq?: number
-    loop?: boolean
-    layer?: string
-    alpha?: number
+  /** アニメーション周期（フレーム数） */
+  freq?: number
+}
+
+/** 通過可能ブロック */
+interface NoneBlockData extends BaseBlockData {
+  type: CollisionType.NONE
+}
+
+/** 足場ブロック */
+interface PlatformBlockData extends BaseBlockData {
+  type: CollisionType.PLATFORM
+}
+
+/** 壁ブロック */
+interface SolidBlockData extends BaseBlockData {
+  type: CollisionType.SOLID
+}
+
+/** ダメージブロック */
+interface DamageBlockData extends BaseBlockData {
+  type: CollisionType.DAMAGE
+  param: {
+    hitbox: DamageHitbox
+    damage: number
   }
 }
+
+/** ブロックデータ */
+export type BlockData = NoneBlockData | PlatformBlockData | SolidBlockData | DamageBlockData
 
 /** プレイヤーの状態 */
 export enum PlayerState {

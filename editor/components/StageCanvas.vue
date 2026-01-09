@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 import { useEditorState } from '../composables/useEditorState'
 import { useStageEditor } from '../composables/useStageEditor'
@@ -48,11 +48,21 @@ onMounted(async () => {
     const stageX = canvasX - EDITOR_CONFIG.MARGIN
     const stageY = canvasY - EDITOR_CONFIG.MARGIN
 
+    // 配列拡張が必要かチェック（負の座標 or 現在のサイズを超える）
+    const currentHeight = stageData.value[currentLayer.value]?.length ?? 0
+    const currentWidth = stageData.value[currentLayer.value]?.[0]?.length ?? 0
+    const needsFullRefresh = stageX < 0 || stageY < 0 || stageX >= currentWidth || stageY >= currentHeight
+
     // タイルを配置（stageData更新）
     setTile(stageX, stageY, selectedTile.value)
 
-    // 常に最新のstageDataで全レイヤーを再描画
-    refreshAllLayers()
+    if (needsFullRefresh) {
+      // 配列が拡張された場合は全体再描画
+      refreshAllLayers()
+    } else if (editor) {
+      // 通常は単一タイルのみ更新（高速）
+      editor.updateSingleTile(stageX, stageY, selectedTile.value)
+    }
   })
 
   // 右クリックでスポイト（GridEditorからタイル文字が渡される）
@@ -64,6 +74,14 @@ onMounted(async () => {
 // レイヤー変更時に再描画
 watch(currentLayer, () => {
   refreshAllLayers()
+})
+
+// コンポーネント破棄時にリソースを解放
+onUnmounted(() => {
+  if (editor) {
+    editor.destroy()
+    editor = null
+  }
 })
 
 // テーマ変更時に再描画

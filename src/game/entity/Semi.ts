@@ -1,5 +1,4 @@
-import { SFX_KEYS } from '@game/config'
-import { AudioService } from '@ptre/audio/AudioService'
+import { playSfx, SFX } from '@game/audio/sfx'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { Entity } from './Entity'
@@ -74,7 +73,7 @@ export class Semi extends Entity {
     this.vx = windDirection > 0 ? FLEE_HORIZONTAL_SPEED : -FLEE_HORIZONTAL_SPEED
     this.animationSpeed = 30 / 60
     this.play()
-    AudioService.getInstance().playSound(SFX_KEYS.SEMI)
+    playSfx(SFX.SEMI)
   }
 
   tick() {
@@ -107,7 +106,7 @@ export class Semi extends Entity {
         this.animationSpeed = 30 / 60
         this.play()
         this.fireOnpu()
-        AudioService.getInstance().playSound(SFX_KEYS.SEMI)
+        playSfx(SFX.SEMI)
       }
     } else if (this.state === 'animating') {
       // アニメーション中：一定フレーム後に停止

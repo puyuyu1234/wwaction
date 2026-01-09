@@ -1,10 +1,10 @@
+import { playSfx, SFX } from '@game/audio/sfx'
 import { FallDeathComponent } from '@game/components/FallDeathComponent'
 import { HealthComponent } from '@game/components/HealthComponent'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
-import { BLOCKSIZE, SFX_KEYS } from '@game/config'
+import { BLOCKSIZE } from '@game/config'
 import { PlayerState, StageContext } from '@game/types'
-import { AudioService } from '@ptre/audio/AudioService'
 import { StateManager } from '@ptre/components/StateManager'
 import { Input } from '@ptre/core/Input'
 import { Rectangle } from '@ptre/core/Rectangle'
@@ -20,7 +20,6 @@ import { Entity } from './Entity'
  */
 export class Player extends Entity {
   private input: Input
-  private audio = AudioService.getInstance()
   private coyoteTime = 0
   private readonly COYOTE_TIME_MAX = 6
   private readonly JUMP_POWER = -3
@@ -89,6 +88,12 @@ export class Player extends Entity {
     // 回復アイテムとの衝突: HP回復 + アイテム消滅
     this.collisionReaction.on('healing', (item) => {
       this.heal(1)
+      item.behavior.destroy()
+    })
+
+    // コインとの衝突: SE再生 + アイテム消滅
+    this.collisionReaction.on('coin', (item) => {
+      playSfx(SFX.COIN)
       item.behavior.destroy()
     })
 
@@ -295,7 +300,7 @@ export class Player extends Entity {
         this.stateManager.changeState(PlayerState.JUMP)
         this.vy = this.JUMP_POWER
         this.coyoteTime = this.COYOTE_TIME_MAX
-        this.audio.playSound(SFX_KEYS.JUMP)
+        playSfx(SFX.JUMP)
       }
     }
   }
@@ -385,7 +390,7 @@ export class Player extends Entity {
     }
     this.x -= this.vx
 
-    this.audio.playSound(SFX_KEYS.DAMAGE)
+    playSfx(SFX.DAMAGE)
 
     // ダメージイベント発火（HPBar更新用）
     this.behavior.dispatch('playerDamage', result.actualDamage)
@@ -411,7 +416,7 @@ export class Player extends Entity {
    */
   heal(num: number) {
     this.health.heal(num)
-    this.audio.playSound(SFX_KEYS.HEAL)
+    playSfx(SFX.HEAL)
   }
 
   /**
@@ -437,7 +442,7 @@ export class Player extends Entity {
     }
 
     // 風生成SE
-    this.audio.playSound(SFX_KEYS.WIND)
+    playSfx(SFX.WIND)
 
     // createWindイベントを発火（StageSceneで受け取る）
     this.behavior.dispatch('createWind', { x: this.x, y: this.y, vx: windVx })

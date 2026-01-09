@@ -66,7 +66,7 @@ async function generateTilePreviews() {
     const texture = tilesetSheet.textures[frameName]
 
     if (texture) {
-      newCanvases[tile] = await renderSpriteToCanvas(pixiApp, texture, block.param?.alpha)
+      newCanvases[tile] = await renderSpriteToCanvas(pixiApp, texture)
     }
   }
 

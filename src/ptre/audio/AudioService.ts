@@ -2,14 +2,13 @@
  * Audio Service
  * Application層のFacade - 音響システムの統一インターフェース
  * - Tone.jsの初期化管理
- * - BGM/MIDI/効果音の再生制御
+ * - BGM/効果音の再生制御
  * - 音量管理
  */
 
 import * as Tone from 'tone'
 
 import { AudioPlayer } from './infra/AudioPlayer'
-import { MidiPlayer } from './infra/MidiPlayer'
 import type { MusicSource, SoundEffectConfig } from './types'
 
 /**
@@ -18,7 +17,6 @@ import type { MusicSource, SoundEffectConfig } from './types'
 export class AudioService {
   private static instance: AudioService
 
-  private midiPlayer: MidiPlayer
   private audioPlayer: AudioPlayer
   private soundEffects: Map<string, Tone.Player> = new Map()
   private initialized = false
@@ -27,14 +25,11 @@ export class AudioService {
   private musicVolume = -6 // dB
   private soundVolume = -6 // dB
 
-  private currentMusicType: 'midi' | 'audio' | null = null
-
   // 音響可視化用Analyser（全体のミックス音声）
   private masterWaveformAnalyser: Tone.Analyser | null = null
   private masterFFTAnalyser: Tone.Analyser | null = null
 
   private constructor() {
-    this.midiPlayer = new MidiPlayer()
     this.audioPlayer = new AudioPlayer()
   }
 
@@ -83,7 +78,7 @@ export class AudioService {
   }
 
   /**
-   * 音楽を再生（MIDI or Audio）
+   * 音楽を再生
    * @param source 音楽ソース設定
    */
   async play(source: MusicSource): Promise<void> {
@@ -95,24 +90,15 @@ export class AudioService {
     // 既存の音楽を停止
     this.stopMusic()
 
-    if (source.type === 'midi') {
-      await this.midiPlayer.play(source)
-      this.midiPlayer.setVolume(this.musicVolume)
-      this.currentMusicType = 'midi'
-    } else {
-      await this.audioPlayer.play(source)
-      this.audioPlayer.setVolume(this.musicVolume)
-      this.currentMusicType = 'audio'
-    }
+    await this.audioPlayer.play(source)
+    this.audioPlayer.setVolume(this.musicVolume)
   }
 
   /**
    * 音楽を停止
    */
   stopMusic(): void {
-    this.midiPlayer.stop()
     this.audioPlayer.stop()
-    this.currentMusicType = null
   }
 
   /**
@@ -180,12 +166,7 @@ export class AudioService {
    */
   setMusicVolume(db: number): void {
     this.musicVolume = db
-
-    if (this.currentMusicType === 'midi') {
-      this.midiPlayer.setVolume(db)
-    } else if (this.currentMusicType === 'audio') {
-      this.audioPlayer.setVolume(db)
-    }
+    this.audioPlayer.setVolume(db)
   }
 
   /**
@@ -215,82 +196,11 @@ export class AudioService {
     return this.soundVolume
   }
 
-  // ============ MIDI 専用制御 ============
-
-  /**
-   * MIDIトラックの音量を変更
-   * @param trackIndex トラック番号
-   * @param db 音量（dB）
-   */
-  setMidiTrackVolume(trackIndex: number, db: number): void {
-    if (this.currentMusicType === 'midi') {
-      this.midiPlayer.setTrackVolume(trackIndex, db)
-    }
-  }
-
-  /**
-   * MIDIトラックのエンベロープを変更
-   * @param trackIndex トラック番号
-   * @param envelope ADSR設定
-   */
-  setMidiTrackEnvelope(
-    trackIndex: number,
-    envelope: { attack: number; decay: number; sustain: number; release: number }
-  ): void {
-    if (this.currentMusicType === 'midi') {
-      this.midiPlayer.setTrackEnvelope(trackIndex, envelope)
-    }
-  }
-
-  /**
-   * MIDIトラックの波形を変更
-   * @param trackIndex トラック番号
-   * @param waveform 波形タイプ
-   */
-  setMidiTrackWaveform(
-    trackIndex: number,
-    waveform: 'sine' | 'square' | 'sawtooth' | 'triangle'
-  ): void {
-    if (this.currentMusicType === 'midi') {
-      this.midiPlayer.setTrackWaveform(trackIndex, waveform)
-    }
-  }
-
-  /**
-   * MIDIトラックの音高を変更（デチューン）
-   * @param trackIndex トラック番号
-   * @param cents デチューン量（セント、100 = 1半音）
-   */
-  setMidiTrackDetune(trackIndex: number, cents: number): void {
-    if (this.currentMusicType === 'midi') {
-      this.midiPlayer.setTrackDetune(trackIndex, cents)
-    }
-  }
-
-  /**
-   * MIDIトラック数を取得
-   */
-  getMidiTrackCount(): number {
-    return this.midiPlayer.getTrackCount()
-  }
-
-  /**
-   * MIDI再生中かどうか
-   */
-  isMidiPlaying(): boolean {
-    return this.currentMusicType === 'midi' && this.midiPlayer.isPlaying()
-  }
-
   /**
    * 音楽が再生中かどうか
    */
   isMusicPlaying(): boolean {
-    if (this.currentMusicType === 'midi') {
-      return this.midiPlayer.isPlaying()
-    } else if (this.currentMusicType === 'audio') {
-      return this.audioPlayer.isPlaying()
-    }
-    return false
+    return this.audioPlayer.isPlaying()
   }
 
   /**
@@ -308,30 +218,9 @@ export class AudioService {
   }
 
   /**
-   * トラックの波形データを取得
-   */
-  getTrackWaveformData(trackIndex: number): Float32Array | null {
-    if (this.currentMusicType === 'midi') {
-      return this.midiPlayer.getTrackWaveformData(trackIndex)
-    }
-    return null
-  }
-
-  /**
-   * トラックの周波数データを取得
-   */
-  getTrackFFTData(trackIndex: number): Float32Array | null {
-    if (this.currentMusicType === 'midi') {
-      return this.midiPlayer.getTrackFFTData(trackIndex)
-    }
-    return null
-  }
-
-  /**
    * リソース解放
    */
   dispose(): void {
-    this.midiPlayer.dispose()
     this.audioPlayer.dispose()
     this.soundEffects.forEach((player) => player.dispose())
     this.soundEffects.clear()

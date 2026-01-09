@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { loadAllSfx } from '@game/audio/sfx'
 import { SCREEN } from '@game/config'
 import { GameSession } from '@game/GameSession'
 import { StageScene } from '@game/scenes/StageScene'
@@ -26,14 +27,7 @@ const initAudioOnce = async () => {
     await audio.init()
 
     // 効果音をロード
-    const base = import.meta.env.BASE_URL
-    await audio.loadSounds({
-      jump: `${base}assets/sound/sfx/jump.mp3`,
-      heal: `${base}assets/sound/sfx/heal.mp3`,
-      wind: `${base}assets/sound/sfx/wind.mp3`,
-      damage: `${base}assets/sound/sfx/damage.mp3`,
-      semi: `${base}assets/sound/sfx/semi.ogg`,
-    })
+    await loadAllSfx(import.meta.env.BASE_URL)
 
     console.log('AudioService initialized!')
   }
@@ -48,9 +42,10 @@ onMounted(async () => {
   if (!canvasRef.value) return
 
   // ユーザーインタラクション検知（一度だけ）
+  // HTML仕様のactivation triggering events + iOS Safari対応
   window.addEventListener('keydown', handleUserInteraction, { once: true })
-  window.addEventListener('click', handleUserInteraction, { once: true })
-  window.addEventListener('touchstart', handleUserInteraction, { once: true })
+  window.addEventListener('mousedown', handleUserInteraction, { once: true })
+  window.addEventListener('touchend', handleUserInteraction, { once: true })
 
   // ゲーム初期化
   const { game, assetLoader } = await GameFactory.createGame('game', SCREEN.WIDTH, SCREEN.HEIGHT)
@@ -66,7 +61,7 @@ onMounted(async () => {
   await assetLoader.loadImage('ui', 'img/ui.png')
 
   // DEV: 特定ステージを直接開始 / PROD: タイトルから
-  const DEBUG_STAGE: number | null = 0 // nullならタイトルから開始
+  const DEBUG_STAGE: number | null = 2 // nullならタイトルから開始
   if (import.meta.env.DEV && DEBUG_STAGE !== null) {
     const session = new GameSession(1, DEBUG_STAGE)
     game.changeScene(new StageScene(session, game.getInput(), SCREEN.WIDTH, SCREEN.HEIGHT))

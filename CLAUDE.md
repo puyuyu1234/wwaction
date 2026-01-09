@@ -8,9 +8,11 @@ TypeScript + Vue 3 + PixiJS で構築された2Dアクションゲーム。
 
 ```
 src/ptre/       # ゲームエンジン（PIXI.js上に構築）
-editor/         # Vueベースのステージエディタ
-stages/         # ステージデータ
-legacy2/        # 旧コード（参照用、触らない）
+src/game/       # ゲーム本体（エンティティ、シーン等）
+editor/         # Vueベースのステージエディタ（開発時のみ）
+stages/         # ステージデータ（JSON）
+themes/         # テーマデータ（JSON）
+public/assets/  # 画像・音声アセット
 ```
 
 ## 開発コマンド
