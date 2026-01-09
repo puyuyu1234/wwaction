@@ -61,7 +61,7 @@ onMounted(async () => {
   await assetLoader.loadImage('ui', 'img/ui.png')
 
   // DEV: 特定ステージを直接開始 / PROD: タイトルから
-  const DEBUG_STAGE: number | null = 2 // nullならタイトルから開始
+  const DEBUG_STAGE: number | null = 4 // nullならタイトルから開始
   if (import.meta.env.DEV && DEBUG_STAGE !== null) {
     const session = new GameSession(1, DEBUG_STAGE)
     game.changeScene(new StageScene(session, game.getInput(), SCREEN.WIDTH, SCREEN.HEIGHT))
