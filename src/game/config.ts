@@ -125,11 +125,9 @@ export const BASE_BLOCKDATA: BlockDataMap = {
   '=': { frame: [65], type: CollisionType.NONE },
   '[': { frame: [66], type: CollisionType.NONE },
   ']': { frame: [67], type: CollisionType.NONE },
-  '|': { frame: [68], type: CollisionType.NONE },
-  ':': { frame: [69], type: CollisionType.NONE },
+  '|': { frame: [68], type: CollisionType.SOLID },
+  ':': { frame: [69], type: CollisionType.PLATFORM },
   ';': { frame: [70], type: CollisionType.NONE },
-  '?': { frame: [71], type: CollisionType.NONE },
-  '~': { frame: [72], type: CollisionType.NONE },
 }
 
 // THEME_BLOCK_OVERRIDE は generated/themes.ts からインポート
@@ -156,8 +154,8 @@ export const HPDATA = [9, 5, 3, 1]
 export const BASE_ENTITYDATA: EntityDataMap = {
   '1': { entityClass: 'Nasake' },
   '2': { entityClass: 'Gurasan' },
-  '3': { entityClass: 'Potion' },
-  '4': { entityClass: 'GurasanNotFall' },
+  '3': { entityClass: 'GurasanNotFall' },
+  '4': { entityClass: '' },
   '5': { entityClass: 'Nuefu' },
   '6': { entityClass: 'Shimi' },
   '7': { entityClass: 'Funkorogashi' },
