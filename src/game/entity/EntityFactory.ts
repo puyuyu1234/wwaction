@@ -10,6 +10,7 @@ import { GurasanNotFall } from './GurasanNotFall'
 import { Nasake } from './Nasake'
 import { Nuefu } from './Nuefu'
 import { Onpu } from './Onpu'
+import { PhysicsCoin } from './PhysicsCoin'
 import { Potion } from './Potion'
 import { Semi } from './Semi'
 import { Shimi } from './Shimi'
@@ -56,8 +57,13 @@ export function createEntity(
     case 'Shimi':
       return new Shimi(x + 16, y + 8, context)
 
-    case 'Dekanasake':
-      return new DekaNasake(x + 16, y + 16, context)
+    case 'Dekanasake': {
+      const deka = new DekaNasake(x + 16, y + 16, context)
+      if (onSpawn) {
+        deka.behavior.on('spawnCoin', (coin: PhysicsCoin) => onSpawn(coin))
+      }
+      return deka
+    }
 
     case 'Funkorogashi': {
       if (!getPlayerX) return null
