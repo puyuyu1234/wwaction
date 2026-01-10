@@ -1,4 +1,3 @@
-import { playSfx, SFX } from '@game/audio/sfx'
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
 import { BLOCKSIZE } from '@game/config'
@@ -7,7 +6,6 @@ import { StateManager } from '@ptre/components/StateManager'
 import { Rectangle } from '@ptre/core/Rectangle'
 
 import { Entity } from './Entity'
-import { PhysicsCoin } from './PhysicsCoin'
 
 /**
  * DekaNasake の状態
@@ -128,29 +126,16 @@ export class DekaNasake extends Entity {
 
     // 地面より下に落ちたらコイン化（スプライトが完全に見えなくなってから）
     if (this.y > this.stageBottom + 32) {
-      this.spawnCoins()
+      this.behavior.dispatch('defeatStart', {
+        x: this.x,
+        y: this.stageBottom,
+        coinConfig: DekaNasake.COIN,
+        context: this.context,
+      })
       this.behavior.destroy()
     }
 
     this.stateManager.update()
-  }
-
-  /**
-   * 100枚のコインを生成
-   */
-  private spawnCoins() {
-    playSfx(SFX.DEFEAT)
-
-    const { count, vyMin, vyMax, vxRange } = DekaNasake.COIN
-
-    for (let i = 0; i < count; i++) {
-      // ランダムな初速度
-      const vx = (Math.random() - 0.5) * 2 * vxRange
-      const vy = vyMin + Math.random() * (vyMax - vyMin)
-
-      const coin = new PhysicsCoin(this.x, this.stageBottom - 8, this.context, vx, vy)
-      this.behavior.dispatch('spawnCoin', coin)
-    }
   }
 
   /**
