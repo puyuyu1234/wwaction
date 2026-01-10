@@ -1,10 +1,26 @@
 import { EventEmitter } from 'eventemitter3'
-import { Application, Container, Sprite, Graphics, Spritesheet, Text } from 'pixi.js'
+import { Application, Container, Sprite, Graphics, Spritesheet } from 'pixi.js'
 
 import { BLOCKSIZE, BASE_ENTITYDATA } from '../../src/game/config'
 import { useAssets } from '../composables/useAssets'
 import { useEditorState } from '../composables/useEditorState'
 import { EDITOR_CONFIG } from '../config'
+
+/**
+ * タイル文字とスプライト情報のマッピング
+ */
+const ENTITY_SPRITE_MAP: Record<string, { sheet: 'entity' | 'player'; animation: string }> = {
+  '0': { sheet: 'player', animation: 'stand' },
+  '1': { sheet: 'entity', animation: 'nasake' },
+  '2': { sheet: 'entity', animation: 'gurasan' },
+  '3': { sheet: 'entity', animation: 'gurasan' },
+  '4': { sheet: 'entity', animation: 'nuefu' },
+  '6': { sheet: 'entity', animation: 'shimi' },
+  '7': { sheet: 'entity', animation: 'funkoro' },
+  '8': { sheet: 'entity', animation: 'semi' },
+  '?': { sheet: 'entity', animation: 'potion' },
+  '~': { sheet: 'entity', animation: 'coin' },
+}
 
 /**
  * ステージエディタのグリッド描画とインタラクション
@@ -20,6 +36,8 @@ export class GridEditor extends EventEmitter {
   private width: number
   private height: number
   private tilesetSpritesheet?: Spritesheet
+  private entitySpritesheet?: Spritesheet
+  private playerSpritesheet?: Spritesheet
   private isDragging = false
   private stageBorder?: Graphics // ステージ境界線（黄色）
   private marginBorder?: Graphics // マージン境界線（赤）
@@ -58,9 +76,11 @@ export class GridEditor extends EventEmitter {
   private async loadAssets() {
     // useAssets composable を使用してアセット読込
     const { loadAllSpritesheets } = useAssets()
-    const { tileset } = await loadAllSpritesheets()
+    const { tileset, entity, player } = await loadAllSpritesheets()
 
     this.tilesetSpritesheet = tileset
+    this.entitySpritesheet = entity
+    this.playerSpritesheet = player
   }
 
   private setupInteraction() {
@@ -141,26 +161,34 @@ export class GridEditor extends EventEmitter {
     const entityData = BASE_ENTITYDATA[tile]
     const isEntity = entityData || tile === '0'
     if (isEntity) {
-      // エンティティはプレースホルダーで描画（仮）
-      const placeholder = new Graphics()
+      const spriteInfo = ENTITY_SPRITE_MAP[tile]
+      const spritesheet =
+        spriteInfo?.sheet === 'player' ? this.playerSpritesheet : this.entitySpritesheet
+
+      if (spriteInfo && spritesheet) {
+        // アニメーションの最初のフレームを取得
+        const animation = spritesheet.animations[spriteInfo.animation]
+        if (animation && animation.length > 0) {
+          const texture = animation[0]
+          const sprite = new Sprite(texture)
+
+          // スプライトのサイズに応じて位置調整（ブロック内に収まるように）
+          const scale = Math.min(BLOCKSIZE / texture.width, BLOCKSIZE / texture.height)
+          sprite.width = texture.width * scale
+          sprite.height = texture.height * scale
+
+          // 中央揃え
+          sprite.x = posX + (BLOCKSIZE - sprite.width) / 2
+          sprite.y = posY + (BLOCKSIZE - sprite.height) / 2
+
+          return sprite
+        }
+      }
+
+      // スプライトが見つからない場合はフォールバック（マゼンタ）
+      return new Graphics()
         .rect(posX, posY, BLOCKSIZE, BLOCKSIZE)
         .fill(0xff00ff)
-
-      // 文字ラベル追加
-      const text = new Text({
-        text: tile,
-        style: {
-          fontFamily: 'monospace',
-          fontSize: 12,
-          fill: 0xffffff,
-        },
-      })
-      text.x = posX + BLOCKSIZE / 2
-      text.y = posY + BLOCKSIZE / 2
-      text.anchor.set(0.5, 0.5)
-      placeholder.addChild(text)
-
-      return placeholder
     }
 
     // タイルブロックチェック（テーマ対応）
@@ -287,16 +315,12 @@ export class GridEditor extends EventEmitter {
     let maxY = 0
 
     for (const layer of layers) {
+      // 配列の実際の長さを考慮（空白のみの行/列も含める）
+      maxY = Math.max(maxY, layer.length)
       for (let y = 0; y < layer.length; y++) {
         const row = layer[y]
         if (!row) continue
-        for (let x = 0; x < row.length; x++) {
-          const tile = row[x]
-          if (tile && tile !== ' ') {
-            maxX = Math.max(maxX, x + 1)
-            maxY = Math.max(maxY, y + 1)
-          }
-        }
+        maxX = Math.max(maxX, row.length)
       }
     }
 

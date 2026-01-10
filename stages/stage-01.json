@@ -1,5 +1,8 @@
 {
   "theme": "plain",
+  "name": "チューリップ農園",
+  "engName": "Tulip Plantation",
+  "bgm": "bgm1",
   "layers": [
     [
       "                     ~                                      ",

@@ -1,5 +1,6 @@
 import { PhysicsComponent } from '@game/components/PhysicsComponent'
 import { TilemapCollisionComponent } from '@game/components/TilemapCollisionComponent'
+import { BLOCKSIZE } from '@game/config'
 import { StageContext } from '@game/types'
 import { StateManager } from '@ptre/components/StateManager'
 import { Rectangle } from '@ptre/core/Rectangle'
@@ -22,9 +23,13 @@ export class DekaNasake extends Entity {
   private physics: PhysicsComponent
   private tilemap: TilemapCollisionComponent
   private stateManager: StateManager<DekaNasakeState>
+  private context: StageContext
 
   /** 移動方向（-1: 左, 1: 右） */
   private direction = -1
+
+  /** ステージの底（これより下に落ちたらコイン化） */
+  private stageBottom: number
 
   /** 各状態の継続フレーム数 */
   private static readonly TIMER = {
@@ -38,6 +43,14 @@ export class DekaNasake extends Entity {
     run: 1.0,
   } as const
 
+  /** コイン生成設定 */
+  private static readonly COIN = {
+    count: 100,
+    vyMin: -6,
+    vyMax: -4,
+    vxRange: 3,
+  } as const
+
   constructor(centerX: number, centerY: number, context: StageContext) {
     // スプライトサイズ: 32x32
     // hitboxは中心基準: (-8, -10, 16, 26)
@@ -47,9 +60,13 @@ export class DekaNasake extends Entity {
     // 'deka' スプライトシートを使用（32x32）
     super('deka', centerX, centerY, 32, 32, hitbox, ['enemy'])
 
+    this.context = context
     this.physics = new PhysicsComponent(this)
     this.tilemap = new TilemapCollisionComponent(this, context)
     this.stateManager = new StateManager<DekaNasakeState>('walk')
+
+    // ステージの高さを計算
+    this.stageBottom = context.layers[0].length * BLOCKSIZE
 
     this.vx = this.direction * DekaNasake.SPEED.walk
     this.scale.x = 1 // 左向き時に scale.x = 1
@@ -61,10 +78,11 @@ export class DekaNasake extends Entity {
         if (this.stateManager.getState() === 'hitWind') return
       }
 
-      // 風の速度を奪い、風を自分の進行方向に跳ね返す
-      const oldDirection = this.direction
+      // 風の速度を奪い、風を来た方向に跳ね返す
+      const oldWindVx = wind.vx
       this.vx = wind.vx
-      wind.vx = 2 * oldDirection
+      // 風が来た方向の逆に跳ね返す（速度0の場合はDekaNasakeの進行方向）
+      wind.vx = oldWindVx !== 0 ? -Math.sign(oldWindVx) * 2 : 2 * this.direction
 
       // 状態を hitWind に変更
       this.stateManager.changeState('hitWind')
@@ -105,6 +123,17 @@ export class DekaNasake extends Entity {
     this.physics.applyGravity()
     this.handleWallCollision()
     this.physics.applyVelocity()
+
+    // 地面より下に落ちたらコイン化（スプライトが完全に見えなくなってから）
+    if (this.y > this.stageBottom + 32) {
+      this.behavior.dispatch('defeatStart', {
+        x: this.x,
+        y: this.stageBottom,
+        coinConfig: DekaNasake.COIN,
+        context: this.context,
+      })
+      this.behavior.destroy()
+    }
 
     this.stateManager.update()
   }

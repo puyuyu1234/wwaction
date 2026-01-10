@@ -166,6 +166,20 @@ export class TilemapCollisionComponent {
   }
 
   /**
+   * 床で反発（バウンス）
+   * @param restitution 反発係数（0.0〜1.0）
+   */
+  bounceAtDownWall(restitution: number = 0.8) {
+    const hitbox = this.currentHitbox
+    const nextBottom = hitbox.bottom + this.entity.vy
+    this.entity.y =
+      Math.floor(nextBottom / BLOCKSIZE) * BLOCKSIZE -
+      this.entity.hitbox.y -
+      this.entity.hitbox.height
+    this.entity.vy *= -restitution
+  }
+
+  /**
    * 右側が崖かどうかをチェック
    * 接地している時に、ヒットボックスの右下に地面がないかを判定
    */

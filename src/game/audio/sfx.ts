@@ -14,6 +14,7 @@ const SFX_CONFIG = {
   WIND: { key: 'wind', path: 'assets/sound/sfx/wind.mp3' },
   SEMI: { key: 'semi', path: 'assets/sound/sfx/semi.ogg' },
   COIN: { key: 'coin', path: 'assets/sound/sfx/coin.ogg' },
+  DEFEAT: { key: 'defeat', path: 'assets/sound/sfx/defeat.ogg' },
 } as const
 
 /**

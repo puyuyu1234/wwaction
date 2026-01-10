@@ -1,7 +1,10 @@
+import { playSfx, SFX } from '@game/audio/sfx'
 import { BGM_CONFIG } from '@game/bgmConfig'
 import { BLOCKSIZE, DEBUG, FONT, getBlockData, getEntityData, Z_INDEX } from '@game/config'
+import { FreezeService } from '@game/FreezeService'
 import { Entity } from '@game/entity/Entity'
-import { createEntity } from '@game/entity/EntityFactory'
+import { createEntity, DefeatStartParams } from '@game/entity/EntityFactory'
+import { PhysicsCoin } from '@game/entity/PhysicsCoin'
 import { Goal } from '@game/entity/Goal'
 import { Player } from '@game/entity/Player'
 import { WindPool } from '@game/entity/WindPool'
@@ -10,6 +13,7 @@ import { StageContext } from '@game/types'
 import { HPBar } from '@game/ui/HPBar'
 import { SceneTransition } from '@game/ui/SceneTransition'
 import { StageName } from '@game/ui/StageName'
+import { ShockwaveEffect } from '@game/ui/ShockwaveEffect'
 import { ThemeRenderer } from '@game/ui/ThemeRenderer'
 import { TilemapRenderer } from '@game/ui/TilemapRenderer'
 import { TutorialUI } from '@ptre/actor/TutorialUI'
@@ -66,6 +70,9 @@ export class StageScene extends Scene {
 
   // チュートリアルUI（ステージ0のみ）
   private tutorialUI?: TutorialUI
+
+  // 衝撃波エフェクト
+  private shockwaves: ShockwaveEffect[] = []
 
   constructor(
     session: GameSession,
@@ -335,6 +342,7 @@ export class StageScene extends Scene {
               context: this.stageContext,
               getPlayerX: () => this.player.x,
               onSpawn: (e) => this.addEntity(e),
+              onDefeatStart: (params) => this.handleDefeatStart(params),
             })
             if (entity) {
               this.addEntity(entity)
@@ -409,6 +417,12 @@ export class StageScene extends Scene {
   }
 
   tick() {
+    // 衝撃波はスロー中も更新（演出優先）
+    this.updateShockwaves()
+
+    // フリーズ中は更新スキップ
+    if (FreezeService.tick()) return
+
     super.tick()
 
     // 画面遷移演出の更新
@@ -484,6 +498,41 @@ export class StageScene extends Scene {
   }
 
   /**
+   * カメラシェイクを開始
+   * @param duration フレーム数
+   */
+  startCameraShake(duration: number) {
+    this.cameraShakeTimer = duration
+    this.cameraShakeBaseX = this.cameraContainer.x
+    this.cameraShakeBaseY = this.cameraContainer.y
+  }
+
+  /**
+   * 衝撃波エフェクトを生成
+   */
+  createShockwave(x: number, y: number) {
+    const shockwave = new ShockwaveEffect(x, y)
+    shockwave.graphics.zIndex = Z_INDEX.ENTITY + 10
+    this.cameraContainer.addChild(shockwave.graphics)
+    this.shockwaves.push(shockwave)
+  }
+
+  /**
+   * 衝撃波エフェクトの更新
+   */
+  private updateShockwaves() {
+    for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+      const shockwave = this.shockwaves[i]
+      shockwave.tick()
+
+      if (shockwave.isFinished()) {
+        shockwave.destroy()
+        this.shockwaves.splice(i, 1)
+      }
+    }
+  }
+
+  /**
    * カメラシェイク演出の更新
    */
   private updateCameraShake() {
@@ -499,6 +548,48 @@ export class StageScene extends Scene {
         this.cameraContainer.x = this.cameraShakeBaseX
         this.cameraContainer.y = this.cameraShakeBaseY
       }
+    }
+  }
+
+  /**
+   * DekaNasake撃破演出
+   * 衝撃波 + 画面揺れ + スローモーション → コイン生成
+   */
+  private handleDefeatStart(params: DefeatStartParams) {
+    const { x, y, coinConfig, context } = params
+
+    // 衝撃波エフェクト
+    this.createShockwave(x, y)
+
+    // 画面揺れ
+    this.startCameraShake(15)
+
+    // 効果音（撃破時）
+    playSfx(SFX.DEFEAT)
+
+    // スローモーション開始、終了時にコイン生成
+    FreezeService.slow(30, 3, () => {
+      this.spawnCoins(x, y, coinConfig, context)
+    })
+  }
+
+  /**
+   * コインを生成
+   */
+  private spawnCoins(
+    x: number,
+    y: number,
+    config: { count: number; vyMin: number; vyMax: number; vxRange: number },
+    context: StageContext
+  ) {
+    const { count, vyMin, vyMax, vxRange } = config
+
+    for (let i = 0; i < count; i++) {
+      const vx = (Math.random() - 0.5) * 2 * vxRange
+      const vy = vyMin + Math.random() * (vyMax - vyMin)
+
+      const coin = new PhysicsCoin(x, y - 8, context, vx, vy)
+      this.addEntity(coin)
     }
   }
 
